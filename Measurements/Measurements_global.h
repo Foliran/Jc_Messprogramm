@@ -1,0 +1,12 @@
+#ifndef MEASUREMENTS_GLOBAL_H
+#define MEASUREMENTS_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(MEASUREMENTS_LIBRARY)
+#  define MEASUREMENTS_EXPORT Q_DECL_EXPORT
+#else
+#  define MEASUREMENTS_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // MEASUREMENTS_GLOBAL_H

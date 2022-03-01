@@ -1,0 +1,12 @@
+#ifndef CONTROLCORE_GLOBAL_H
+#define CONTROLCORE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(CONTROLCORE_LIBRARY)
+#  define CONTROLCORE_EXPORT Q_DECL_EXPORT
+#else
+#  define CONTROLCORE_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // CONTROLCORE_GLOBAL_H
