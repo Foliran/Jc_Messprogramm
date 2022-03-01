@@ -203,6 +203,8 @@ void PpmsWidget::setupUI()
 
     voltageLive = new QLabel();
     voltageLive->setText("");
+    currentEndpoint = new QLabel("");
+    currentRate = new QLabel("");
     currentLive = new QLabel();
     currentLive->setText("");
     pulseWidth = new QLabel();

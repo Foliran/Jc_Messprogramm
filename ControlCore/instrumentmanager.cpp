@@ -20,6 +20,7 @@ const int KEITHLEYADDRESS = 26;
 
 InstrumentManager::InstrumentManager()
     : timer(new QTimer(this))
+    , simulation(true)
     , gpib(std::make_shared<GPIB>())
 {
     connect(timer, &QTimer::timeout,

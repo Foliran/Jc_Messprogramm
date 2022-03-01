@@ -45,7 +45,7 @@ private slots:
 
 private:
     QTimer* timer;
-    bool simulation = false;
+    bool simulation;
     PpmsAbstract* ppms;
     KeithleyAbstract *keithley;
     //keithley2651Aabstract* k2651;

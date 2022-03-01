@@ -16,7 +16,8 @@ public:
     double getVoltage() override;
     double getCurrent() override;
 private:
-    double currentSetpoint;
+    double current;
+    double voltage;
     double pulseWidth;
     double ratio;
 };
