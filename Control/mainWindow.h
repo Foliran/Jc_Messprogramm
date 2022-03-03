@@ -1,4 +1,3 @@
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -8,8 +7,6 @@
 #include <QCloseEvent>
 #include <QCheckBox>
 #include "../ControlCore/measurementsmanager.h"
-//#include "ui_mainWindow.h"
-
 
 QT_BEGIN_NAMESPACE
 class QAction;

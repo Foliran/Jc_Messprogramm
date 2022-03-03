@@ -13,7 +13,6 @@
 
 FileWriter::FileWriter(QObject* parent)
     : QObject(parent)
-    , measurementState(MeasurementsManager::State::Idle)
 {
 }
 
@@ -38,7 +37,7 @@ QString FileWriter::writeHeader(std::shared_ptr<const MeasurementSequence> measu
         header.append(QString::number(seqJc->getCurrentEnd()));
         header.append(" A \n Current Rate: ");
         header.append(QString::number(seqJc->getCurrentRate()));
-        header.append(" A/min");
+        header.append(" A/s");
         header.append("\n CoilAngle: ");
         header.append(QString::number(measurementSequence->getCoilAngle()));
         header.append(" degrees \n");
@@ -46,6 +45,7 @@ QString FileWriter::writeHeader(std::shared_ptr<const MeasurementSequence> measu
     }
     else { return "unable to write header"; }
 }
+
 QString FileWriter::createFileName(std::shared_ptr<const MeasurementSequence> measurementSequence)
 {
     //auto seqTc = std::dynamic_pointer_cast<const MeasSeqTc> (measurementSequence);
@@ -68,7 +68,7 @@ void FileWriter::append(std::shared_ptr<DataPoint> datapoint)
     if (measurementState == MeasurementsManager::State::ApproachEndJc)
     {
         file->write(QString::number(datapoint->getKeithleyData()->getCurrent()).toUtf8() +
-            " " + QString::number(datapoint->getKeithleyData()->getVoltage()).toUtf8());
+            " " + QString::number(datapoint->getKeithleyData()->getVoltage()).toUtf8() + "\n");
     }
 }
 

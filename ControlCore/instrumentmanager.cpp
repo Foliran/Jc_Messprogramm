@@ -7,12 +7,12 @@
 //fertig
 
 #include "../Instruments/ppmssimulation.h"
-#include "../Instruments/ppmsabstract.h"
-#include "../Instruments/ppmsinstrument.h"
-#include "../Instruments/gpib.h"
-#include "../Instruments/keithleyabstract.h"
 #include "../Instruments/keithleysimulation.h"
+#include "../Instruments/ppmsabstract.h"
+#include "../Instruments/keithleyabstract.h"
+#include "../Instruments/ppmsinstrument.h"
 #include "../Instruments/keithleyTSP.h"
+#include "../Instruments/gpib.h"
 
 const int PPMSADDRESS = 15;
 const int KEITHLEYADDRESS = 26;
@@ -30,8 +30,8 @@ InstrumentManager::InstrumentManager()
 
     if (simulation)
     {
-        ppms = new PpmsSimulation();
-        keithley = new KeithleySimulation();
+        ppms = new PpmsSimulation;
+        keithley = new KeithleySimulation;
     }
     else
     {
@@ -39,23 +39,18 @@ InstrumentManager::InstrumentManager()
         keithley = new KeithleyTSP(gpib, KEITHLEYADDRESS);
     }
 
-    connect(ppms, &PpmsAbstract::newTempSP,
-        this, &InstrumentManager::newTempSP);
-    connect(ppms, &PpmsAbstract::newMagSP,
-        this, &InstrumentManager::newMagSP);
-    connect(ppms, &PpmsAbstract::newAngleSP,
-        this, &InstrumentManager::newAngleSP);
-    connect(ppms, &PpmsAbstract::newErrorPPMS,
-        this, &InstrumentManager::newErrorMessage);
-    connect(ppms, &PpmsAbstract::newRotstate,
-        this, &InstrumentManager::newRotstate);
-    connect(keithley, &KeithleyAbstract::newValues,
-        this, &InstrumentManager::newValues);
+    connect(ppms, &PpmsAbstract::newTempSP, this, &InstrumentManager::newTempSP);
+    connect(ppms, &PpmsAbstract::newMagSP, this, &InstrumentManager::newMagSP);
+    connect(ppms, &PpmsAbstract::newAngleSP, this, &InstrumentManager::newAngleSP);
+    connect(keithley, &KeithleyAbstract::newValues, this, &InstrumentManager::newValues);
+    connect(ppms, &PpmsAbstract::newErrorPPMS, this, &InstrumentManager::newErrorMessage);
+    connect(ppms, &PpmsAbstract::newRotstate, this, &InstrumentManager::newRotstate);
 }
 
 void InstrumentManager::openDevice()
 {
     ppms->openDevice();
+    keithley->openDevice();
 }
 
 void InstrumentManager::setTempSetpoint(double setpoint, double rate)

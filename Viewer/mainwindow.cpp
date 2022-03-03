@@ -52,7 +52,4 @@ void MainWindow::on_DialogOpen_clicked()
 
     gGraph.createDatapoints(datafile);
     gGraph.createQlineDiagramm();
-
-
-
 }

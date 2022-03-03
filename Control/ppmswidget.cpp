@@ -57,6 +57,7 @@ void PpmsWidget::newData(std::shared_ptr<const DataPoint> dpoint)
 {
     if (dpoint != nullptr)
     {
+        //qDebug() << "PPMSWidget::newData";
         tempLive->setText(QString::number(dpoint->getPpmsdata()->getTempLive()));
         tempStatus->setText(tempStatStr);
         magFieldLive->setText(QString::number(dpoint->getPpmsdata()->getMagFieldLive()));

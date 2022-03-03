@@ -12,6 +12,12 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     , address(addressNew)
 {
     std::cout << "Initialize constructor" << std::endl;
+
+
+}
+
+void KeithleyTSP::openDevice()
+{
     gpib->cmd(address,
         " tsplink.reset(2) "
         " node[2].tsplink.group = 1 "
@@ -85,7 +91,6 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
         " node[1].trigger.tsplinkin[1].edge = node[1].trigger.EDGE_FALLING "
         " waitcomplete(0) ",
         DELAYGPIB, TERMCHAR);
-
 }
 
 KeithleyDatapoint KeithleyTSP::keithleyLogik()

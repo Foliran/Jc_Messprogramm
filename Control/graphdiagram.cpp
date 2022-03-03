@@ -23,10 +23,9 @@ GraphDiagram::GraphDiagram(QWidget* parent)
     :QWidget(parent)
     , filename1("filename")
     , currentMin(0)
-    , currentMax(1)
+    , currentMax(0)
     , voltMin(10)
     , voltMax(10)
-    //, phase(0)
     , graphMeas(false)
     , series(new QLineSeries())
     , chart(new QChart())
@@ -42,7 +41,7 @@ GraphDiagram::GraphDiagram(QWidget* parent)
 //TODO: Hier vllt noch anpassen
 void GraphDiagram::appendDataPoint(std::shared_ptr<const DataPoint> datapoint)
 {
-
+        //qDebug() << "GraphDiagram::appendDataPoint";
     if (measurementState == MeasurementsManager::State::ApproachEndJc)
     {
         // Range of Y-Axis
@@ -76,6 +75,7 @@ QSize GraphDiagram::minimumSizeHint() const
 
 void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mSeq)
 {
+    qDebug() << "GraphDiagram::setStaticValues";
     series->clear();
     measSeq = mSeq;
     auto mSeqJc = std::dynamic_pointer_cast <const MeasSeqJc> (measSeq);
@@ -92,8 +92,6 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mS
         {
             axisX->setRange(mSeqJc->getCurrentEnd(), mSeqJc->getCurrentStart());
         }
-
-        //QString title = mSeq->getFileName();
         chart->setTitle("Jc Measurement " + mSeq->getFileName());
     }
 

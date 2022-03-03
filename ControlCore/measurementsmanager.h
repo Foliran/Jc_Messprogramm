@@ -53,7 +53,7 @@ private slots:
 
 private:
     size_t measurementNumber;
-    std::vector<std::shared_ptr<const MeasurementSequence> > mVecSeq;
+    std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeq;
     std::unique_ptr <InstrumentManager> instrumentmanager;
     std::unique_ptr <FileWriter> fw;
     std::shared_ptr <MeasSeqJc> mSeqJc;

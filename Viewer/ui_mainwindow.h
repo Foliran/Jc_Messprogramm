@@ -25,8 +25,8 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QLabel *label;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
+    QPushButton *DialogOpen;
+    QPushButton *TextSuche;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -41,12 +41,12 @@ public:
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(120, 40, 450, 20));
         label->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(160, 80, 260, 60));
-        pushButton_2 = new QPushButton(centralwidget);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setGeometry(QRect(20, 40, 80, 20));
+        DialogOpen = new QPushButton(centralwidget);
+        DialogOpen->setObjectName(QString::fromUtf8("DialogOpen"));
+        DialogOpen->setGeometry(QRect(160, 80, 260, 60));
+        TextSuche = new QPushButton(centralwidget);
+        TextSuche->setObjectName(QString::fromUtf8("TextSuche"));
+        TextSuche->setGeometry(QRect(20, 40, 80, 20));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -65,8 +65,8 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         label->setText(QString());
-        pushButton->setText(QCoreApplication::translate("MainWindow", "Diagramm anzeigen", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("MainWindow", "Datei \303\266ffnen", nullptr));
+        DialogOpen->setText(QCoreApplication::translate("MainWindow", "Diagramm anzeigen", nullptr));
+        TextSuche->setText(QCoreApplication::translate("MainWindow", "Datei \303\266ffnen", nullptr));
     } // retranslateUi
 
 };

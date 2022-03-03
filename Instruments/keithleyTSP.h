@@ -13,6 +13,7 @@ class INSTRUMENTS_EXPORT KeithleyTSP : public KeithleyAbstract
 public:
     KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew);
     bool isOpen() override;
+    void openDevice() override;
     KeithleyDatapoint keithleyLogik() override;
     std::pair<double, double> setPulseAndMeasure(double value, double pWidth, double ratio) override;
     double getVoltage() override;

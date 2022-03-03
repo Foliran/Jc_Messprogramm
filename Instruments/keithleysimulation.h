@@ -11,6 +11,7 @@ class INSTRUMENTS_EXPORT KeithleySimulation : public KeithleyAbstract
 public:
     KeithleySimulation();
     bool isOpen() override;
+    void openDevice() override;
     KeithleyDatapoint keithleyLogik() override;
     std::pair<double, double> setPulseAndMeasure(double value, double pWidth, double ratio) override;
     double getVoltage() override;

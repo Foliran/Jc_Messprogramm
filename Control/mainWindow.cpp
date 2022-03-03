@@ -1,5 +1,6 @@
 #include <QtWidgets>
 #include <memory>
+#include <QDebug>
 
 //Internal Classes
 #include "mainWindow.h"
@@ -110,7 +111,7 @@ void MainWindow::setupUi()
 
 void MainWindow::createActions()
 {
-    //TODO: Falls Start-Button nicht sichtbar, hier vllt sichtbar setzen
+    qDebug() << "MainWindow::createAction";
     QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
@@ -130,6 +131,7 @@ void MainWindow::createRotatorButton()
 
 void MainWindow::onStartMessungButton()
 {
+    qDebug() << "MainWindow::onStartMessungButton";
     StartDialog* startDialog = new StartDialog(this);
     connect(startDialog, &StartDialog::createMeasurement,
         this, &MainWindow::onCreateMeasurement);
@@ -138,12 +140,14 @@ void MainWindow::onStartMessungButton()
 
 void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq)
 {
+    qDebug() << "MainWindow::onCreateMeasurement";
     MeasManager->appendMeasurement(mSeq);
     mTable->newMeasurement(mSeq);
 }
 
 void MainWindow::onStartMeasurement(std::shared_ptr<const MeasurementSequence> mSeq)
 {
+    qDebug() << "MainWindow::onStartMeasurement";
     graph->setStaticValues(mSeq);
     mTable->activeMeasurement(mSeq);
 }
@@ -164,12 +168,14 @@ void MainWindow::onSetSampleStage(bool rotator)
 
 void MainWindow::onNewData(std::shared_ptr<const DataPoint> datapoint)
 {
+    //qDebug() << "MainWindow::onNewData";
     ppmsWidget->newData(datapoint);
     graph->appendDataPoint(datapoint);
 }
 
 void MainWindow::onNewMeasurementState(MeasurementsManager::State newState)
 {
+    qDebug() << "MainWindow::onNewMeasurementState";
     MeasManagerState = newState;
     graph->MeasurementState(MeasManagerState);
 }

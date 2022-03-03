@@ -1,5 +1,6 @@
 #include "keithleysimulation.h"
 #include "../Core/datapoint.h"
+#include <QRandomGenerator>
 
 
 KeithleySimulation::KeithleySimulation():
@@ -15,9 +16,13 @@ bool KeithleySimulation::isOpen() {
     return true;
 }
 
+void KeithleySimulation::openDevice()
+{
+
+}
+
 KeithleyDatapoint KeithleySimulation::keithleyLogik()
 {
-    srand((unsigned)time(0));
     KeithleyDatapoint dPoint;
     dPoint.setCurrent(current);
     dPoint.setVoltage(voltage);
@@ -26,6 +31,8 @@ KeithleyDatapoint KeithleySimulation::keithleyLogik()
 std::pair<double, double> KeithleySimulation::setPulseAndMeasure(double value, double pWidth, double r) {
     pulseWidth = pWidth;
     ratio = r;
+    current = value;
+    voltage = value;
     std::pair<double, double> pair = std::make_pair(value, value);
     return pair;
 }
