@@ -43,6 +43,12 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onNewTempSP);
     connect(MeasManager, &MeasurementsManager::newCurrentValues,
         this, &MainWindow::onNewCurrentValues);
+    connect(MeasManager, &MeasurementsManager::newCurrentSetpoint,
+        this, &MainWindow::onNewCurrentSP);
+    connect(MeasManager, &MeasurementsManager::newRatio,
+        this, &MainWindow::onNewRatio);
+    connect(MeasManager, &MeasurementsManager::newPulseWidth,
+        this, &MainWindow::onNewPulseWidth);
     connect(MeasManager, &MeasurementsManager::newMagSP,
         this, &MainWindow::onNewMagSP);
     connect(MeasManager, &MeasurementsManager::newAngleSP,
@@ -111,7 +117,6 @@ void MainWindow::setupUi()
 
 void MainWindow::createActions()
 {
-    qDebug() << "MainWindow::createAction";
     QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
@@ -131,7 +136,6 @@ void MainWindow::createRotatorButton()
 
 void MainWindow::onStartMessungButton()
 {
-    qDebug() << "MainWindow::onStartMessungButton";
     StartDialog* startDialog = new StartDialog(this);
     connect(startDialog, &StartDialog::createMeasurement,
         this, &MainWindow::onCreateMeasurement);
@@ -140,7 +144,6 @@ void MainWindow::onStartMessungButton()
 
 void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq)
 {
-    qDebug() << "MainWindow::onCreateMeasurement";
     MeasManager->appendMeasurement(mSeq);
     mTable->newMeasurement(mSeq);
 }
@@ -175,7 +178,6 @@ void MainWindow::onNewData(std::shared_ptr<const DataPoint> datapoint)
 
 void MainWindow::onNewMeasurementState(MeasurementsManager::State newState)
 {
-    qDebug() << "MainWindow::onNewMeasurementState";
     MeasManagerState = newState;
     graph->MeasurementState(MeasManagerState);
 }
@@ -188,6 +190,21 @@ void MainWindow::onNewTempSP(double temp, double rate)
 void MainWindow::onNewCurrentValues(double curr, double volt)
 {
     ppmsWidget->newCurrentValues(curr, volt);
+}
+
+void MainWindow::onNewCurrentSP(double setpoint)
+{
+    ppmsWidget->newCurrentSP(setpoint);
+}
+
+void MainWindow::onNewRatio(double r)
+{
+    ppmsWidget->newRatio(r);
+}
+
+void MainWindow::onNewPulseWidth(double pWidth)
+{
+    ppmsWidget->newPulseWidth(pWidth);
 }
 
 void MainWindow::onNewMagSP(double magField, double magRate)

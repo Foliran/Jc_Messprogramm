@@ -28,13 +28,11 @@ KeithleyDatapoint KeithleySimulation::keithleyLogik()
     dPoint.setVoltage(voltage);
     return dPoint;
 }
-std::pair<double, double> KeithleySimulation::setPulseAndMeasure(double value, double pWidth, double r) {
+void KeithleySimulation::setPulseAndMeasure(double value, double pWidth, double r) {
     pulseWidth = pWidth;
     ratio = r;
     current = value;
     voltage = value;
-    std::pair<double, double> pair = std::make_pair(value, value);
-    return pair;
 }
 
 double KeithleySimulation::getVoltage()

@@ -158,7 +158,12 @@ void PpmsWidget::newCurrentValues(double curr, double rate)
     voltageLive->setText(QString::number(rate));
 }
 
-void PpmsWidget:: newPulseWidth(double value)
+void PpmsWidget::newCurrentSP(double setpoint)
+{
+    currentEndpoint->setText(QString::number(setpoint));
+}
+
+void PpmsWidget::newPulseWidth(double value)
 {
     pulseWidth->setText(QString::number(value));
 }

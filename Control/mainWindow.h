@@ -44,6 +44,9 @@ private slots:
     void onNewMeasurementState(MeasurementsManager::State newState);
     void onNewTempSP(double temp, double rate);
     void onNewCurrentValues(double curr, double volt);
+    void onNewCurrentSP(double currentSP);
+    void onNewRatio(double r);
+    void onNewPulseWidth(double pWidth);
     void onNewMagSP(double magField, double magRate);
     void onNewAngleSP(double angle);
     void onNewRotState(bool rotActive);

@@ -24,8 +24,8 @@ GraphDiagram::GraphDiagram(QWidget* parent)
     , filename1("filename")
     , currentMin(0)
     , currentMax(0)
-    , voltMin(10)
-    , voltMax(10)
+    , voltMin(0.0)
+    , voltMax(1.0)
     , graphMeas(false)
     , series(new QLineSeries())
     , chart(new QChart())
@@ -48,9 +48,8 @@ void GraphDiagram::appendDataPoint(std::shared_ptr<const DataPoint> datapoint)
         //TODO: Hier noch bearbeiten
         if (voltMin == 10) { voltMin = datapoint->getKeithleyData()->getVoltage(); }
         if (voltMax == 10) { voltMin = datapoint->getKeithleyData()->getVoltage(); }
-        //if(voltmin_ <= 0){voltmin_=datapoint->lockindata()->pvVoltOutputLive();}
-        if (voltMin > datapoint->getKeithleyData()->getVoltage()) { voltMin = datapoint->getKeithleyData()->getVoltage(); }
-        if (voltMax < datapoint->getKeithleyData()->getVoltage()) { voltMax = datapoint->getKeithleyData()->getVoltage(); }
+        if (voltMin > datapoint->getKeithleyData()->getVoltage()) { voltMin = 0.9*datapoint->getKeithleyData()->getVoltage(); }
+        if (voltMax < datapoint->getKeithleyData()->getVoltage()) { voltMax = 1.1*datapoint->getKeithleyData()->getVoltage(); }
         axisY->setRange(voltMin, voltMax);
 
         series->append(datapoint->getKeithleyData()->getCurrent(), datapoint->getKeithleyData()->getVoltage());
@@ -86,11 +85,11 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mS
         axisY->setTitleText("Voltage in Volt");
         if (mSeqJc->getCurrentStart() <= mSeqJc->getCurrentEnd())
         {
-            axisX->setRange(mSeqJc->getCurrentStart(), mSeqJc->getCurrentEnd());
+            axisX->setRange(0, mSeqJc->getCurrentEnd()); //mSeqJc->getCurrentStart()
         }
         else
         {
-            axisX->setRange(mSeqJc->getCurrentEnd(), mSeqJc->getCurrentStart());
+            axisX->setRange(0, mSeqJc->getCurrentStart()); //mSeqJc->getCurrentEnd()
         }
         chart->setTitle("Jc Measurement " + mSeq->getFileName());
     }

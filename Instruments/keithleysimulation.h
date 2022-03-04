@@ -13,7 +13,7 @@ public:
     bool isOpen() override;
     void openDevice() override;
     KeithleyDatapoint keithleyLogik() override;
-    std::pair<double, double> setPulseAndMeasure(double value, double pWidth, double ratio) override;
+    void setPulseAndMeasure(double value, double pWidth, double ratio) override;
     double getVoltage() override;
     double getCurrent() override;
 private:

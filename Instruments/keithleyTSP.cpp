@@ -115,15 +115,14 @@ bool KeithleyTSP::isOpen() {
     return check;
 }
 
-std::pair<double, double> KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
+void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
 {
     if (!gpib->isOpen(address))
     {
-        return std::make_pair(0, 0);
+        return;
     }
-    double curr, volt = 0;
     gpib->cmd(address,
-        " node[2].trigger.timer[1].delay = " + std::to_string(pWidth) +
+        " node[2].trigger.timer[1].delay = " + std::to_string(pWidth/1000.0) +
         " node[2].trigger.timer[2].delay = " + std::to_string(ratio * pWidth) +
         " node[2].smua.trigger.source.listi({"+ std::to_string(value)+ "}) "
 
@@ -136,14 +135,11 @@ std::pair<double, double> KeithleyTSP::setPulseAndMeasure(double value, double p
         " node[2].smua.source.output = node[2].smua.OUTPUT_OFF ",
         DELAYGPIB, TERMCHAR);
 
-    curr = std::stod(gpib->query(address, " print(node[2].smua.nvbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
+    current = std::stod(gpib->query(address, " print(node[2].smua.nvbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
     gpib->cmd(address, " node[2].smua.nvbuffer1.clear() ", DELAYGPIB, TERMCHAR);
-    volt = std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
+    voltage = std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
     gpib->cmd(address, " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
-    current = curr;
-    voltage = volt;
     emit newValues(current, voltage);
-    return std::make_pair(curr, volt);
 }
 
 double KeithleyTSP::getVoltage()

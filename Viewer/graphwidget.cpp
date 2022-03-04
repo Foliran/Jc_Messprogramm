@@ -46,7 +46,8 @@ void GraphWidget::createQlineDiagramm()
     QLineSeries* series = new QLineSeries();
     // Warum hier bis -2?
     //TODO: Ausprobieren, ob bis -1 auch geht
-    for (int j = 0; j < StromVektordouble.length() - 2; j++)
+    //Ja, -1 geht bisher auch, falls mal irgendwann das Programm abstürzt könnte es hieran liegen
+    for (int j = 0; j < StromVektordouble.length() - 1; j++)
     {
         series->append(StromVektordouble[j], SpannungVektordouble[j]);
     }

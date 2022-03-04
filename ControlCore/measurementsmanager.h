@@ -35,6 +35,9 @@ signals:
     void newState(MeasurementsManager::State newState);
     void newTempSP(double setpoint, double rate);
     void newCurrentValues(double current, double voltage);
+    void newCurrentSetpoint(double currentSP);
+    void newRatio(double newRatio);
+    void newPulseWidth(double pWidth);
     void newMagSP(double magField, double magRate);
     void newAngleSP(double angle);
     void newRotstate(bool rotActive);

@@ -3,8 +3,11 @@
 MeasSeqJc::MeasSeqJc()
     : currentStart(0.1)
     , currentEnd(1)
-    , currentRate(0.01)
+    , currentRate(0.1)
+    , currentLive(0.1)
     , temperature(77)
+    , pulsewidth(30)
+    , ratio(0.5)
 {
 }
 
@@ -46,7 +49,7 @@ double MeasSeqJc::getCurrentLive() const
 
 void MeasSeqJc::setCurrentLive(double currentLiveNew)
 {
-    currentRate = currentLiveNew;
+    currentLive = currentLiveNew;
 }
 
 double MeasSeqJc::getTemperature() const

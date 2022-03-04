@@ -25,6 +25,7 @@ public:
     void newAngleSP(double angle);
     void newTempSP(double temp, double rate);
     void newCurrentValues(double curr, double volt);
+    void newCurrentSP(double setpoint);
     void newPulseWidth(double value);
     void newRatio(double value);
 

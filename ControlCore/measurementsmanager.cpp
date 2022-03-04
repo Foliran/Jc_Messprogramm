@@ -70,12 +70,6 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequ
 {
     qDebug() << "MeasManager::StartMeasurement";
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
-    if (seqJc == nullptr) {
-        qDebug() << "Vektor ist leer";
-    }
-    else{
-        qDebug() <<"Vektor ist nicht leer";
-    }
     fw = std::make_unique<FileWriter>();
     fw->openFile(measurementSequence);
 
@@ -85,12 +79,15 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequ
     mSeqJc->setTemperature(seqJc->getTemperature());
     mSeqJc->setPulsewidth(seqJc->getPulsewidth());
     mSeqJc->setRatio(seqJc->getRatio());
+    //TODO: Scheint zu gehen, wenn ich hier die drei emits setzte
+    emit newRatio(mSeqJc->getRatio());
+    emit newPulseWidth(mSeqJc->getPulsewidth());
+    emit newCurrentSetpoint(mSeqJc->getCurrentEnd());
 
     if (tempSP != mSeqJc->getTemperature())
     {
         instrumentmanager->setTempSetpoint(mSeqJc->getTemperature(), 20);
     }
-    instrumentmanager->setPulseAndMeasure(seqJc->getCurrentStart(), seqJc->getCurrentRate(), mSeqJc->getPulsewidth());
     measurementState = State::ApproachStartJc;
     emit newState(measurementState);
 
@@ -109,7 +106,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
     //ppmsStatus
     QString ppmsStatusStr = QString::fromStdString(datapoint->getPpmsdata()->getStatusPpms());
-    auto ppmsStatus = ppmsStatusStr.toDouble();//std::stod(ppmsStatusStr);
+    auto ppmsStatus = ppmsStatusStr.toDouble();
     bool tempStable = false;
     bool magStable = false;
     bool rotStable = false;
@@ -131,7 +128,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
     //Jc
         case State::ApproachStartJc:
         {
-            qDebug() << "State::ApproachStartJc";
+            //qDebug() << "State::ApproachStartJc";
         // Sind Parameter nahe genug an den gewollten Startwerten, starte Messung
         // gehe also auf approachEndJc
             if (std::abs(mSeqJc->getTemperature() - datapoint->getPpmsdata()->getTempLive()) < 0.6 &&
@@ -149,19 +146,11 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
     case State::ApproachEndJc:
     {
-        qDebug() << "State::ApproachEndJc";
-        if (datapoint->getKeithleyData()->getCurrent() < mSeqJc->getCurrentEnd())
+        if ((datapoint->getKeithleyData()->getCurrent()+mSeqJc->getCurrentRate()) <= mSeqJc->getCurrentEnd())
         {
             instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
             mSeqJc->setCurrentLive(mSeqJc->getCurrentLive()+mSeqJc->getCurrentRate());
         }
-        if (datapoint->getKeithleyData()->getCurrent() >= mSeqJc->getCurrentEnd())
-        {
-            instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentLive() - mSeqJc->getCurrentRate(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
-            mSeqJc->setCurrentLive(mSeqJc->getCurrentLive()+mSeqJc->getCurrentRate());
-
-        }
-
 
 // Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
 // Beende Messung, setze neuen State und emitte newState
@@ -187,13 +176,11 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
     // Wenn es also noch weitere Messungen gibt, fange neue Messung an
         if (mVecSeq.size() > measurementNumber)
         {
-            qDebug() << "State::CheckForMeas - Weitere Messung, " << mVecSeq.size();
             emit startNewMeasurement(mVecSeq[measurementNumber]);
             startMeasurement(mVecSeq[measurementNumber]);
         }
         else
         {
-            qDebug() << "State::CheckForMeas - Alle Messungen fertig, "<< mVecSeq.size();
             measurementState = State::Idle;
             emit newState(measurementState);
         }
