@@ -6,15 +6,11 @@
 #include <QObject>
 #include <vector>
 
-//Internal Classes
-//class MeasSeqTc;
 class MeasSeqJc;
 class MeasurementSequence;
 class DataPoint;
 class FileWriter;
 class InstrumentManager;
-
-//fertig
 
 class CONTROLCORE_EXPORT MeasurementsManager : public QObject
 {
@@ -24,7 +20,7 @@ public:
     explicit MeasurementsManager();
     ~MeasurementsManager();
     void openDevice();
-    enum class State { Idle, CheckForMeas, ApproachStartJc, ApproachEndJc };//, ApproachStartTc, ApproachEndTc
+    enum class State { Idle, CheckForMeas, ApproachStartJc, ApproachEndJc };
     void appendMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeq);
     void startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence);
     void rotatorState(bool rotator);

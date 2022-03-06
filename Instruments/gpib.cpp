@@ -32,7 +32,6 @@ void GPIB::openDevice(int deviceAddress)
 
     if (handle >= 0)
     {
-        //ibclr_(handle); //TODO:eventuell nicht so wichtig
         deviceHandles_.insert(std::make_pair(deviceAddress, handle));
     }
 }

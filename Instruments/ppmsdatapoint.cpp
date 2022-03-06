@@ -127,8 +127,6 @@ void PpmsDataPoint::setUserTemp(double value)
     userTemp = value;
 }
 
-
-
 uint32_t PpmsDataPoint::getDatamask() const
 {
     return datamask;;

@@ -19,7 +19,7 @@ SOURCES += \
     ppmsdatapoint.cpp \
     ppmsinstrument.cpp \
     ppmssimulation.cpp \
-    status.cpp
+    #status.cpp
 
 HEADERS += \
     Instruments_global.h \
@@ -33,7 +33,7 @@ HEADERS += \
     ppmsdatapoint.h \
     ppmsinstrument.h \
     ppmssimulation.h \
-    status.h
+    #status.h
 
 # Default rules for deployment.
 unix {

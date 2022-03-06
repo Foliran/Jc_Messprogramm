@@ -1,21 +1,13 @@
 #ifndef INSTRUMENTMANAGER_H
 #define INSTRUMENTMANAGER_H
-/*Aufgabe: Daten von Messequence an PPMS-Core
- * & Keithley-Core weiter zu geben!
- */
 #include "ControlCore_global.h"
 #include <memory>
 #include <QTimer>
 
-//fertig
-
- //Internal Classes
 #include "../Core/datapoint.h"
-//Die Klassendefinition hier ist glaub ich zum Verhindern von circular dependencies
 class PpmsAbstract;
 class KeithleyAbstract;
 class GPIB;
-//class LockInSens;
 
 class CONTROLCORE_EXPORT InstrumentManager : public QObject
 {
@@ -48,8 +40,6 @@ private:
     bool simulation;
     PpmsAbstract* ppms;
     KeithleyAbstract *keithley;
-    //keithley2651Aabstract* k2651;
-    //keithleyDMM6500abstract* kdmm;
     std::shared_ptr <GPIB> gpib;
 };
 

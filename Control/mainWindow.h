@@ -21,6 +21,7 @@ class PpmsSimulation;
 class KeithleySimulation;
 class PpmsWidget;
 class MeasurementsTable;
+class GraphWidget;
 
 QT_END_NAMESPACE
 
@@ -37,6 +38,7 @@ public:
 
 private slots:
     void onStartMessungButton();
+    void onOpenFileButton();
     void onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq);
     void onStartMeasurement(std::shared_ptr<const MeasurementSequence> mSeq);
     void onSetSampleStage(bool rotator);
@@ -60,6 +62,7 @@ private:
     void createRotatorButton();
 
     GraphDiagram* graph;
+    GraphWidget* graphwidget;
     MeasurementsManager* MeasManager;
     MeasurementsManager::State MeasManagerState;
     PpmsWidget* ppmsWidget;

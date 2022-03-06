@@ -6,10 +6,10 @@
 #include "mainWindow.h"
 #include "../ControlCore/measurementsmanager.h"
 #include "../Core/measurementsequence.h"
-#include "graphdiagram.h"
 #include "../Core/datapoint.h"
+#include "../Viewer/graphwidget.h"
 #include "startdialog.h"
-//#include "../Instruments/ppmssimulation.h"
+#include "graphdiagram.h"
 #include "ppmswidget.h"
 #include "measurementstable.h"
 #include "QDialog"
@@ -19,6 +19,7 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , graph(new GraphDiagram(this))
+    //, graphwidget(new GraphWidget(this))
     , MeasManager(new MeasurementsManager())
     , MeasManagerState(MeasurementsManager::State::Idle)
     , ppmsWidget(new PpmsWidget())
@@ -117,15 +118,22 @@ void MainWindow::setupUi()
 
 void MainWindow::createActions()
 {
-    QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
+    //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
+    const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/StartButton.png"));
     QAction* messungStarten = new QAction(measurementIcon, tr("&New Measurement"), this);
+    QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
     messungStarten->setStatusTip(tr("Create a new measurement"));
+    openFile->setStatusTip(tr("Show an old Measurement"));
     connect(messungStarten, &QAction::triggered,
         this, &MainWindow::onStartMessungButton);
-    fileMenu->addAction(messungStarten);
+    connect(openFile, &QAction::triggered,
+        this, &MainWindow::onOpenFileButton);
+    //fileMenu->addAction(messungStarten);
+    //fileMenu->addAction(openFile);
     fileToolBar->addAction(messungStarten);
+    fileToolBar->addAction(openFile);
 }
 
 void MainWindow::createRotatorButton()
@@ -138,8 +146,13 @@ void MainWindow::onStartMessungButton()
 {
     StartDialog* startDialog = new StartDialog(this);
     connect(startDialog, &StartDialog::createMeasurement,
-        this, &MainWindow::onCreateMeasurement);
+        this, &MainWindow::onCreateMeasureme nt);
     startDialog->show();
+}
+
+void MainWindow::onOpenFileButton()
+{
+    //TODO: Einbundung von openFileWindow
 }
 
 void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq)

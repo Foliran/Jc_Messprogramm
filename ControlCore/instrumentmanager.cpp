@@ -4,8 +4,6 @@
 #include <QtConcurrent/QtConcurrent>
 #include <memory>
 
-//fertig
-
 #include "../Instruments/ppmssimulation.h"
 #include "../Instruments/keithleysimulation.h"
 #include "../Instruments/ppmsabstract.h"
