@@ -10,4 +10,4 @@ SUBDIRS += \
 Core.depends=Instruments
 ControlCore.depends=Core
 Control.depends=ControlCore
-Viewer.depends=Core
+#Viewer.depends=Core

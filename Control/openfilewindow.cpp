@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "openfilewindow.h"
+#include "ui_openfilewindow.h"
 #include "../Core/filereader.h"
 #include "graphwidget.h"
 
@@ -8,19 +8,18 @@
 #include <memory>
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent) :
+OpenFileWindow::OpenFileWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::OpenFileWindow)
 {
     ui->setupUi(this);
 }
 
-MainWindow::~MainWindow()
+OpenFileWindow::~OpenFileWindow()
 {
     delete ui;
 }
-
-void MainWindow::on_TextSuche_clicked()
+void OpenFileWindow::on_TextSuche_clicked()
 {
 
     //Öffne die MessDatei
@@ -40,12 +39,13 @@ void MainWindow::on_TextSuche_clicked()
     fReader.readFile();             //rufe readfile auf
     datafile=fReader.readFile();    //setze datafile= return von readfile
 
+
     //Label wird mit Filenamen besetzt.
     filename=file.fileName();
     ui->label->setText(filename);
 }
 
-void MainWindow::on_DialogOpen_clicked()
+void OpenFileWindow::on_DialogOpen_clicked()
 {
     datafile->setFileName(filename);
     GraphWidget gGraph(*datafile);

@@ -7,7 +7,8 @@
 #include "../ControlCore/measurementsmanager.h"
 #include "../Core/measurementsequence.h"
 #include "../Core/datapoint.h"
-#include "../Viewer/graphwidget.h"
+#include "graphwidget.h"
+//#include "openfilewindow.h"
 #include "startdialog.h"
 #include "graphdiagram.h"
 #include "ppmswidget.h"
@@ -146,13 +147,15 @@ void MainWindow::onStartMessungButton()
 {
     StartDialog* startDialog = new StartDialog(this);
     connect(startDialog, &StartDialog::createMeasurement,
-        this, &MainWindow::onCreateMeasureme nt);
+        this, &MainWindow::onCreateMeasurement);
     startDialog->show();
 }
 
 void MainWindow::onOpenFileButton()
 {
     //TODO: Einbundung von openFileWindow
+    //OpenFileWindow* ofw = new OpenFileWindow(this);
+    //ofw->show();
 }
 
 void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq)

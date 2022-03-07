@@ -21,7 +21,8 @@ class PpmsSimulation;
 class KeithleySimulation;
 class PpmsWidget;
 class MeasurementsTable;
-class GraphWidget;
+//class GraphWidget;
+//class OpenFileWindow;
 
 QT_END_NAMESPACE
 
@@ -62,7 +63,6 @@ private:
     void createRotatorButton();
 
     GraphDiagram* graph;
-    GraphWidget* graphwidget;
     MeasurementsManager* MeasManager;
     MeasurementsManager::State MeasManagerState;
     PpmsWidget* ppmsWidget;

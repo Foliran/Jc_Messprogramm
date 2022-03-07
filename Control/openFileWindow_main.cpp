@@ -1,11 +1,11 @@
-#include "mainwindow.h"
+#include "openfilewindow.h"
 
 #include <QApplication>
 
-int main(int argc, char *argv[])
+int main2(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    OpenFileWindow w;
     w.show();
     return a.exec();
 }

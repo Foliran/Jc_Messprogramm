@@ -30,7 +30,7 @@ QString FileWriter::writeHeader(std::shared_ptr<const MeasurementSequence> measu
         //header.append(" T \n Frequency: ");
         //header.append(QString::number(measurementSequence->frequency()));
         header.append("\n Magnetic Field: ");
-        header.append(QString::number(measurementSequence->getMagneticField()));
+        header.append(QString::number(seqJc->getMagneticField()));
         header.append(" mT \n Starting Current: ");
         header.append(QString::number(seqJc->getCurrentStart()));
         header.append(" A \n Ending Current: ");
@@ -41,6 +41,7 @@ QString FileWriter::writeHeader(std::shared_ptr<const MeasurementSequence> measu
         header.append("\n CoilAngle: ");
         header.append(QString::number(measurementSequence->getCoilAngle()));
         header.append(" degrees \n");
+        header.append(" Current Voltage \n");
         return header;
     }
     else { return "unable to write header"; }
