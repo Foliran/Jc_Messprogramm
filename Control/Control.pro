@@ -14,12 +14,14 @@ SOURCES += graphdiagram.cpp \
     mainWindow.cpp \
     mainWindow_main.cpp \
     measurementstable.cpp \
+    openfilewindow.cpp \
     ppmswidget.cpp \
     startdialog.cpp
 
 HEADERS += graphdiagram.h \
     mainWindow.h \
     measurementstable.h \
+    openfilewindow.h \
     ppmswidget.h \
     startdialog.h
 
@@ -29,7 +31,8 @@ unix {
 }
 !isEmpty(target.path): INSTALLS += target
 
-FORMS += mainWindow.ui
+FORMS += mainWindow.ui \
+    openfilewindow.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Instruments/release/ -lInstruments
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Instruments/debug/ -lInstruments

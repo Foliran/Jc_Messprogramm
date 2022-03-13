@@ -1,15 +1,14 @@
 #ifndef OPENFILEWINDOW_H
 #define OPENFILEWINDOW_H
 
-#include <QMainWindow>
-#include <QString>
-#include <../Core/datafile.h>
+#include <QDialog>
+#include "../Core/datafile.h"
 
 namespace Ui {
 class OpenFileWindow;
 }
 
-class OpenFileWindow : public QMainWindow
+class OpenFileWindow : public QDialog
 {
     Q_OBJECT
 
@@ -17,15 +16,13 @@ public:
     explicit OpenFileWindow(QWidget *parent = nullptr);
     ~OpenFileWindow();
 
+private slots:
+    void openFile_clicked();
+
 private:
     Ui::OpenFileWindow *ui;
-
-private slots:
-    void on_TextSuche_clicked();
-    void on_DialogOpen_clicked();
-
     QString filename;
-    std::shared_ptr<Datafile> datafile = std::make_shared<Datafile>();
+    Datafile *dfile;
 };
 
 #endif // OPENFILEWINDOW_H

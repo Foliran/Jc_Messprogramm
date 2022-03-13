@@ -68,6 +68,10 @@ void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const Me
 
 void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence)
 {
+<<<<<<< HEAD
+=======
+    //qDebug() << "MeasManager::StartMeasurement";
+>>>>>>> 7a35ff940952766b1ecd398445d6d92406c3075d
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
     fw = std::make_unique<FileWriter>();
     fw->openFile(measurementSequence);
@@ -78,7 +82,7 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequ
     mSeqJc->setTemperature(seqJc->getTemperature());
     mSeqJc->setPulsewidth(seqJc->getPulsewidth());
     mSeqJc->setRatio(seqJc->getRatio());
-    //TODO: Scheint zu gehen, wenn ich hier die drei emits setzte
+    //scheint zu gehen, wenn ich hier die drei emits setzte
     emit newRatio(mSeqJc->getRatio());
     emit newPulseWidth(mSeqJc->getPulsewidth());
     emit newCurrentSetpoint(mSeqJc->getCurrentEnd());
@@ -192,12 +196,10 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 void MeasurementsManager::onNewTempSP(double setpoint, double rate)
 {
     emit newTempSP(setpoint, rate);
-
 }
 
 void MeasurementsManager::onNewCurrentValues(double current, double voltage)
 {
-    qDebug() << "MeasManager::onNewCurrentValues";
     emit newCurrentValues(current, voltage);
 }
 
