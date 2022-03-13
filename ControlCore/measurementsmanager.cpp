@@ -68,7 +68,6 @@ void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const Me
 
 void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence)
 {
-    qDebug() << "MeasManager::StartMeasurement";
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
     fw = std::make_unique<FileWriter>();
     fw->openFile(measurementSequence);
@@ -172,7 +171,6 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
     case State::CheckForMeas:
     {
-        qDebug() << "State::CheckForMeas";
     // Wenn es also noch weitere Messungen gibt, fange neue Messung an
         if (mVecSeq.size() > measurementNumber)
         {
@@ -193,7 +191,6 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
 void MeasurementsManager::onNewTempSP(double setpoint, double rate)
 {
-    qDebug() << "InduManager::onNewTempSQ";
     emit newTempSP(setpoint, rate);
 
 }

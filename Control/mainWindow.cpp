@@ -166,7 +166,6 @@ void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const Measureme
 
 void MainWindow::onStartMeasurement(std::shared_ptr<const MeasurementSequence> mSeq)
 {
-    qDebug() << "MainWindow::onStartMeasurement";
     graph->setStaticValues(mSeq);
     mTable->activeMeasurement(mSeq);
 }
