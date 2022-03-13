@@ -5,7 +5,7 @@ SUBDIRS += \
     ControlCore \
     Instruments \
     Core \
-    Viewer
+    #Viewer
 
 Core.depends=Instruments
 ControlCore.depends=Core
