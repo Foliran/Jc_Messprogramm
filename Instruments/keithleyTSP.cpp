@@ -55,7 +55,7 @@ void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
     }
     pWidth = pWidth / 1000.0;
     //ratio = ratio / 1000.0;
-    ratio = 13 / 1000.0;
+    ratio = 100 / 1000.0;
     gpib->cmd(address, "initializeSettings.run()", DELAYGPIB, TERMCHAR);
     std::string valueString = " value = " + std::to_string(value);
     std::string pWidthString = " pWidth = " + std::to_string(pWidth);
