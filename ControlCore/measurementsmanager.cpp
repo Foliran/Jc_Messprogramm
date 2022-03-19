@@ -172,7 +172,6 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
     case State::CheckForMeas:
     {
-        qDebug() << "State::CheckForMeas";
     // Wenn es also noch weitere Messungen gibt, fange neue Messung an
         if (mVecSeq.size() > measurementNumber)
         {
