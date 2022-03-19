@@ -74,7 +74,6 @@ QSize GraphDiagram::minimumSizeHint() const
 
 void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mSeq)
 {
-    qDebug() << "GraphDiagram::setStaticValues";
     series->clear();
     measSeq = mSeq;
     auto mSeqJc = std::dynamic_pointer_cast <const MeasSeqJc> (measSeq);

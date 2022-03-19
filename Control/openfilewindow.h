@@ -3,6 +3,14 @@
 
 #include <QDialog>
 #include "../Core/datafile.h"
+#include <QtCharts/QChartView>
+#include <QtCharts/QLegend>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QHorizontalStackedBarSeries>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QCategoryAxis>
+
+QT_CHARTS_USE_NAMESPACE
 
 namespace Ui {
 class OpenFileWindow;
@@ -23,6 +31,7 @@ private:
     Ui::OpenFileWindow *ui;
     QString filename;
     Datafile *dfile;
+    QLineSeries *series;
 };
 
 #endif // OPENFILEWINDOW_H

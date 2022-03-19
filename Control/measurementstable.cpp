@@ -26,7 +26,6 @@ QSize MeasurementsTable::minimumSizeHint() const
 
 void MeasurementsTable::newMeasurement(const std::vector<std::shared_ptr<const MeasurementSequence>>& mSeq)
 {
-    qDebug() << "MeasTable::newMeasurement";
     for (const auto& mesSeq : mSeq)
     {
         vecSeq.push_back(mesSeq);

@@ -46,7 +46,6 @@ QSize StartDialog::minimumSizeHint() const
 
 void StartDialog::accept()
 {
-    qDebug() << "StartDialog::accept()";
     auto vecSeq = createSequence();
 
     emit createMeasurement(vecSeq);
@@ -164,7 +163,6 @@ void StartDialog::setupUI()
 
 std::vector <std::shared_ptr<const MeasurementSequence>> StartDialog::createSequence() const
 {
-    qDebug() << "StartDialog::createSequence";
     std::vector <std::shared_ptr<const MeasurementSequence>> vecSeq;
     MeasSeqJc seqJc;
     seqJc.setSupraName(sampleNameJc->text());
