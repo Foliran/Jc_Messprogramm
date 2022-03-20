@@ -37,7 +37,7 @@ private slots:
 
 private:
     QTimer* timer;
-    bool simulation;
+    int simulation;
     PpmsAbstract* ppms;
     KeithleyAbstract *keithley;
     std::shared_ptr <GPIB> gpib;

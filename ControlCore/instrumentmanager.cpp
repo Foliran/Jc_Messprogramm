@@ -18,7 +18,7 @@ const int KEITHLEYADDRESS = 26;
 
 InstrumentManager::InstrumentManager()
     : timer(new QTimer(this))
-    , simulation(true)
+    , simulation(1) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
     , gpib(std::make_shared<GPIB>())
 {
     connect(timer, &QTimer::timeout,
@@ -26,12 +26,17 @@ InstrumentManager::InstrumentManager()
 
     timer->start(1000);
 
-    if (simulation)
+    if (simulation == 0)
     {
         ppms = new PpmsSimulation;
         keithley = new KeithleySimulation;
     }
-    else
+    else if(simulation == 1)
+    {
+        ppms = new PpmsSimulation;
+        keithley = new KeithleyTSP(gpib, KEITHLEYADDRESS);
+    }
+    else if(simulation == 2)
     {
         ppms = new PpmsInstrument(gpib, PPMSADDRESS);
         keithley = new KeithleyTSP(gpib, KEITHLEYADDRESS);
@@ -49,6 +54,10 @@ void InstrumentManager::openDevice()
 {
     ppms->openDevice();
     keithley->openDevice();
+    if(keithley->isOpen())
+    {
+        qDebug() << "Keithley is open";
+    } else qDebug() << "Keithley is not open";
 }
 
 void InstrumentManager::setTempSetpoint(double setpoint, double rate)

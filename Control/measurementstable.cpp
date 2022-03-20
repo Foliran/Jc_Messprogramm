@@ -41,7 +41,6 @@ void MeasurementsTable::newMeasurement(const std::vector<std::shared_ptr<const M
 
 void MeasurementsTable::activeMeasurement(const std::shared_ptr<const MeasurementSequence> mesSeq)
 {
-    qDebug() << "MeasTable::activeMeasurement";
     auto it = vecSeq.begin();
     QColor color;
     std::for_each(vecSeq.begin(), vecSeq.end(),
