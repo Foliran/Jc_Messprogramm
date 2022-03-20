@@ -25,7 +25,7 @@ GraphDiagram::GraphDiagram(QWidget* parent)
     , currentMin(0)
     , currentMax(0)
     , voltMin(0.0)
-    , voltMax(1.0)
+    , voltMax(0.001)
     , graphMeas(false)
     , series(new QLineSeries())
     , chart(new QChart())
@@ -88,7 +88,7 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mS
         }
         else
         {
-            axisX->setRange(0, mSeqJc->getCurrentStart()); //mSeqJc->getCurrentEnd()
+            axisX->setRange(0, 0.01); //mSeqJc->getCurrentEnd()
         }
         chart->setTitle("Jc Measurement " + mSeq->getFileName());
     }

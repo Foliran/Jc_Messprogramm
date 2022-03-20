@@ -68,10 +68,7 @@ void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const Me
 
 void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence)
 {
-<<<<<<< HEAD
-=======
     //qDebug() << "MeasManager::StartMeasurement";
->>>>>>> 7a35ff940952766b1ecd398445d6d92406c3075d
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
     fw = std::make_unique<FileWriter>();
     fw->openFile(measurementSequence);
