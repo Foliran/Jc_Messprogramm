@@ -9,17 +9,15 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += filereader.cpp \
+SOURCES += filewriter.cpp \
     datafile.cpp \
     datapoint.cpp \
-    filewriter.cpp \
     measseqjc.cpp \
     measurementsequence.cpp
 
 HEADERS += Core_global.h \
     datafile.h \
     datapoint.h \
-    filereader.h \
     filewriter.h \
     measseqjc.h \
     measurementsequence.h
