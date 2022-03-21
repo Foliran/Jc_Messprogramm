@@ -122,7 +122,7 @@ void MainWindow::createActions()
     //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
-    const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/StartButton.png"));
+    const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
     QAction* messungStarten = new QAction(measurementIcon, tr("&New Measurement"), this);
     QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
     messungStarten->setStatusTip(tr("Create a new measurement"));
@@ -131,8 +131,6 @@ void MainWindow::createActions()
         this, &MainWindow::onStartMessungButton);
     connect(openFile, &QAction::triggered,
         this, &MainWindow::onOpenFileButton);
-    //fileMenu->addAction(messungStarten);
-    //fileMenu->addAction(openFile);
     fileToolBar->addAction(messungStarten);
     fileToolBar->addAction(openFile);
 }
@@ -185,7 +183,6 @@ void MainWindow::onSetSampleStage(bool rotator)
 
 void MainWindow::onNewData(std::shared_ptr<const DataPoint> datapoint)
 {
-    //qDebug() << "MainWindow::onNewData";
     ppmsWidget->newData(datapoint);
     graph->appendDataPoint(datapoint);
 }
