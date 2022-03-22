@@ -7,7 +7,6 @@
 #include "../ControlCore/measurementsmanager.h"
 #include "../Core/measurementsequence.h"
 #include "../Core/datapoint.h"
-#include "graphwidget.h"
 #include "openfilewindow.h"
 #include "startdialog.h"
 #include "graphdiagram.h"

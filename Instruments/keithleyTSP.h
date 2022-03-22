@@ -18,12 +18,16 @@ public:
     void setPulseAndMeasure(double value, double pWidth, double ratio) override;
     double getVoltage() override;
     double getCurrent() override;
+    double getBackground() override;
+    void resetRange() override;
+    void resetBackground() override;
 
 private:
     std::shared_ptr<GPIB> gpib;
     int address;
     double current;
     double voltage;
+    double background;
 };
 
 #endif // KEITHLEYTSP_H

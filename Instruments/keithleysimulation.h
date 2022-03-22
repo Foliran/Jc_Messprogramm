@@ -16,11 +16,15 @@ public:
     void setPulseAndMeasure(double value, double pWidth, double ratio) override;
     double getVoltage() override;
     double getCurrent() override;
+    void resetRange() override;
+    double getBackground() override;
+    void resetBackground() override;
 private:
     double current;
     double voltage;
     double pulseWidth;
     double ratio;
+    double background;
 };
 
 #endif // KEITHLEYSIMULATION_H

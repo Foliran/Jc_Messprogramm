@@ -8,6 +8,7 @@ KeithleySimulation::KeithleySimulation():
   , voltage(0)
   , pulseWidth(0.03)
   , ratio(0.5)
+  , background(-1.0)
 {
 
 }
@@ -43,4 +44,16 @@ double KeithleySimulation::getVoltage()
 double KeithleySimulation::getCurrent()
 {
     return current;
+}
+
+void KeithleySimulation::resetRange() {
+
+}
+
+double KeithleySimulation::getBackground(){
+    return 0;
+}
+
+void KeithleySimulation::resetBackground(){
+
 }

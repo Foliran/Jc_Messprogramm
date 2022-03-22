@@ -3,6 +3,8 @@
 #include<memory>
 #include<iostream>
 #include<QDebug>
+#include<chrono>
+#include<thread>
 
 //const int GPIBADDRESS = 26;
 const int DELAYGPIB = 2; //in ms
@@ -11,6 +13,9 @@ const bool TERMCHAR = false;
 KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     gpib(gpibNew)
     , address(addressNew)
+    , current(0.0)
+    , voltage(0.0)
+    , background(-1.0)
 {
     std::cout << "Initialize constructor" << std::endl;
     qDebug() << "Finished constructor";
@@ -64,18 +69,11 @@ void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
     gpib->cmd(address, pWidthString, DELAYGPIB, TERMCHAR);
     gpib->cmd(address, ratioString, DELAYGPIB, TERMCHAR);
     gpib->cmd(address, "setPulseAndMeasure.run()", DELAYGPIB, TERMCHAR);
-    /*gpib->cmd(address, "node[2].smua.trigger.source.listi({value})", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[2].trigger.timer[1].delay = pWidth", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[2].trigger.timer[2].delay = ratio", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[2].smua.source.output = node[2].smua.OUTPUT_ON", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[1].trigger.model.initiate()", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[2].smua.trigger.initiate()", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "waitcomplete()", DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[2].smua.source.output = node[2].smua.OUTPUT_OFF", DELAYGPIB, TERMCHAR);*/
     current = std::stod(gpib->query(address, " print(node[2].smua.nvbuffer1.sourcevalues[1]) ", DELAYGPIB, TERMCHAR));
     voltage = std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
     gpib->cmd(address, " node[2].smua.nvbuffer1.clear() "
                        " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
+    resetRange();
 
 }
 
@@ -87,4 +85,45 @@ double KeithleyTSP::getVoltage()
 double KeithleyTSP::getCurrent()
 {
     return current;
+}
+
+double KeithleyTSP::getBackground()
+{
+    std::string valueString = " value = 0.000";
+    std::string pWidthString = " pWidth = 30 / 1000.0";
+    std::string ratioString = " ratio = 100.0/1000.0";
+    gpib->cmd(address, valueString, DELAYGPIB, TERMCHAR);
+    gpib->cmd(address, pWidthString, DELAYGPIB, TERMCHAR);
+    gpib->cmd(address, ratioString, DELAYGPIB, TERMCHAR);
+    gpib->cmd(address, "node[1].dmm.measure.autorange = node[1].dmm.ON", DELAYGPIB, TERMCHAR);
+    double voltGes = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        gpib->cmd(address, "setPulseAndMeasure.run()", DELAYGPIB, TERMCHAR);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        voltGes += std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
+        gpib->cmd(address, " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
+    }
+    background = voltGes / 10.0;
+    std::cout << background << std::endl;
+    return background;
+}
+
+void KeithleyTSP::resetRange() {
+    gpib->cmd(address, " rangeDMM = node[1].dmm.measure.range ", DELAYGPIB, TERMCHAR);
+    double range = std::stod(gpib->query(address, " print(rangeDMM)", DELAYGPIB, TERMCHAR));
+    if (voltage >= (0.8 * range)) {
+        std::string newRange = "node[1].dmm.measure.range  = " + std::to_string(10 * range);
+        gpib->cmd(address, newRange, DELAYGPIB, TERMCHAR);
+    }
+    gpib->cmd(address, " rangeSMU = node[2].smua.source.rangei ", DELAYGPIB, TERMCHAR);
+    range = std::stod(gpib->query(address, " print(rangeSMU)", DELAYGPIB, TERMCHAR));
+    if (current >= (0.8 * range)) {
+        std::string newRange = "node[2].smua.source.rangei = " + std::to_string(10 * range);
+        gpib->cmd(address, newRange, DELAYGPIB, TERMCHAR);
+    }
+}
+
+void KeithleyTSP::resetBackground() {
+    background = -1.0;
 }

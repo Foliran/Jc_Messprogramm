@@ -15,6 +15,9 @@ public:
     virtual void setPulseAndMeasure(double value, double pWidth, double ratio) = 0;
     virtual double getVoltage() = 0;
     virtual double getCurrent() = 0;
+    virtual void resetRange() = 0;
+    virtual double getBackground() = 0;
+    virtual void resetBackground() = 0;
 
 signals:
     void newValues(double current, double voltage);

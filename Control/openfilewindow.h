@@ -2,7 +2,6 @@
 #define OPENFILEWINDOW_H
 
 #include <QDialog>
-#include "../Core/datafile.h"
 #include <QtCharts/QChartView>
 #include <QtCharts/QLegend>
 #include <QtCharts/QBarCategoryAxis>
@@ -30,7 +29,6 @@ private slots:
 private:
     Ui::OpenFileWindow *ui;
     QString filename;
-    Datafile *dfile;
     QLineSeries *series;
 };
 

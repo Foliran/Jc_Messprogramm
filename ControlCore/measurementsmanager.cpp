@@ -144,47 +144,47 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             break;
         }
 
-    case State::ApproachEndJc:
-    {
-        if ((datapoint->getKeithleyData()->getCurrent()+mSeqJc->getCurrentRate()) <= mSeqJc->getCurrentEnd())
+        case State::ApproachEndJc:
         {
-            instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
-            mSeqJc->setCurrentLive(mSeqJc->getCurrentLive()+mSeqJc->getCurrentRate());
+            if ((datapoint->getKeithleyData()->getCurrent()+mSeqJc->getCurrentRate()) <= mSeqJc->getCurrentEnd())
+            {
+                instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
+                mSeqJc->setCurrentLive(mSeqJc->getCurrentLive()+mSeqJc->getCurrentRate());
+            }
+
+    // Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
+    // Beende Messung, setze neuen State und emitte newState
+            if (fw != nullptr)
+            {
+                fw->MeasurementState(measurementState);
+                fw->append(datapoint);
+            }
+            if (std::abs(mSeqJc->getCurrentEnd() - datapoint->getKeithleyData()->getCurrent()) < mSeqJc->getCurrentRate())
+            {
+                tempSP = datapoint->getPpmsdata()->getTempSetpoint();
+                fw->closeFile();
+                measurementState = State::CheckForMeas;
+                measurementNumber++;
+                emit newState(measurementState);
+            }
+            break;
         }
 
-// Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
-// Beende Messung, setze neuen State und emitte newState
-        if (fw != nullptr)
+        case State::CheckForMeas:
         {
-            fw->MeasurementState(measurementState);
-            fw->append(datapoint);
+        // Wenn es also noch weitere Messungen gibt, fange neue Messung an
+            if (mVecSeq.size() > measurementNumber)
+            {
+                emit startNewMeasurement(mVecSeq[measurementNumber]);
+                startMeasurement(mVecSeq[measurementNumber]);
+            }
+            else
+            {
+                measurementState = State::Idle;
+                emit newState(measurementState);
+            }
+            break;
         }
-        if (std::abs(mSeqJc->getCurrentEnd() - datapoint->getKeithleyData()->getCurrent()) < mSeqJc->getCurrentRate())
-        {
-            tempSP = datapoint->getPpmsdata()->getTempSetpoint();
-            fw->closeFile();
-            measurementState = State::CheckForMeas;
-            measurementNumber++;
-            emit newState(measurementState);
-        }
-        break;
-    }
-
-    case State::CheckForMeas:
-    {
-    // Wenn es also noch weitere Messungen gibt, fange neue Messung an
-        if (mVecSeq.size() > measurementNumber)
-        {
-            emit startNewMeasurement(mVecSeq[measurementNumber]);
-            startMeasurement(mVecSeq[measurementNumber]);
-        }
-        else
-        {
-            measurementState = State::Idle;
-            emit newState(measurementState);
-        }
-        break;
-    }
 
     default:assert(false);
     }
