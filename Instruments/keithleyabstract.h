@@ -21,6 +21,7 @@ public:
 
 signals:
     void newValues(double current, double voltage);
+    void newKeithleyError(QString KeithleyError);
 };
 
 #endif // KEITHLEYABSTRACT_H

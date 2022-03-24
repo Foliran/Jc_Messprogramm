@@ -68,7 +68,6 @@ void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const Me
 
 void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence)
 {
-    //qDebug() << "MeasManager::StartMeasurement";
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
     fw = std::make_unique<FileWriter>();
     fw->openFile(measurementSequence);
@@ -118,6 +117,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
     {
         case State::Idle:
         {
+            //qDebug() << "Idle";
             /*
              * if abfrage-> ob das Programm bei Aktueller Temp bleiben soll, oder Energiesparmodus!
             */
@@ -125,10 +125,9 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             // Also entweder bearbeitet das in Zukunft jemand (Hallo zukünftiger jemand!), oder man schmeißt das mal raus
             break;
         }
-    //Jc
         case State::ApproachStartJc:
         {
-            //qDebug() << "State::ApproachStartJc";
+            //qDebug() << "ApproachStartJc";
         // Sind Parameter nahe genug an den gewollten Startwerten, starte Messung
         // gehe also auf approachEndJc
             if (std::abs(mSeqJc->getTemperature() - datapoint->getPpmsdata()->getTempLive()) < 0.6 &&
@@ -136,6 +135,19 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 std::abs(angleSP - datapoint->getPpmsdata()->getRotLive()) < 1 &&
                 tempStable == true && magStable == true && rotStable == true)
             {
+                measurementState = State::MeasureBackground;
+                emit newState(measurementState);
+            }
+            break;
+        }
+        case State::MeasureBackground:
+        {
+            //qDebug() << "MeasureBackground";
+            if(datapoint->getKeithleyData()->getBackground() == -1000.0)
+            {
+                instrumentmanager->measureBackground();
+            }
+            else {
                 measurementState = State::ApproachEndJc;
                 instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
@@ -143,17 +155,17 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             break;
         }
-
         case State::ApproachEndJc:
         {
+            //qDebug() << "ApproachEndJc";
             if ((datapoint->getKeithleyData()->getCurrent()+mSeqJc->getCurrentRate()) <= mSeqJc->getCurrentEnd())
             {
                 instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentLive()+mSeqJc->getCurrentRate());
             }
 
-    // Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
-    // Beende Messung, setze neuen State und emitte newState
+            // Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
+            // Beende Messung, setze neuen State und emitte newState
             if (fw != nullptr)
             {
                 fw->MeasurementState(measurementState);
@@ -165,6 +177,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
                 measurementNumber++;
+                instrumentmanager->resetBackground();
                 emit newState(measurementState);
             }
             break;

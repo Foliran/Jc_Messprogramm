@@ -14,11 +14,14 @@ public:
     void setCurrentRate(double value);
     double getVoltage() const;
     void setVoltage(double value);
+    double getBackground() const;
+    void setBackground(double value);
 
 private:
     double current;
     double currentRate;
     double voltage;
+    double background;
 };
 
 #endif // KEITHLEYDATAPOINT_H

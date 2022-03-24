@@ -30,3 +30,11 @@ double KeithleyDatapoint::getVoltage() const {
 void KeithleyDatapoint::setVoltage(double value) {
     voltage = value;
 }
+
+double KeithleyDatapoint::getBackground() const {
+    return background;
+}
+
+void KeithleyDatapoint::setBackground(double value) {
+    background = value;
+}

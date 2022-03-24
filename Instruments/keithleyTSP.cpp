@@ -15,11 +15,24 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     , address(addressNew)
     , current(0.0)
     , voltage(0.0)
-    , background(-1.0)
+    , background(-1000.0)
+    , isMeasuringBackground(false)
 {
     std::cout << "Initialize constructor" << std::endl;
     qDebug() << "Finished constructor";
     gpib->openDevice(address);
+    if(!gpib->isOpen(address)) {
+        QString errormessage = "Ppms: ";
+        if (gpib->getError().size() == 0)
+        {
+            errormessage.append("Not connected");
+        }
+        else
+        {
+            errormessage.append(gpib->getError().c_str());
+        }
+        emit newErrorPPMS(errormessage);
+    }
     gpib->cmd(address, "initializeSettings.run()", DELAYGPIB, TERMCHAR);
 }
 
@@ -37,6 +50,7 @@ KeithleyDatapoint KeithleyTSP::keithleyLogik()
     KeithleyDatapoint dPoint;
     dPoint.setCurrent(getCurrent());
     dPoint.setVoltage(getVoltage());
+    dPoint.setBackground(background);
     return dPoint;
 }
 
@@ -45,23 +59,23 @@ bool KeithleyTSP::isOpen() {
     std::string s = gpib->query(address, "print(tsplink.state)", DELAYGPIB, TERMCHAR);
     if (s == "online")
     {
+
         check = true;
     }
-    qDebug() << QString::fromStdString(s);
     return check;
 }
 
 void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
 {
-    qDebug() << "TSP::setPulseAndMeasure";
+    //qDebug() << "TSP::setPulseAndMeasure";
     if (!gpib->isOpen(address))
     {
         return;
     }
+    resetRange();
     pWidth = pWidth / 1000.0;
     //ratio = ratio / 1000.0;
     ratio = 100 / 1000.0;
-    gpib->cmd(address, "initializeSettings.run()", DELAYGPIB, TERMCHAR);
     std::string valueString = " value = " + std::to_string(value);
     std::string pWidthString = " pWidth = " + std::to_string(pWidth);
     std::string ratioString = " ratio = " + std::to_string(ratio);
@@ -73,7 +87,6 @@ void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
     voltage = std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
     gpib->cmd(address, " node[2].smua.nvbuffer1.clear() "
                        " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
-    resetRange();
 
 }
 
@@ -105,25 +118,29 @@ double KeithleyTSP::getBackground()
         gpib->cmd(address, " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
     }
     background = voltGes / 10.0;
-    std::cout << background << std::endl;
+    //std::cout << background << std::endl;
     return background;
 }
 
 void KeithleyTSP::resetRange() {
     gpib->cmd(address, " rangeDMM = node[1].dmm.measure.range ", DELAYGPIB, TERMCHAR);
-    double range = std::stod(gpib->query(address, " print(rangeDMM)", DELAYGPIB, TERMCHAR));
-    if (voltage >= (0.8 * range)) {
-        std::string newRange = "node[1].dmm.measure.range  = " + std::to_string(10 * range);
-        gpib->cmd(address, newRange, DELAYGPIB, TERMCHAR);
+    double rangeDMM = std::stod(gpib->query(address, " print(rangeDMM)", DELAYGPIB, TERMCHAR));
+    //qDebug() << "Range DMM" << range;
+    if (voltage >= (0.8 * rangeDMM)) {
+        std::string newRangeDMM = "node[1].dmm.measure.range  = " + std::to_string(10 * rangeDMM);
+        //qDebug() << "New range for DMM:" << QString::fromStdString(newRangeDMM);
+        gpib->cmd(address, newRangeDMM, DELAYGPIB, TERMCHAR);
     }
     gpib->cmd(address, " rangeSMU = node[2].smua.source.rangei ", DELAYGPIB, TERMCHAR);
-    range = std::stod(gpib->query(address, " print(rangeSMU)", DELAYGPIB, TERMCHAR));
-    if (current >= (0.8 * range)) {
-        std::string newRange = "node[2].smua.source.rangei = " + std::to_string(10 * range);
-        gpib->cmd(address, newRange, DELAYGPIB, TERMCHAR);
+    double rangeSMU = std::stod(gpib->query(address, " print(rangeSMU)", DELAYGPIB, TERMCHAR));
+    //qDebug() << "Range SMU" << rangeSMU;
+    if (current >= (0.8 * rangeSMU)) {
+        std::string newRangeSMU = "node[2].smua.source.rangei = " + std::to_string(10 * rangeSMU);
+        //qDebug() << "New range for SMU:" << QString::fromStdString(newRangeSMU);
+        gpib->cmd(address, newRangeSMU, DELAYGPIB, TERMCHAR);
     }
 }
 
 void KeithleyTSP::resetBackground() {
-    background = -1.0;
+    background = -1000.0;
 }

@@ -28,6 +28,8 @@ public:
     void openDevice();
     void setTempSetpoint(double setpoint, double rate);
     void setPulseAndMeasure(double v, double p, double r);
+    void measureBackground();
+    void resetBackground();
     void setMagFieldSP(double magField, double magRate);
     void setAngle(double angle);
     void rotatorState(bool rotator);

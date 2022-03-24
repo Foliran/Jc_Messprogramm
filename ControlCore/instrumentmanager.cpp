@@ -54,10 +54,6 @@ void InstrumentManager::openDevice()
 {
     ppms->openDevice();
     keithley->openDevice();
-    if(keithley->isOpen())
-    {
-        qDebug() << "Keithley is open";
-    } else qDebug() << "Keithley is not open";
 }
 
 void InstrumentManager::setTempSetpoint(double setpoint, double rate)
@@ -79,6 +75,14 @@ void InstrumentManager::setAngle(double angle)
 void InstrumentManager::setPulseAndMeasure(double v, double p, double r)
 {
     keithley->setPulseAndMeasure(v, p, r);
+}
+
+void InstrumentManager::measureBackground() {
+    keithley->getBackground();
+}
+
+void InstrumentManager::resetBackground() {
+    keithley->resetBackground();
 }
 
 void InstrumentManager::rotatorState(bool rotator)

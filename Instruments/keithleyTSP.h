@@ -28,6 +28,7 @@ private:
     double current;
     double voltage;
     double background;
+    bool isMeasuringBackground;
 };
 
 #endif // KEITHLEYTSP_H
