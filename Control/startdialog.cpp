@@ -76,7 +76,7 @@ void StartDialog::setupUI()
     currentEndJc = new QDoubleSpinBox();
     currentEndJc->setDecimals(3);
     currentEndJc->setSingleStep(0.01);
-    currentEndJc->setRange(0, 5);
+    currentEndJc->setRange(0, 20);
     currentEndJc->setValue(1.0);
 
     currentRateJc = new QDoubleSpinBox();
@@ -101,6 +101,7 @@ void StartDialog::setupUI()
     pulseWidth->setDecimals(0);
     pulseWidth->setSingleStep(1);
     pulseWidth->setValue(30);
+    pulseWidth->setRange(0, 1000);
 
     ratio = new QDoubleSpinBox();
     ratio->setDecimals(2);
