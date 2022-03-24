@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QtCharts/QChartView>
 #include <QtCharts/QValueAxis>
+#include <QtCharts/QLogValueAxis>
 #include <QtWidgets/QVBoxLayout>
 
 //Internal Classes
@@ -32,20 +33,23 @@ GraphDiagram::GraphDiagram(QWidget* parent)
     , chartView(new QChartView(chart))
     , axisX(new QValueAxis)
     , axisY(new QValueAxis)
+    , axisXLog(new QLogValueAxis)
+    , axisYLog(new QLogValueAxis)
     , measSeq(nullptr)
     , measurementState(MeasurementsManager::State::Idle)
 {
-
+    axisXLog->setBase(10);
+    axisXLog->setMinorTickCount(10);
+    axisYLog->setBase(10);
+    axisYLog->setMinorTickCount(10);
 }
 
-//TODO: Hier vllt noch anpassen
 void GraphDiagram::appendDataPoint(std::shared_ptr<const DataPoint> datapoint)
 {
         //qDebug() << "GraphDiagram::appendDataPoint";
     if (measurementState == MeasurementsManager::State::ApproachEndJc)
     {
         // Range of Y-Axis
-        //TODO: Hier noch bearbeiten
         if (voltMin == 10) { voltMin = datapoint->getKeithleyData()->getVoltage(); }
         if (voltMax == 10) { voltMin = datapoint->getKeithleyData()->getVoltage(); }
         if (voltMin > datapoint->getKeithleyData()->getVoltage()) { voltMin = 0.9*datapoint->getKeithleyData()->getVoltage(); }
@@ -127,6 +131,41 @@ void GraphDiagram::createQlineDiagramm()
     setLayout(mainLayout);
 }
 
+void GraphDiagram::setAxisLogarithmic(int state){
+    QAbstractAxis *removeAxisX, *insertAxisX,  *removeAxisY, *insertAxisY;
+    if(state == Qt::Checked){
+        removeAxisX = axisX;
+        insertAxisX = axisYLog;
+        removeAxisY = axisY;
+        insertAxisY = axisYLog;
+    }
+    else{
+        removeAxisX = axisXLog;
+        insertAxisX = axisX;
+        removeAxisY = axisYLog;
+        insertAxisY = axisY;
+    }
+    //set x-axis
+    if(chart->axes(Qt::Horizontal).contains(removeAxisX))
+        chart->removeAxis(removeAxisX);
+    chart->addAxis(insertAxisX, Qt::AlignBottom);
 
+    for(auto serie: chart->series()){
+        if(serie->attachedAxes().contains(removeAxisX))
+            serie->detachAxis(removeAxisX);
+        serie->attachAxis(insertAxisX);
+    }
+
+    //set y axis
+    if(chart->axes(Qt::Vertical).contains(removeAxisY))
+        chart->removeAxis(removeAxisY);
+    chart->addAxis(insertAxisY, Qt::AlignLeft);
+
+    for(auto serie: chart->series()){
+        if(serie->attachedAxes().contains(removeAxisY))
+            serie->detachAxis(removeAxisY);
+        serie->attachAxis(insertAxisY);
+    }
+}
 
 

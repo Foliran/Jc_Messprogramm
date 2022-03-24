@@ -146,8 +146,8 @@ void MainWindow::createRotatorButton()
 
 }
 
-void MainWindow::onLogAxis() {
-
+void MainWindow::onLogAxis(int state) {
+    graph->setAxisLogarithmic(state);
 }
 
 void MainWindow::onStartMessungButton()

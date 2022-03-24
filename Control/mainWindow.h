@@ -54,7 +54,7 @@ private slots:
     void onNewAngleSP(double angle);
     void onNewRotState(bool rotActive);
     void onNewErrorMessage(QString errormessagePpms);
-    void onLogAxis();
+    void onLogAxis(int state);
 
 private:
     void setupUi();
