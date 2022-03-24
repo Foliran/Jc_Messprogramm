@@ -28,7 +28,7 @@ private:
     double current;
     double voltage;
     double background;
-    bool isMeasuringBackground;
+    std::string dtoStr(double number, int decimals);
 };
 
 #endif // KEITHLEYTSP_H

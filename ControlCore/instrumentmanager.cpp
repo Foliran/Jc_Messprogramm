@@ -47,6 +47,7 @@ InstrumentManager::InstrumentManager()
     connect(ppms, &PpmsAbstract::newAngleSP, this, &InstrumentManager::newAngleSP);
     connect(keithley, &KeithleyAbstract::newValues, this, &InstrumentManager::newValues);
     connect(ppms, &PpmsAbstract::newErrorPPMS, this, &InstrumentManager::newErrorMessage);
+    //connect(keithley, &KeithleyAbstract::newKeithleyError, this &InstrumentManager::newErrorMessage);
     connect(ppms, &PpmsAbstract::newRotstate, this, &InstrumentManager::newRotstate);
 }
 

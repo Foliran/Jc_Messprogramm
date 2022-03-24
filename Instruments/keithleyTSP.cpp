@@ -5,6 +5,8 @@
 #include<QDebug>
 #include<chrono>
 #include<thread>
+#include<sstream>
+#include<iomanip>
 
 //const int GPIBADDRESS = 26;
 const int DELAYGPIB = 2; //in ms
@@ -16,13 +18,10 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     , current(0.0)
     , voltage(0.0)
     , background(-1000.0)
-    , isMeasuringBackground(false)
 {
-    std::cout << "Initialize constructor" << std::endl;
-    qDebug() << "Finished constructor";
     gpib->openDevice(address);
     if(!gpib->isOpen(address)) {
-        QString errormessage = "Ppms: ";
+        QString errormessage = "TSP-Link: ";
         if (gpib->getError().size() == 0)
         {
             errormessage.append("Not connected");
@@ -31,7 +30,7 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
         {
             errormessage.append(gpib->getError().c_str());
         }
-        emit newErrorPPMS(errormessage);
+        emit newKeithleyError(errormessage);
     }
     gpib->cmd(address, "initializeSettings.run()", DELAYGPIB, TERMCHAR);
 }
@@ -68,6 +67,8 @@ bool KeithleyTSP::isOpen() {
 void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
 {
     //qDebug() << "TSP::setPulseAndMeasure";
+    current = value;
+    gpib->cmd(address, "node[2].smua.trigger.source.limitv = 10", DELAYGPIB, TERMCHAR);
     if (!gpib->isOpen(address))
     {
         return;
@@ -76,9 +77,9 @@ void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
     pWidth = pWidth / 1000.0;
     //ratio = ratio / 1000.0;
     ratio = 100 / 1000.0;
-    std::string valueString = " value = " + std::to_string(value);
+    std::string valueString = " value = " + dtoStr(value, 2);
     std::string pWidthString = " pWidth = " + std::to_string(pWidth);
-    std::string ratioString = " ratio = " + std::to_string(ratio);
+    std::string ratioString = " ratio = " + dtoStr(ratio, 2);
     gpib->cmd(address, valueString, DELAYGPIB, TERMCHAR);
     gpib->cmd(address, pWidthString, DELAYGPIB, TERMCHAR);
     gpib->cmd(address, ratioString, DELAYGPIB, TERMCHAR);
@@ -143,4 +144,12 @@ void KeithleyTSP::resetRange() {
 
 void KeithleyTSP::resetBackground() {
     background = -1000.0;
+}
+
+std::string KeithleyTSP::dtoStr(double number, int dec)
+{
+    std::stringstream sstring;
+    sstring.str(std::string());
+    sstring << std::setprecision(dec) << number;
+    return sstring.str();
 }
