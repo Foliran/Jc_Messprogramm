@@ -54,6 +54,7 @@ private slots:
     void onNewAngleSP(double angle);
     void onNewRotState(bool rotActive);
     void onNewErrorMessage(QString errormessagePpms);
+    void onLogAxis();
 
 private:
     void setupUi();
@@ -69,5 +70,6 @@ private:
     QWidget* mainLayoutWidget;
     MeasurementsTable* mTable;
     QCheckBox* rotCheckBox;
+    QCheckBox* logAxis;
 };
 #endif

@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget* parent)
     , mainLayoutWidget(new QWidget())
     , mTable(new MeasurementsTable())
     , rotCheckBox(nullptr)
+    , logAxis(nullptr)
 {
     createRotatorButton();
     setupUi();
@@ -60,6 +61,7 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onNewErrorMessage);
     connect(rotCheckBox, &QCheckBox::clicked,
         this, &MainWindow::onSetSampleStage);
+    connect(logAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogAxis);
 
     MeasManager->openDevice();
 }
@@ -103,6 +105,7 @@ void MainWindow::setupUi()
     QHBoxLayout* Rot = new QHBoxLayout();
     Rot->addSpacing(12);
     Rot->addWidget(rotCheckBox);
+    Rot->addWidget(logAxis);
     listandRot->addLayout(Rot);
     listandRot->addWidget(mTable);
     GraphandList->addWidget(graph);
@@ -138,6 +141,13 @@ void MainWindow::createRotatorButton()
 {
     rotCheckBox = new QCheckBox("C&ase sensitive", this);
     rotCheckBox->setText("Rotator On/Off");
+    logAxis = new QCheckBox();
+    logAxis->setText("Log axis On/Off");
+
+}
+
+void MainWindow::onLogAxis() {
+
 }
 
 void MainWindow::onStartMessungButton()

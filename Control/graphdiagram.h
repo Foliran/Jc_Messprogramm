@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QtCharts>
 #include <QtCharts/QValueAxis>
+#include <QtCharts/QLogValueAxis>
 
 //Internal Classes
 class DataPoint;
@@ -21,6 +22,7 @@ public:
     void createQlineDiagramm();
     void appendDataPoint(std::shared_ptr<const DataPoint> datapoint);
     void MeasurementState(MeasurementsManager::State newState);
+    void setAxisLogarithmic(bool b);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
@@ -38,6 +40,8 @@ private:
     QChartView* chartView;
     QValueAxis* axisX;
     QValueAxis* axisY;
+    QLogValueAxis *axisXLog;
+    QLogValueAxis *axisYLog;
 
     std::shared_ptr <const MeasurementSequence> measSeq;
     MeasurementsManager::State measurementState;
