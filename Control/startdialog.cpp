@@ -65,25 +65,25 @@ void StartDialog::setupUI()
     tempJc->setDecimals(2);
     tempJc->setSingleStep(0.1);
     tempJc->setRange(0, 400);
-    tempJc->setValue(80);
+    tempJc->setValue(320);
 
     currentStartJc = new QDoubleSpinBox();
     currentStartJc->setDecimals(3);
     currentStartJc->setSingleStep(0.002);
-    currentStartJc->setRange(0.004, 5);
-    currentStartJc->setValue(0.004);
+    currentStartJc->setRange(0.00, 5);
+    currentStartJc->setValue(0.00);
 
     currentEndJc = new QDoubleSpinBox();
     currentEndJc->setDecimals(3);
     currentEndJc->setSingleStep(0.01);
     currentEndJc->setRange(0, 20);
-    currentEndJc->setValue(1.0);
+    currentEndJc->setValue(0.1);
 
     currentRateJc = new QDoubleSpinBox();
     currentRateJc->setDecimals(3);
     currentRateJc->setSingleStep(0.002);
-    currentRateJc->setRange(0.002, 1.0);
-    currentRateJc->setValue(0.002);
+    currentRateJc->setRange(0.001, 1.0);
+    currentRateJc->setValue(0.01);
 
     magneticFieldJc = new QDoubleSpinBox();
     magneticFieldJc->setDecimals(2);
@@ -106,6 +106,7 @@ void StartDialog::setupUI()
     ratio = new QDoubleSpinBox();
     ratio->setDecimals(2);
     ratio->setSingleStep(0.01);
+    ratio->setRange(0, 1000);
     ratio->setValue(0.5);
 
     auto labelSampleNameJc = new QLabel("Sample Name:");

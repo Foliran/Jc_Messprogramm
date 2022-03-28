@@ -32,6 +32,9 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
         }
         emit newKeithleyError(errormessage);
     }
+    else {
+        qDebug() << "Keithley Connection is open";
+    }
     gpib->cmd(address, "initializeSettings.run()", DELAYGPIB, TERMCHAR);
 }
 
@@ -75,11 +78,11 @@ void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
     }
     resetRange();
     pWidth = pWidth / 1000.0;
-    //ratio = ratio / 1000.0;
-    ratio = 100 / 1000.0;
+    ratio = 50 / 1000.0;
+    ratio = ratio / 1000.0;
     std::string valueString = " value = " + dtoStr(value, 2);
     std::string pWidthString = " pWidth = " + std::to_string(pWidth);
-    std::string ratioString = " ratio = " + dtoStr(ratio, 2);
+    std::string ratioString = " ratio = " + dtoStr(ratio, 4);
     gpib->cmd(address, valueString, DELAYGPIB, TERMCHAR);
     gpib->cmd(address, pWidthString, DELAYGPIB, TERMCHAR);
     gpib->cmd(address, ratioString, DELAYGPIB, TERMCHAR);

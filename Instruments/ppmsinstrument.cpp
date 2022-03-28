@@ -69,6 +69,8 @@ void PpmsInstrument::openDevice()
         }
         emit newErrorPPMS(errormessage);
         return;
+    } else {
+        qDebug() << "PPMS Connection is open";
     }
 
     dataMask += BITSTATUS; // Stat

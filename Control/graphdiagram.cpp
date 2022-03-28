@@ -139,7 +139,7 @@ void GraphDiagram::setAxisLogarithmic(int state){
         removeAxisY = axisY;
         insertAxisY = axisYLog;
     }
-    else{
+    else if (state == Qt::Unchecked){
         removeAxisX = axisXLog;
         insertAxisX = axisX;
         removeAxisY = axisYLog;

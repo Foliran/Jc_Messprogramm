@@ -18,7 +18,7 @@ const int KEITHLEYADDRESS = 26;
 
 InstrumentManager::InstrumentManager()
     : timer(new QTimer(this))
-    , simulation(0) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
+    , simulation(2) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
     , gpib(std::make_shared<GPIB>())
 {
     connect(timer, &QTimer::timeout,
@@ -55,6 +55,10 @@ void InstrumentManager::openDevice()
 {
     ppms->openDevice();
     keithley->openDevice();
+    if(keithley->isOpen()) std::cout << "Keithley-Verbindung offen \n";
+    else std::cout << "Keithley-Verbindung nicht offen \n";
+    if(ppms->isOpen()) std::cout << "PPMS-Verbindung offen \n";
+    else std::cout << "PPMS-Verbindung nicht offen \n";
 }
 
 void InstrumentManager::setTempSetpoint(double setpoint, double rate)
