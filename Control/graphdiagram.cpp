@@ -55,7 +55,7 @@ void GraphDiagram::appendDataPoint(std::shared_ptr<const DataPoint> datapoint)
         if (voltMin > datapoint->getKeithleyData()->getVoltage()) { voltMin = 0.9*datapoint->getKeithleyData()->getVoltage(); }
         if (voltMax < datapoint->getKeithleyData()->getVoltage()) { voltMax = 1.1*datapoint->getKeithleyData()->getVoltage(); }
         axisY->setRange(voltMin, voltMax);
-
+        axisYLog->setRange(voltMin, voltMax);
         series->append(datapoint->getKeithleyData()->getCurrent(), datapoint->getKeithleyData()->getVoltage());
 
     }
@@ -88,11 +88,11 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mS
         axisY->setTitleText("Voltage in Volt");
         if (mSeqJc->getCurrentStart() <= mSeqJc->getCurrentEnd())
         {
-            axisX->setRange(0, mSeqJc->getCurrentEnd()); //mSeqJc->getCurrentStart()
+            axisX->setRange(mSeqJc->getCurrentStart(), mSeqJc->getCurrentEnd()); //
         }
         else
         {
-            axisX->setRange(0, 0.01); //mSeqJc->getCurrentEnd()
+            axisX->setRange(mSeqJc->getCurrentEnd(), mSeqJc->getCurrentStart()); //mSeqJc->getCurrentEnd()
         }
         chart->setTitle("Jc Measurement " + mSeq->getFileName());
     }
@@ -108,7 +108,6 @@ void GraphDiagram::createQlineDiagramm()
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisX);
     series->attachAxis(axisY);
-
     //font Size
     QFont font;
     font.setPixelSize(18);
@@ -131,40 +130,61 @@ void GraphDiagram::createQlineDiagramm()
     setLayout(mainLayout);
 }
 
-void GraphDiagram::setAxisLogarithmic(int state){
-    QAbstractAxis *removeAxisX, *insertAxisX,  *removeAxisY, *insertAxisY;
-    if(state == Qt::Checked){
-        removeAxisX = axisX;
-        insertAxisX = axisYLog;
-        removeAxisY = axisY;
-        insertAxisY = axisYLog;
-    }
-    else if (state == Qt::Unchecked){
-        removeAxisX = axisXLog;
-        insertAxisX = axisX;
-        removeAxisY = axisYLog;
-        insertAxisY = axisY;
-    }
-    //set x-axis
-    if(chart->axes(Qt::Horizontal).contains(removeAxisX))
-        chart->removeAxis(removeAxisX);
-    chart->addAxis(insertAxisX, Qt::AlignBottom);
+void GraphDiagram::setAxisLogarithmic(int state, int chooseAxis){
+    //chooseAxis = 0 -> x-Achse logarithmisch; chooseAxis = 1 -> y-Achse logarithmisch
+    QAbstractAxis *removeAxis, *insertAxis;
+    if(chooseAxis == 0)
+    {
+        if(state == Qt::Checked){
+            removeAxis = axisX;
+            insertAxis = axisXLog;
+        }
+        else { //
+            removeAxis = axisXLog;
+            insertAxis = axisX;
+        }
+        qDebug() << "insert " << insertAxis;
+        qDebug() << "remove " << removeAxis;
+        //set x-axis
+        if(chart->axes(Qt::Horizontal).contains(removeAxis))
+        {
+            chart->removeAxis(removeAxis);
+        }
+        chart->addAxis(insertAxis, Qt::AlignBottom);
+        for(auto serie: chart->series()){
+            if(serie->attachedAxes().contains(removeAxis))
+            {
+                serie->detachAxis(removeAxis);
+            }
+            serie->attachAxis(insertAxis);
+        }
 
-    for(auto serie: chart->series()){
-        if(serie->attachedAxes().contains(removeAxisX))
-            serie->detachAxis(removeAxisX);
-        serie->attachAxis(insertAxisX);
-    }
+    } else if (chooseAxis == 1) {
+        if(state == Qt::Checked){
+            removeAxis = axisY;
+            insertAxis = axisYLog;
+        }
+        else { //
+            removeAxis = axisYLog;
+            insertAxis = axisY;
+        }
+        qDebug() << "insert " << insertAxis;
+        qDebug() << "remove " << removeAxis;
+        //set x-axis
+        if(chart->axes(Qt::Vertical).contains(removeAxis))
+        {
+            chart->removeAxis(removeAxis);
+        }
+        chart->addAxis(insertAxis, Qt::AlignLeft);
+        for(auto serie: chart->series()){
+            if(serie->attachedAxes().contains(removeAxis))
+            {
+                serie->detachAxis(removeAxis);
+            }
+            serie->attachAxis(insertAxis);
+        }
 
-    //set y axis
-    if(chart->axes(Qt::Vertical).contains(removeAxisY))
-        chart->removeAxis(removeAxisY);
-    chart->addAxis(insertAxisY, Qt::AlignLeft);
-
-    for(auto serie: chart->series()){
-        if(serie->attachedAxes().contains(removeAxisY))
-            serie->detachAxis(removeAxisY);
-        serie->attachAxis(insertAxisY);
+        for(auto i : chart->axes()) {qDebug() << i << " " << i->alignment();}
     }
 }
 

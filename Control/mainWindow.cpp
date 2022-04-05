@@ -26,7 +26,8 @@ MainWindow::MainWindow(QWidget* parent)
     , mainLayoutWidget(new QWidget())
     , mTable(new MeasurementsTable())
     , rotCheckBox(nullptr)
-    , logAxis(nullptr)
+    , logXAxis(nullptr)
+    , logYAxis(nullptr)
 {
     createRotatorButton();
     setupUi();
@@ -61,7 +62,8 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onNewErrorMessage);
     connect(rotCheckBox, &QCheckBox::clicked,
         this, &MainWindow::onSetSampleStage);
-    connect(logAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogAxis);
+    connect(logXAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogXAxis);
+    connect(logYAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogYAxis);
 
     MeasManager->openDevice();
 }
@@ -102,10 +104,11 @@ void MainWindow::setupUi()
     QVBoxLayout* mainLayout = new QVBoxLayout();
     QHBoxLayout* GraphandList = new QHBoxLayout();
     QVBoxLayout* listandRot = new QVBoxLayout();
-    QHBoxLayout* Rot = new QHBoxLayout();
+    QVBoxLayout* Rot = new QVBoxLayout();
     Rot->addSpacing(12);
     Rot->addWidget(rotCheckBox);
-    Rot->addWidget(logAxis);
+    Rot->addWidget(logXAxis);
+    Rot->addWidget(logYAxis);
     listandRot->addLayout(Rot);
     listandRot->addWidget(mTable);
     GraphandList->addWidget(graph);
@@ -141,13 +144,19 @@ void MainWindow::createRotatorButton()
 {
     rotCheckBox = new QCheckBox("C&ase sensitive", this);
     rotCheckBox->setText("Rotator On/Off");
-    logAxis = new QCheckBox();
-    logAxis->setText("Log axis On/Off");
+    logXAxis = new QCheckBox();
+    logXAxis->setText("Logarithmic axis x");
+    logYAxis = new QCheckBox();
+    logYAxis->setText("Logarithmic axis y");
 
 }
 
-void MainWindow::onLogAxis(int state) {
-    graph->setAxisLogarithmic(state);
+void MainWindow::onLogXAxis(int state) {
+    graph->setAxisLogarithmic(state, 0);
+}
+
+void MainWindow::onLogYAxis(int state) {
+    graph->setAxisLogarithmic(state, 1);
 }
 
 void MainWindow::onStartMessungButton()
@@ -243,13 +252,13 @@ void MainWindow::onNewRotState(bool rotActive)
     rotCheckBox->setCheckState(rotState);
 }
 
-void MainWindow::onNewErrorMessage(QString errormessagePpms)
+void MainWindow::onNewErrorMessage(QString errormessage)
 {
     QMessageBox* msgBox = new QMessageBox(this);
     msgBox->setAttribute(Qt::WA_DeleteOnClose); //makes sure the msgbox is deleted automatically when closed
     msgBox->setStandardButtons(QMessageBox::Ok);
     msgBox->setWindowTitle(tr("Error"));
-    msgBox->setText(errormessagePpms);
+    msgBox->setText(errormessage);
     msgBox->setModal(false); // if you want it non-modal
     msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
 }

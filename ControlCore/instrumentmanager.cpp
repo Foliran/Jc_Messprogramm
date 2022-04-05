@@ -18,7 +18,7 @@ const int KEITHLEYADDRESS = 26;
 
 InstrumentManager::InstrumentManager()
     : timer(new QTimer(this))
-    , simulation(2) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
+    , simulation(0) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
     , gpib(std::make_shared<GPIB>())
 {
     connect(timer, &QTimer::timeout,
@@ -47,7 +47,7 @@ InstrumentManager::InstrumentManager()
     connect(ppms, &PpmsAbstract::newAngleSP, this, &InstrumentManager::newAngleSP);
     connect(keithley, &KeithleyAbstract::newValues, this, &InstrumentManager::newValues);
     connect(ppms, &PpmsAbstract::newErrorPPMS, this, &InstrumentManager::newErrorMessage);
-    //connect(keithley, &KeithleyAbstract::newKeithleyError, this &InstrumentManager::newErrorMessage);
+    connect(keithley, &KeithleyAbstract::newKeithleyError, this, &InstrumentManager::newErrorMessage);
     connect(ppms, &PpmsAbstract::newRotstate, this, &InstrumentManager::newRotstate);
 }
 
@@ -79,6 +79,7 @@ void InstrumentManager::setAngle(double angle)
 
 void InstrumentManager::setPulseAndMeasure(double v, double p, double r)
 {
+    qDebug() << "InstruManager::setPulseAndMeasure";
     keithley->setPulseAndMeasure(v, p, r);
 }
 

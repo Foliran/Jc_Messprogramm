@@ -22,7 +22,7 @@ public:
     void createQlineDiagramm();
     void appendDataPoint(std::shared_ptr<const DataPoint> datapoint);
     void MeasurementState(MeasurementsManager::State newState);
-    void setAxisLogarithmic(int state);
+    void setAxisLogarithmic(int state, int chooseAxis);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 

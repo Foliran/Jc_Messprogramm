@@ -70,7 +70,7 @@ void StartDialog::setupUI()
     currentStartJc = new QDoubleSpinBox();
     currentStartJc->setDecimals(3);
     currentStartJc->setSingleStep(0.002);
-    currentStartJc->setRange(0.00, 5);
+    currentStartJc->setRange(0.00, 20);
     currentStartJc->setValue(0.00);
 
     currentEndJc = new QDoubleSpinBox();
@@ -82,7 +82,7 @@ void StartDialog::setupUI()
     currentRateJc = new QDoubleSpinBox();
     currentRateJc->setDecimals(3);
     currentRateJc->setSingleStep(0.002);
-    currentRateJc->setRange(0.001, 1.0);
+    currentRateJc->setRange(0.0001, 1.0);
     currentRateJc->setValue(0.01);
 
     magneticFieldJc = new QDoubleSpinBox();
