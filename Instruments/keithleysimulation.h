@@ -19,6 +19,7 @@ public:
     void resetRange() override;
     double getBackground() override;
     void resetBackground() override;
+    void checkForError() override;
 private:
     double current;
     double voltage;

@@ -18,6 +18,7 @@ public:
     virtual void resetRange() = 0;
     virtual double getBackground() = 0;
     virtual void resetBackground() = 0;
+    virtual void checkForError() = 0;
 
 signals:
     void newValues(double current, double voltage);

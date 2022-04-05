@@ -21,6 +21,7 @@ public:
     double getBackground() override;
     void resetRange() override;
     void resetBackground() override;
+    void checkForError() override;
 
 private:
     std::shared_ptr<GPIB> gpib;
@@ -28,7 +29,6 @@ private:
     double current;
     double voltage;
     double background;
-    std::string dtoStr(double number, int decimals);
 };
 
 #endif // KEITHLEYTSP_H

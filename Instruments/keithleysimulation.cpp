@@ -1,6 +1,7 @@
 #include "keithleysimulation.h"
 #include "../Core/datapoint.h"
 #include <QRandomGenerator>
+#include <QDebug>
 
 
 KeithleySimulation::KeithleySimulation():
@@ -8,7 +9,7 @@ KeithleySimulation::KeithleySimulation():
   , voltage(0)
   , pulseWidth(0.03)
   , ratio(0.5)
-  , background(-1.0)
+  , background(-1000.0)
 {
 
 }
@@ -30,6 +31,8 @@ KeithleyDatapoint KeithleySimulation::keithleyLogik()
     return dPoint;
 }
 void KeithleySimulation::setPulseAndMeasure(double value, double pWidth, double r) {
+
+    qDebug() << "setPulsAndMeasure";
     pulseWidth = pWidth;
     ratio = r;
     current = value;
@@ -51,9 +54,14 @@ void KeithleySimulation::resetRange() {
 }
 
 double KeithleySimulation::getBackground(){
-    return 0;
+    background = 0;
+    return background;
 }
 
 void KeithleySimulation::resetBackground(){
+    background = -1000;
+}
+
+void KeithleySimulation::checkForError() {
 
 }

@@ -27,7 +27,7 @@ const int BITTEMP = 1 << 1; // Temp
 const int BITMAG = 1 << 2; // Mag
 const int BITANGLE = 1 << 3; // Angle
 const int BITPRESSURE = 1 << 19; // pressure
-const int BITUSERTEMP = 1 << 23; // userTemp
+const int BITUSERTEMP = 1 << 24; // userTemp
 
 PpmsInstrument::PpmsInstrument(std::shared_ptr<GPIB> gpibNew, int addressNew)
     : gpib(gpibNew)
@@ -77,12 +77,7 @@ void PpmsInstrument::openDevice()
     dataMask += BITTEMP; // Temp
     dataMask += BITMAG; // Mag
     dataMask += BITPRESSURE; // pressure
-
-    /*if(rotState_ == true)
-    {
-        dataMask_ += BITANGLE; // Angle
-        dataMask_ += BITUSERTEMP; // userTemp
-    }*/
+    dataMask += BITUSERTEMP; //ausgelesene Usertemp, die ich will
 
     QString magcnf;
 
@@ -102,7 +97,7 @@ void PpmsInstrument::setRotatorstate(bool rotator)
         gpib->cmd(address, "Bridge 1,999.023,100.000,0,0,9.0", DELAYGPIB, TERMCHAR);
         gpib->cmd(address, "USERTEMP 23 1.9 1.8 2 1", DELAYGPIB, TERMCHAR);
         dataMask += BITANGLE; // Angle
-        dataMask += BITUSERTEMP; // userTemp
+        //dataMask += BITUSERTEMP; // userTemp
 
         qDebug() << gpib->query(address, "", DELAYGPIB, TERMCHAR).c_str();
 
@@ -119,8 +114,7 @@ void PpmsInstrument::setRotatorstate(bool rotator)
         //gpib_->cmd(address_ ,"Bridge 0,999.023,100.000,0,0,9.0", DELAYGPIB, TERMCHAR);
         gpib->cmd(address, "USERTEMP 0", DELAYGPIB, TERMCHAR);
         dataMask -= BITANGLE; // Angle
-        dataMask -= BITUSERTEMP; // userTemp
-        //qDebug()<<dataMask_;
+        //dataMask -= BITUSERTEMP; // userTemp
     }
 
     emit newRotstate(rotState);
@@ -167,7 +161,8 @@ QPair<double, double> PpmsInstrument::getTempSetpointCore()
     {
         return (QPair<double, double>(0, 0));
     }
-
+    //HIER DIE ZWEITE VERSION; NACHDEM WIR JETZT JA USERTEMP UND NICHT MEHR TEMP AUSLESEN WOLLEN
+    //QString string = gpib->query(address, "GETDAT? 16777216", DELAYGPIB, TERMCHAR).c_str();
     QString string = gpib->query(address, "TEMP?", DELAYGPIB, TERMCHAR).c_str();
     //QString besteht z.b aus (300,20.0)
     auto list = string.split(',', Qt::SkipEmptyParts);
@@ -241,12 +236,14 @@ PpmsDataPoint PpmsInstrument::ppmsLogik()
     ppmsDpoint.setTempLive(Datavector[3].toDouble());
     ppmsDpoint.setMagFieldLive(Datavector[4].toDouble() / OE_IN_MT);
     ppmsDpoint.setSamplePressure(Datavector[5].toDouble());
+    ppmsDpoint.setTempLive(Datavector[6].toDouble());
 
     if (ppmsDpoint.getDatamask() & BITUSERTEMP && rotState == true && Datavector.size() > 7)
     {
         ppmsDpoint.setRotLive(Datavector[5].toDouble());
         ppmsDpoint.setSamplePressure(Datavector[6].toDouble());
         ppmsDpoint.setUserTemp(Datavector[7].toDouble());
+        ppmsDpoint.setTempLive(Datavector[7].toDouble());
     }
 
     ppmsDpoint.setChamberLevel(getHeliumCore());
@@ -260,12 +257,3 @@ std::string PpmsInstrument::dtoStr(double number, int dec)
     sstring << std::setprecision(dec) << number;
     return sstring.str();
 }
-
-
-
-
-
-
-
-
-
