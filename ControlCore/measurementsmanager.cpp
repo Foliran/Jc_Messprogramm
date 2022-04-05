@@ -128,8 +128,8 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         case State::ApproachStartJc:
         {
             //qDebug() << "ApproachStartJc";
-        // Sind Parameter nahe genug an den gewollten Startwerten, starte Messung
-        // gehe also auf approachEndJc
+            // Sind Parameter nahe genug an den gewollten Startwerten, starte Messung
+            // gehe also auf approachEndJc
             if (std::abs(mSeqJc->getTemperature() - datapoint->getPpmsdata()->getTempLive()) < 0.6 &&
                 std::abs(magFieldSP - datapoint->getPpmsdata()->getMagFieldLive()) < 10 &&
                 std::abs(angleSP - datapoint->getPpmsdata()->getRotLive()) < 1 &&
@@ -185,7 +185,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
         case State::CheckForMeas:
         {
-        // Wenn es also noch weitere Messungen gibt, fange neue Messung an
+            // Wenn es also noch weitere Messungen gibt, fange neue Messung an
             if (mVecSeq.size() > measurementNumber)
             {
                 emit startNewMeasurement(mVecSeq[measurementNumber]);

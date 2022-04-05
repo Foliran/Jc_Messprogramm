@@ -20,7 +20,7 @@ public:
     explicit MeasurementsManager();
     ~MeasurementsManager();
     void openDevice();
-    enum class State { Idle, MeasureBackground, CheckForMeas, ApproachStartJc, ApproachEndJc };
+    enum class State { Idle, MeasureBackground, CheckForMeas, ApproachStartJc, ApproachEndJc, PauseMeasurement};
     void appendMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeq);
     void startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence);
     void rotatorState(bool rotator);
