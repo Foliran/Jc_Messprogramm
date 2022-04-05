@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QCheckBox>
+#include <QPushButton>
 #include "../ControlCore/measurementsmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -56,6 +57,7 @@ private slots:
     void onNewErrorMessage(QString errormessagePpms);
     void onLogXAxis(int state);
     void onLogYAxis(int state);
+    void onPauseButton();
 
 private:
     void setupUi();
@@ -67,11 +69,13 @@ private:
     GraphDiagram* graph;
     MeasurementsManager* MeasManager;
     MeasurementsManager::State MeasManagerState;
+    MeasurementsManager::State StateBeforePause;
     PpmsWidget* ppmsWidget;
     QWidget* mainLayoutWidget;
     MeasurementsTable* mTable;
     QCheckBox* rotCheckBox;
     QCheckBox* logXAxis;
     QCheckBox* logYAxis;
+    QPushButton *pause;
 };
 #endif

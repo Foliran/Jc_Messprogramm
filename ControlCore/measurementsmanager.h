@@ -24,6 +24,7 @@ public:
     void appendMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeq);
     void startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence);
     void rotatorState(bool rotator);
+    State measurementState;
 
 signals:
     void newData(std::shared_ptr<const DataPoint>);
@@ -56,7 +57,6 @@ private:
     std::unique_ptr <InstrumentManager> instrumentmanager;
     std::unique_ptr <FileWriter> fw;
     std::shared_ptr <MeasSeqJc> mSeqJc;
-    State measurementState;
     double magFieldSP;
     double angleSP;
     double tempSP;

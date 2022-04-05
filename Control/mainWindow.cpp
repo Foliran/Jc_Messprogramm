@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onSetSampleStage);
     connect(logXAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogXAxis);
     connect(logYAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogYAxis);
+    connect(pause, &QPushButton::clicked, this, &MainWindow::onPauseButton);
 
     MeasManager->openDevice();
 }
@@ -111,6 +112,7 @@ void MainWindow::setupUi()
     Rot->addWidget(logYAxis);
     listandRot->addLayout(Rot);
     listandRot->addWidget(mTable);
+    listandRot->addWidget(pause);
     GraphandList->addWidget(graph);
     GraphandList->addLayout(listandRot);
     mTable->setMaximumWidth(250);
@@ -126,17 +128,20 @@ void MainWindow::createActions()
 {
     //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
-    const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
+    const QIcon measurementIconLinear = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
+    const QIcon measurementIconLog = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
     const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
-    QAction* messungStarten = new QAction(measurementIcon, tr("&New Measurement"), this);
+    QAction* messungStartenLinear = new QAction(measurementIconLinear, tr("&New Measurement with linear steps"), this);
+    QAction* messungStartenLog = new QAction(measurementIconLog, tr("&New Measurement with logarithmic steps"), this);
     QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
-    messungStarten->setStatusTip(tr("Create a new measurement"));
+    messungStartenLinear->setStatusTip(tr("Create a new measurement with linear steps"));
+    messungStartenLog->setStatusTip(tr("Create a new measurement with logarithmic steps"));
     openFile->setStatusTip(tr("Show an old Measurement"));
-    connect(messungStarten, &QAction::triggered,
-        this, &MainWindow::onStartMessungButton);
-    connect(openFile, &QAction::triggered,
-        this, &MainWindow::onOpenFileButton);
-    fileToolBar->addAction(messungStarten);
+    connect(messungStartenLinear, &QAction::triggered, this, &MainWindow::onStartMessungButton);
+    connect(messungStartenLog, &QAction::triggered, this, &MainWindow::onStartMessungButton);
+    connect(openFile, &QAction::triggered, this, &MainWindow::onOpenFileButton);
+    fileToolBar->addAction(messungStartenLinear);
+    //fileToolBar->addAction(messungStartenLog);
     fileToolBar->addAction(openFile);
 }
 
@@ -149,6 +154,7 @@ void MainWindow::createRotatorButton()
     logYAxis = new QCheckBox();
     logYAxis->setText("Logarithmic axis y");
 
+    pause = new QPushButton("Pause");
 }
 
 void MainWindow::onLogXAxis(int state) {
@@ -157,6 +163,19 @@ void MainWindow::onLogXAxis(int state) {
 
 void MainWindow::onLogYAxis(int state) {
     graph->setAxisLogarithmic(state, 1);
+}
+
+void MainWindow::onPauseButton() {
+    if(pause->text() == "Pause") {
+        StateBeforePause = MeasManagerState;
+        MeasManagerState = MeasurementsManager::State::PauseMeasurement;
+        pause->setText("Go on");
+    } else if(pause->text() == "Go on") {
+        MeasManagerState = StateBeforePause;
+        pause->setText("Pause");
+    }
+    MeasManager->measurementState = MeasManagerState;
+    graph->MeasurementState(MeasManagerState);
 }
 
 void MainWindow::onStartMessungButton()

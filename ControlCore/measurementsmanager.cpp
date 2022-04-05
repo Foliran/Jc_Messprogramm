@@ -198,6 +198,11 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             break;
         }
+        case State::PauseMeasurement:
+        {
+            emit newState(measurementState);
+            break;
+        }
 
     default:assert(false);
     }
