@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QButtonGroup>
 #include <QRadioButton>
+#include <QCheckBox>
+#include <QLabel>
 
 //fertig
 
@@ -19,7 +21,8 @@ class StartDialog : public QDialog
 
 signals:
     void createMeasurement(std::vector <std::shared_ptr<const MeasurementSequence>>&);
-
+private slots:
+    void adjustCurrent();
 public:
     explicit StartDialog(QWidget* parent = nullptr);
 
@@ -35,15 +38,22 @@ private:
     std::vector <std::shared_ptr<const MeasurementSequence>> createSequence() const;
 
     //Jc
+    QCheckBox* reversedPulse;
+    QCheckBox* logSteps;
     QLineEdit* sampleNameJc;
     QDoubleSpinBox* tempJc;
     QDoubleSpinBox* magneticFieldJc;
     QDoubleSpinBox* currentStartJc;
     QDoubleSpinBox* currentEndJc;
     QDoubleSpinBox* currentRateJc;
+    QDoubleSpinBox* voltageCriterion;
     QDoubleSpinBox* coilAngleJc;
     QDoubleSpinBox* pulseWidth;
+    QDoubleSpinBox* timeBetweenPulses;
+    QDoubleSpinBox* nPulses;
     QDoubleSpinBox* ratio;
+
+    QLabel* labelCurrentRate;
 };
 
 #endif // STARTDIALOG_H

@@ -29,7 +29,9 @@ StartDialog::StartDialog(QWidget* parent)
     , currentStartJc(nullptr)
     , currentEndJc(nullptr)
     , currentRateJc(nullptr)
+    , voltageCriterion(nullptr)
     , coilAngleJc(nullptr)
+    , nPulses(nullptr)
 {
     setupUI();
 }
@@ -54,12 +56,17 @@ void StartDialog::accept()
 void StartDialog::setupUI()
 {
     auto gridLayoutJc = new QGridLayout();
-    auto boxButton = new QHBoxLayout();
-
+    //auto boxButton = new QHBoxLayout();
 
     //Jc Measurement
     sampleNameJc = new QLineEdit();
     sampleNameJc->setText("");
+
+    reversedPulse = new QCheckBox();
+    reversedPulse->setText("Pulse reversed");
+
+    logSteps = new QCheckBox();
+    logSteps->setText("logarithmic steps");
 
     tempJc = new QDoubleSpinBox();
     tempJc->setDecimals(2);
@@ -101,7 +108,18 @@ void StartDialog::setupUI()
     pulseWidth->setDecimals(0);
     pulseWidth->setSingleStep(1);
     pulseWidth->setValue(30);
-    pulseWidth->setRange(0, 1000);
+    pulseWidth->setRange(0.1, 1000);
+
+    nPulses = new QDoubleSpinBox();
+    nPulses->setDecimals(0);
+    nPulses->setSingleStep(1);
+    nPulses->setValue(1);
+
+    timeBetweenPulses = new QDoubleSpinBox();
+    timeBetweenPulses->setDecimals(0);
+    timeBetweenPulses->setValue(100);
+    timeBetweenPulses->setRange(0, 1000);
+    timeBetweenPulses->setSingleStep(1);
 
     ratio = new QDoubleSpinBox();
     ratio->setDecimals(2);
@@ -109,18 +127,29 @@ void StartDialog::setupUI()
     ratio->setRange(0, 1000);
     ratio->setValue(0.5);
 
-    auto labelSampleNameJc = new QLabel("Sample Name:");
-    auto labelTempJc = new QLabel("Temperature:");
-    auto labelCurrentStartJc = new QLabel("Start Current:");
-    auto labelCurrentEndJc = new QLabel("End Current:");
-    auto labelCurrentRate = new QLabel("Current Rate:");
-    auto labelMagneticFieldJc = new QLabel("Magnetic Field:");
-    auto labelCoilAngleJc = new QLabel("Coil Angle:");
-    auto labelPulseWidth = new QLabel("Pulse width");
-    auto labelRatio = new QLabel("Measurement Ratio:");
+    voltageCriterion = new QDoubleSpinBox();
+    voltageCriterion->setDecimals(0);
+    voltageCriterion->setValue(5);
+    voltageCriterion->setRange(0, 20);
+    voltageCriterion->setSingleStep(1);
 
-    gridLayoutJc->addWidget(labelSampleNameJc, 0, 0);
-    gridLayoutJc->addWidget(sampleNameJc, 0, 1);
+    auto labelSampleNameJc = new QLabel("Sample name:");
+    auto labelTempJc = new QLabel("Temperature:");
+    auto labelCurrentStartJc = new QLabel("Start current:");
+    auto labelCurrentEndJc = new QLabel("End current:");
+    labelCurrentRate = new QLabel("Current rate:");
+    auto labelVoltageCriterion = new QLabel("Voltage end criterion: 10e-");
+    auto labelMagneticFieldJc = new QLabel("Magnetic field:");
+    auto labelCoilAngleJc = new QLabel("Coil angle:");
+    auto labelPulseWidth = new QLabel("Pulse width: ");
+    auto labelNPulses= new QLabel("Number of pulses: ");
+    auto labelTimeBetwPulses= new QLabel("Time between pulses: ");
+    auto labelRatio = new QLabel("Measurement delay:");
+
+    gridLayoutJc->addWidget(reversedPulse, 0, 0);
+    gridLayoutJc->addWidget(logSteps, 0, 1);
+    gridLayoutJc->addWidget(labelSampleNameJc);
+    gridLayoutJc->addWidget(sampleNameJc);
     gridLayoutJc->addWidget(labelTempJc);
     gridLayoutJc->addWidget(tempJc);
     gridLayoutJc->addWidget(labelCurrentStartJc);
@@ -129,8 +158,14 @@ void StartDialog::setupUI()
     gridLayoutJc->addWidget(currentEndJc);
     gridLayoutJc->addWidget(labelCurrentRate);
     gridLayoutJc->addWidget(currentRateJc);
+    gridLayoutJc->addWidget(labelVoltageCriterion);
+    gridLayoutJc->addWidget(voltageCriterion);
     gridLayoutJc->addWidget(labelPulseWidth);
     gridLayoutJc->addWidget(pulseWidth);
+    gridLayoutJc->addWidget(labelNPulses);
+    gridLayoutJc->addWidget(nPulses);
+    gridLayoutJc->addWidget(labelTimeBetwPulses);
+    gridLayoutJc->addWidget(timeBetweenPulses);
     gridLayoutJc->addWidget(labelRatio);
     gridLayoutJc->addWidget(ratio);
     gridLayoutJc->addWidget(labelMagneticFieldJc);
@@ -138,26 +173,17 @@ void StartDialog::setupUI()
     gridLayoutJc->addWidget(labelCoilAngleJc);
     gridLayoutJc->addWidget(coilAngleJc);
 
-    //set Layouts
-    //widgetTc->setLayout(gridLayout);
     widgetJc->setLayout(gridLayoutJc);
-    auto boxwidget = new QWidget();
-    boxwidget->setLayout(boxButton);
-    widgetJc->setVisible(true);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
         | QDialogButtonBox::Close);
 
-    //connect(buttongroupmes, QOverload<int, bool>::of(&QButtonGroup::buttonToggled),
-    //    this, &StartDialog::updateUI);
-
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(logSteps, &QCheckBox::stateChanged, this, &StartDialog::adjustCurrent);
 
     //set MainLayout
     auto mainLayout = new QVBoxLayout();
-    mainLayout->addWidget(boxwidget);
-    //mainLayout->addWidget(widgetTc);
     mainLayout->addWidget(widgetJc);
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
@@ -175,6 +201,8 @@ std::vector <std::shared_ptr<const MeasurementSequence>> StartDialog::createSequ
     seqJc.setCurrentRate(currentRateJc->value());
     seqJc.setCoilAngle(coilAngleJc->value());
     seqJc.setPulsewidth(pulseWidth->value());
+    seqJc.setNumberPulses((int)nPulses->value());
+    seqJc.setInterPulseTime(timeBetweenPulses->value());
     seqJc.setRatio(ratio->value());
     seqJc.setFileName(sampleNameJc->text() + "_" +
         QString::number(tempJc->value()) + "K_" +
@@ -184,4 +212,31 @@ std::vector <std::shared_ptr<const MeasurementSequence>> StartDialog::createSequ
     );
     vecSeq.push_back(std::make_shared<const MeasSeqJc>(seqJc));
     return vecSeq;
+    if(logSteps->isChecked() && reversedPulse->isChecked())
+    {
+        seqJc.setPulseMode(MeasurementSequence::pulseMode::LogReversed);
+    }
+    else if(logSteps->isChecked() && !reversedPulse->isChecked())
+    {
+        seqJc.setPulseMode(MeasurementSequence::pulseMode::LogOnce);
+    }
+    else if(!logSteps->isChecked() && reversedPulse->isChecked())
+    {
+        seqJc.setPulseMode(MeasurementSequence::pulseMode::LinearReversed);
+    }
+    else if(!logSteps->isChecked() && !reversedPulse->isChecked())
+    {
+        seqJc.setPulseMode(MeasurementSequence::pulseMode::LinearOnce);
+    }
+}
+
+void StartDialog::adjustCurrent() {
+    if(logSteps->isChecked())
+    {
+        labelCurrentRate->setText(QChar(0x0394)+QString(" I / I"));
+        currentRateJc->setValue(0.025);
+    } else {
+        labelCurrentRate->setText("Current rate");
+        currentRateJc->setValue(0.01);
+    }
 }

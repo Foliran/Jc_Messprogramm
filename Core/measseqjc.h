@@ -40,8 +40,20 @@ public:
     double getPulsewidth() const;
     void setPulsewidth(double temperatureNew);
 
+    double getNumberPulses() const;
+    void setNumberPulses(double nPulsesNew);
+
+    MeasurementSequence::pulseMode getPulseMode() const;
+    void setPulseMode(MeasurementSequence::pulseMode newMode);
+
+    double getInterPulseTime() const;
+    void setInterPulseTime(double newTime);
+
     double getRatio() const;
     void setRatio(double temperatureNew);
+
+    double getVoltageCriterion() const;
+    void setVoltageCriterion(double temperatureNew);
 
 protected:
     double currentStart;
@@ -50,5 +62,8 @@ protected:
     double currentLive;
     double temperature;
     double pulsewidth;
+    double interPulsesTime;
+    double voltageCriterion;
+    int nPulses;
     double ratio;
 };

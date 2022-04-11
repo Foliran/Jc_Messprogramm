@@ -129,19 +129,14 @@ void MainWindow::createActions()
     //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     const QIcon measurementIconLinear = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
-    const QIcon measurementIconLog = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
     const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
-    QAction* messungStartenLinear = new QAction(measurementIconLinear, tr("&New Measurement with linear steps"), this);
-    QAction* messungStartenLog = new QAction(measurementIconLog, tr("&New Measurement with logarithmic steps"), this);
+    QAction* messungStartenLinear = new QAction(measurementIconLinear, tr("&New Measurement"), this);
     QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
-    messungStartenLinear->setStatusTip(tr("Create a new measurement with linear steps"));
-    messungStartenLog->setStatusTip(tr("Create a new measurement with logarithmic steps"));
+    messungStartenLinear->setStatusTip(tr("Create a new measurement"));
     openFile->setStatusTip(tr("Show an old Measurement"));
     connect(messungStartenLinear, &QAction::triggered, this, &MainWindow::onStartMessungButton);
-    connect(messungStartenLog, &QAction::triggered, this, &MainWindow::onStartMessungButton);
     connect(openFile, &QAction::triggered, this, &MainWindow::onOpenFileButton);
     fileToolBar->addAction(messungStartenLinear);
-    //fileToolBar->addAction(messungStartenLog);
     fileToolBar->addAction(openFile);
 }
 

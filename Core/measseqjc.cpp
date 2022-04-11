@@ -7,6 +7,7 @@ MeasSeqJc::MeasSeqJc()
     , currentLive(0.1)
     , temperature(77)
     , pulsewidth(30)
+    , nPulses(1)
     , ratio(0.5)
 {
 }
@@ -77,7 +78,32 @@ double MeasSeqJc::getRatio() const
     return ratio;
 }
 
+double MeasSeqJc::getNumberPulses() const
+{
+    return nPulses;
+}
+
+void MeasSeqJc::setNumberPulses(double nPulsesNew)
+{
+    nPulses = nPulsesNew;
+}
+
 void MeasSeqJc::setRatio(double ratioNew)
 {
     ratio = ratioNew;
+}
+
+MeasurementSequence::pulseMode MeasSeqJc::getPulseMode() const {
+    return mode;
+}
+void MeasSeqJc::setPulseMode(MeasurementSequence::pulseMode newMode) {
+    mode = newMode;
+}
+
+double MeasSeqJc::getInterPulseTime() const {
+    return interPulsesTime;
+}
+
+void MeasSeqJc::setInterPulseTime(double newTime) {
+    interPulsesTime = newTime;
 }

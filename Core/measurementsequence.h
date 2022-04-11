@@ -9,6 +9,7 @@ class CORE_EXPORT MeasurementSequence
 public:
     MeasurementSequence();
     virtual ~MeasurementSequence() = 0;
+    enum class pulseMode {LinearOnce, LogOnce, LinearReversed, LogReversed};
 
     //allgemein
     QString getSupraName() const;
@@ -17,6 +18,7 @@ public:
     //PPMS
     double getMagneticField() const;
     void setMagneticField(double magneticField);
+
     double getCoilAngle() const;
     void setCoilAngle(double coilAngle);
 
@@ -32,6 +34,7 @@ protected:
     double magneticField;
     double coilAngle;
 
+    pulseMode mode;
 };
 
 #endif
