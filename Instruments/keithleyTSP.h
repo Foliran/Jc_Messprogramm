@@ -15,7 +15,7 @@ public:
     bool isOpen() override;
     void openDevice() override;
     KeithleyDatapoint keithleyLogik() override;
-    void setPulseAndMeasure(double value, double pWidth, double ratio) override;
+    void setPulseAndMeasure(double value, double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed) override;
     double getVoltage() override;
     double getCurrent() override;
     double getBackground() override;

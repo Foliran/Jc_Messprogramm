@@ -12,7 +12,7 @@ public:
     virtual bool isOpen() = 0;
     virtual KeithleyDatapoint keithleyLogik() = 0;
     virtual void openDevice() = 0;
-    virtual void setPulseAndMeasure(double value, double pWidth, double ratio) = 0;
+    virtual void setPulseAndMeasure(double value, double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed) = 0;
     virtual double getVoltage() = 0;
     virtual double getCurrent() = 0;
     virtual void resetRange() = 0;

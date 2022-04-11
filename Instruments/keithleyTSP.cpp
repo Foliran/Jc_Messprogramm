@@ -67,8 +67,9 @@ bool KeithleyTSP::isOpen() {
     return check;
 }
 
-void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
+void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed)
 {
+    //reversed = true -> es wird in beide Richtungen gemessesn und die Absolutwerte gemittelt; false -> es wird nur in positive Richtung gemessen
     //qDebug() << "TSP::setPulseAndMeasure";
     current = value;
     gpib->cmd(address, "node[2].smua.trigger.source.limitv = 10", DELAYGPIB, TERMCHAR);
@@ -92,7 +93,6 @@ void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio)
     voltage = std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
     gpib->cmd(address, " node[2].smua.nvbuffer1.clear() "
                        " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
-
 }
 
 double KeithleyTSP::getVoltage()

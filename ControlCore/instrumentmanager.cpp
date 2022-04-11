@@ -24,7 +24,7 @@ InstrumentManager::InstrumentManager()
     connect(timer, &QTimer::timeout,
         this, &InstrumentManager::onPolling);
 
-    timer->start(100);
+    timer->start(200);
 
     if (simulation == 0)
     {
@@ -77,9 +77,9 @@ void InstrumentManager::setAngle(double angle)
     ppms->setAngle(angle);
 }
 
-void InstrumentManager::setPulseAndMeasure(double v, double p, double r)
+void InstrumentManager::setPulseAndMeasure(double v, double p, double r, int n, double t, bool reversed)
 {
-    keithley->setPulseAndMeasure(v, p, r);
+    keithley->setPulseAndMeasure(v, p, r, n, t, reversed);
 }
 
 void InstrumentManager::measureBackground() {

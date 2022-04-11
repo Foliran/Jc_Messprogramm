@@ -27,7 +27,7 @@ public:
     ~InstrumentManager() = default;
     void openDevice();
     void setTempSetpoint(double setpoint, double rate);
-    void setPulseAndMeasure(double v, double p, double r);
+    void setPulseAndMeasure(double v, double p, double r, int n, double t, bool reversed);
     void measureBackground();
     void resetBackground();
     void setMagFieldSP(double magField, double magRate);

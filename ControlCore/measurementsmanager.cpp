@@ -15,11 +15,11 @@
 
 
 MeasurementsManager::MeasurementsManager()
-    : measurementNumber(0)
+    : measurementState(State::Idle)
+    , measurementNumber(0)
     , instrumentmanager(std::make_unique<InstrumentManager>())
     , fw(nullptr)
     , mSeqJc(std::make_shared<MeasSeqJc>())
-    , measurementState(State::Idle)
     , magFieldSP(0)
     , angleSP(0)
     , tempSP(0)
@@ -149,7 +149,12 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             else {
                 measurementState = State::ApproachEndJc;
-                instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
+                if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogOnce)
+                {
+                    instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
+                } else if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearReversed|| mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogReversed) {
+                    instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
+                }
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
                 emit newState(measurementState);
             }
@@ -158,10 +163,21 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         case State::ApproachEndJc:
         {
             //qDebug() << "ApproachEndJc";
-            if ((datapoint->getKeithleyData()->getCurrent()+mSeqJc->getCurrentRate()) <= mSeqJc->getCurrentEnd())
+            double newCurrent = 0;
+            if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearReversed) {
+                newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();
+            } else if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogReversed) {
+                newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentLive() * mSeqJc->getCurrentRate();
+            }
+            if ( newCurrent <= mSeqJc->getCurrentEnd() )
             {
-                instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate(), mSeqJc->getPulsewidth(), mSeqJc->getRatio());
-                mSeqJc->setCurrentLive(mSeqJc->getCurrentLive()+mSeqJc->getCurrentRate());
+                if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogOnce) {
+                    instrumentmanager->setPulseAndMeasure(newCurrent, mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
+                }
+                if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearReversed || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogReversed) {
+                    instrumentmanager->setPulseAndMeasure(newCurrent, mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
+                }
+                mSeqJc->setCurrentLive(newCurrent);
             }
 
             // Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
