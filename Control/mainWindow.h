@@ -40,6 +40,7 @@ public:
 
 private slots:
     void onStartMessungButton();
+    void onStartMultiMessungButton();
     void onOpenFileButton();
     void onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq);
     void onStartMeasurement(std::shared_ptr<const MeasurementSequence> mSeq);

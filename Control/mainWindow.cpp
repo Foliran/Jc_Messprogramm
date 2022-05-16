@@ -9,6 +9,7 @@
 #include "../Core/datapoint.h"
 #include "openfilewindow.h"
 #include "startdialog.h"
+#include "startdialogmulti.h"
 #include "graphdiagram.h"
 #include "ppmswidget.h"
 #include "measurementstable.h"
@@ -130,15 +131,20 @@ void MainWindow::createActions()
 {
     //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
-    const QIcon measurementIconLinear = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
+    const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
+    const QIcon measurementIconMulti = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc.svg"));
     const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
-    QAction* messungStartenLinear = new QAction(measurementIconLinear, tr("&New Measurement"), this);
+    QAction* messungStarten = new QAction(measurementIcon, tr("&New Measurement"), this);
+    QAction* messungStartenMulti = new QAction(measurementIconMulti, tr("&New Measurement"), this);
     QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
-    messungStartenLinear->setStatusTip(tr("Create a new measurement"));
+    messungStarten->setStatusTip(tr("Create a new measurement"));
+    messungStartenMulti->setStatusTip(tr("Create a series of new measurements"));
     openFile->setStatusTip(tr("Show an old Measurement"));
-    connect(messungStartenLinear, &QAction::triggered, this, &MainWindow::onStartMessungButton);
+    connect(messungStarten, &QAction::triggered, this, &MainWindow::onStartMessungButton);
+    connect(messungStartenMulti, &QAction::triggered, this, &MainWindow::onStartMultiMessungButton);
     connect(openFile, &QAction::triggered, this, &MainWindow::onOpenFileButton);
-    fileToolBar->addAction(messungStartenLinear);
+    fileToolBar->addAction(messungStarten);
+    fileToolBar->addAction(messungStartenMulti);
     fileToolBar->addAction(openFile);
 }
 
@@ -189,6 +195,14 @@ void MainWindow::onStartMessungButton()
     connect(startDialog, &StartDialog::createMeasurement,
         this, &MainWindow::onCreateMeasurement);
     startDialog->show();
+}
+
+void MainWindow::onStartMultiMessungButton()
+{
+    StartDialogMulti* start = new StartDialogMulti(this);
+    connect(start, &StartDialogMulti::createMeasurement,
+        this, &MainWindow::onCreateMeasurement);
+    start->show();
 }
 
 void MainWindow::onOpenFileButton()

@@ -16,14 +16,16 @@ SOURCES += graphdiagram.cpp \
     measurementstable.cpp \
     openfilewindow.cpp \
     ppmswidget.cpp \
-    startdialog.cpp
+    startdialog.cpp \
+    startdialogmulti.cpp
 
 HEADERS += graphdiagram.h \
     mainWindow.h \
     measurementstable.h \
     openfilewindow.h \
     ppmswidget.h \
-    startdialog.h
+    startdialog.h \
+    startdialogmulti.h
 
 # Default rules for deployment.
 unix {
