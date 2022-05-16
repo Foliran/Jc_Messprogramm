@@ -209,7 +209,7 @@ void StartDialogMulti::setupUI()
 std::vector <std::shared_ptr<const MeasurementSequence>> StartDialogMulti::createSequence() const
 {
     std::vector <std::shared_ptr<const MeasurementSequence>> vecSeq;
-    int nMeasurements = std::abs(startTempJc->value() - endTempJc->value()) / tempRateJc->value();
+    int nMeasurements = std::abs(startTempJc->value() - endTempJc->value()) / tempRateJc->value() + 1;
     int direction = startTempJc->value() > endTempJc->value() ? -1: 1;
     double temp = startTempJc->value();
     for(int i = 0; i < nMeasurements; i++)
