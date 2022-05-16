@@ -57,6 +57,7 @@ private slots:
     void onNewErrorMessage(QString errormessagePpms);
     void onLogXAxis(int state);
     void onLogYAxis(int state);
+    void onSkipButton();
     void onPauseButton();
 
 private:
@@ -77,5 +78,6 @@ private:
     QCheckBox* logXAxis;
     QCheckBox* logYAxis;
     QPushButton *pause;
+    QPushButton *skip;
 };
 #endif

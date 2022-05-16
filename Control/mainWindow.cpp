@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(logXAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogXAxis);
     connect(logYAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogYAxis);
     connect(pause, &QPushButton::clicked, this, &MainWindow::onPauseButton);
+    connect(skip, &QPushButton::clicked, this, &MainWindow::onSkipButton);
 
     MeasManager->openDevice();
 }
@@ -113,12 +114,13 @@ void MainWindow::setupUi()
     listandRot->addLayout(Rot);
     listandRot->addWidget(mTable);
     listandRot->addWidget(pause);
+    listandRot->addWidget(skip);
     GraphandList->addWidget(graph);
     GraphandList->addLayout(listandRot);
     mTable->setMaximumWidth(250);
     mainLayout->addLayout(GraphandList);
     mainLayout->addSpacing(10);
-    ppmsWidget->setMaximumHeight(180);
+    ppmsWidget->setMaximumHeight(200);
     ppmsWidget->height();
     mainLayout->addWidget(ppmsWidget);
     mainLayoutWidget->setLayout(mainLayout);
@@ -150,6 +152,7 @@ void MainWindow::createRotatorButton()
     logYAxis->setText("Logarithmic axis y");
 
     pause = new QPushButton("Pause");
+    skip = new QPushButton("Skip current measurement");
 }
 
 void MainWindow::onLogXAxis(int state) {
@@ -158,6 +161,12 @@ void MainWindow::onLogXAxis(int state) {
 
 void MainWindow::onLogYAxis(int state) {
     graph->setAxisLogarithmic(state, 1);
+}
+
+void MainWindow::onSkipButton() {
+    MeasManagerState = MeasurementsManager::State::SkipMeasurement;
+    MeasManager->measurementState = MeasManagerState;
+    graph->MeasurementState(MeasManagerState);
 }
 
 void MainWindow::onPauseButton() {
@@ -172,6 +181,7 @@ void MainWindow::onPauseButton() {
     MeasManager->measurementState = MeasManagerState;
     graph->MeasurementState(MeasManagerState);
 }
+
 
 void MainWindow::onStartMessungButton()
 {

@@ -196,6 +196,15 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 instrumentmanager->resetBackground();
                 emit newState(measurementState);
             }
+            if(std::abs(datapoint->getKeithleyData()->getVoltage()) > std::abs(mSeqJc->getVoltageCriterion()))
+            {
+                tempSP = datapoint->getPpmsdata()->getTempSetpoint();
+                fw->closeFile();
+                measurementState = State::CheckForMeas;
+                measurementNumber++;
+                instrumentmanager->resetBackground();
+                emit newState(measurementState);
+            }
             break;
         }
 
