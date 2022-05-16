@@ -1,4 +1,5 @@
 #include "measseqjc.h"
+#include <QDebug>
 
 MeasSeqJc::MeasSeqJc()
     : currentStart(0.1)
@@ -93,17 +94,18 @@ void MeasSeqJc::setRatio(double ratioNew)
     ratio = ratioNew;
 }
 
-MeasurementSequence::pulseMode MeasSeqJc::getPulseMode() const {
-    return mode;
-}
-void MeasSeqJc::setPulseMode(MeasurementSequence::pulseMode newMode) {
-    mode = newMode;
-}
-
 double MeasSeqJc::getInterPulseTime() const {
     return interPulsesTime;
 }
 
 void MeasSeqJc::setInterPulseTime(double newTime) {
     interPulsesTime = newTime;
+}
+
+double MeasSeqJc::getVoltageCriterion() const {
+    return voltageCriterion;
+}
+
+void MeasSeqJc::setVoltageCriterion(double newCrit) {
+    voltageCriterion = newCrit;
 }

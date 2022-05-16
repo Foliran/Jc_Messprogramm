@@ -43,9 +43,6 @@ public:
     double getNumberPulses() const;
     void setNumberPulses(double nPulsesNew);
 
-    MeasurementSequence::pulseMode getPulseMode() const;
-    void setPulseMode(MeasurementSequence::pulseMode newMode);
-
     double getInterPulseTime() const;
     void setInterPulseTime(double newTime);
 
@@ -53,7 +50,7 @@ public:
     void setRatio(double temperatureNew);
 
     double getVoltageCriterion() const;
-    void setVoltageCriterion(double temperatureNew);
+    void setVoltageCriterion(double newCrit);
 
 protected:
     double currentStart;

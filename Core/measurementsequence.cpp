@@ -51,4 +51,13 @@ void MeasurementSequence::setFileName(const QString name)
     fileName = name;
 }
 
+int MeasurementSequence::getPulseMode() const {
+    //qDebug() << "MeasSeqJc pulseMode is " << pMode;
+    return pMode;
+}
+void MeasurementSequence::setPulseMode(int newMode) {
+    //qDebug() << "MeasSeqJc pulseMode is now " << newMode;
+    pMode = newMode;
+}
+
 

@@ -210,24 +210,28 @@ std::vector <std::shared_ptr<const MeasurementSequence>> StartDialog::createSequ
         QString::number(magneticFieldJc->value()) + "mT_" +
         QString::number(coilAngleJc->value()) + "d"
     );
-    vecSeq.push_back(std::make_shared<const MeasSeqJc>(seqJc));
-    return vecSeq;
     if(logSteps->isChecked() && reversedPulse->isChecked())
     {
-        seqJc.setPulseMode(MeasurementSequence::pulseMode::LogReversed);
+        seqJc.setPulseMode(4);
+        //qDebug() << "PulseMode ist logReversed";
     }
     else if(logSteps->isChecked() && !reversedPulse->isChecked())
     {
-        seqJc.setPulseMode(MeasurementSequence::pulseMode::LogOnce);
+        seqJc.setPulseMode(2);
+        //qDebug() << "PulseMode ist logOnce";
     }
     else if(!logSteps->isChecked() && reversedPulse->isChecked())
     {
-        seqJc.setPulseMode(MeasurementSequence::pulseMode::LinearReversed);
+        seqJc.setPulseMode(3);
+        //qDebug() << "PulseMode ist linearReversed";
     }
     else if(!logSteps->isChecked() && !reversedPulse->isChecked())
     {
-        seqJc.setPulseMode(MeasurementSequence::pulseMode::LinearOnce);
+        seqJc.setPulseMode(1);
+        //qDebug() << "PulseMode ist LinearOnce";
     }
+    vecSeq.push_back(std::make_shared<const MeasSeqJc>(seqJc));
+    return vecSeq;
 }
 
 void StartDialog::adjustCurrent() {

@@ -24,7 +24,7 @@ InstrumentManager::InstrumentManager()
     connect(timer, &QTimer::timeout,
         this, &InstrumentManager::onPolling);
 
-    timer->start(200);
+    timer->start(1000);
 
     if (simulation == 0)
     {

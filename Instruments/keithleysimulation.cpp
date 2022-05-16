@@ -11,7 +11,6 @@ KeithleySimulation::KeithleySimulation():
   , ratio(0.5)
   , background(-1000.0)
 {
-
 }
 
 bool KeithleySimulation::isOpen() {

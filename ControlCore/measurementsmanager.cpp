@@ -65,7 +65,6 @@ void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const Me
     }
 }
 
-
 void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence)
 {
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
@@ -78,6 +77,7 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequ
     mSeqJc->setTemperature(seqJc->getTemperature());
     mSeqJc->setPulsewidth(seqJc->getPulsewidth());
     mSeqJc->setRatio(seqJc->getRatio());
+    mSeqJc->setPulseMode(seqJc->getPulseMode());
     //scheint zu gehen, wenn ich hier die drei emits setzte
     emit newRatio(mSeqJc->getRatio());
     emit newPulseWidth(mSeqJc->getPulsewidth());
@@ -102,7 +102,6 @@ void MeasurementsManager::rotatorState(bool rotator)
 void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 {
     emit newData(datapoint);
-
     //ppmsStatus
     QString ppmsStatusStr = QString::fromStdString(datapoint->getPpmsdata()->getStatusPpms());
     auto ppmsStatus = ppmsStatusStr.toDouble();
@@ -125,6 +124,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             // Also entweder bearbeitet das in Zukunft jemand (Hallo zukünftiger jemand!), oder man schmeißt das mal raus
             break;
         }
+
         case State::ApproachStartJc:
         {
             //qDebug() << "ApproachStartJc";
@@ -140,19 +140,22 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             break;
         }
+
         case State::MeasureBackground:
         {
-            //qDebug() << "MeasureBackground";
+            qDebug() << "MeasureBackground";
             if(datapoint->getKeithleyData()->getBackground() == -1000.0)
             {
+                // -1000 -> Background noch nicht gemessen
                 instrumentmanager->measureBackground();
             }
-            else {
+            else if(datapoint->getKeithleyData()->getBackground() != -500){
+                // -500 -> Background wird gerade gemessen, warte also einfach
                 measurementState = State::ApproachEndJc;
-                if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogOnce)
+                if(mSeqJc->getPulseMode() == 1  || mSeqJc->getPulseMode() == 2)
                 {
                     instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
-                } else if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearReversed|| mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogReversed) {
+                } else if(mSeqJc->getPulseMode() == 3 || mSeqJc->getPulseMode() == 4) {
                     instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
                 }
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
@@ -160,21 +163,22 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             break;
         }
+
         case State::ApproachEndJc:
         {
             //qDebug() << "ApproachEndJc";
             double newCurrent = 0;
-            if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearReversed) {
+            if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();
-            } else if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogReversed) {
+            } else if(mSeqJc->getPulseMode() == 2 || mSeqJc->getPulseMode() == 4) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentLive() * mSeqJc->getCurrentRate();
             }
             if ( newCurrent <= mSeqJc->getCurrentEnd() )
             {
-                if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearOnce || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogOnce) {
+                if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 2) {
                     instrumentmanager->setPulseAndMeasure(newCurrent, mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
                 }
-                if(mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LinearReversed || mSeqJc->getPulseMode() == MeasurementSequence::pulseMode::LogReversed) {
+                if(mSeqJc->getPulseMode() == 3 || mSeqJc->getPulseMode() == 4) {
                     instrumentmanager->setPulseAndMeasure(newCurrent, mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
                 }
                 mSeqJc->setCurrentLive(newCurrent);
@@ -208,9 +212,20 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             break;
         }
 
+        case State::SkipMeasurement:
+        {
+            tempSP = datapoint->getPpmsdata()->getTempSetpoint();
+            fw->closeFile();
+            measurementState = State::CheckForMeas;
+            measurementNumber++;
+            instrumentmanager->resetBackground();
+            emit newState(measurementState);
+        }
+
         case State::CheckForMeas:
         {
             // Wenn es also noch weitere Messungen gibt, fange neue Messung an
+            qDebug() << "CheckForMeas";
             if (mVecSeq.size() > measurementNumber)
             {
                 emit startNewMeasurement(mVecSeq[measurementNumber]);

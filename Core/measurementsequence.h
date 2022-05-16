@@ -9,7 +9,6 @@ class CORE_EXPORT MeasurementSequence
 public:
     MeasurementSequence();
     virtual ~MeasurementSequence() = 0;
-    enum class pulseMode {LinearOnce, LogOnce, LinearReversed, LogReversed};
 
     //allgemein
     QString getSupraName() const;
@@ -25,6 +24,9 @@ public:
     QString getFileName() const;
     void setFileName(const QString fileName);
 
+    int getPulseMode() const;
+    void setPulseMode(int newMode);
+
 protected:
      //allgemein
     QString supraName;
@@ -33,8 +35,12 @@ protected:
     //PPMS
     double magneticField;
     double coilAngle;
+    int pMode; //Ich mag keinen enum class, deshalb hier mit int:
+               //1 = LinearOnce, 2 = LogOnce,
+               //3 = LinearReversed, 4 = LogReversed
 
-    pulseMode mode;
+
+    //pulseMode mode;
 };
 
 #endif

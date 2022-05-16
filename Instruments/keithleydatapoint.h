@@ -17,6 +17,7 @@ public:
     double getBackground() const;
     void setBackground(double value);
 
+
 private:
     double current;
     double currentRate;

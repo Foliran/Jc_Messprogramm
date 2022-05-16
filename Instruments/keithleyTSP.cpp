@@ -107,6 +107,7 @@ double KeithleyTSP::getCurrent()
 
 double KeithleyTSP::getBackground()
 {
+    background = -500;
     std::string valueString = " value = 0.000";
     std::string pWidthString = " pWidth = 30 / 1000.0";
     std::string ratioString = " ratio = 100.0/1000.0";
