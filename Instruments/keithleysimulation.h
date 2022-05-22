@@ -20,6 +20,7 @@ public:
     double getBackground() override;
     void resetBackground() override;
     void checkForError() override;
+    void setOutputOff() override;
 private:
     double current;
     double voltage;

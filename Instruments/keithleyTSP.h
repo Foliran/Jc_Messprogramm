@@ -22,6 +22,7 @@ public:
     void resetRange() override;
     void resetBackground() override;
     void checkForError() override;
+    void setOutputOff() override;
 
 private:
     std::shared_ptr<GPIB> gpib;

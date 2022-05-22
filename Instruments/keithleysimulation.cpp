@@ -65,3 +65,7 @@ void KeithleySimulation::resetBackground(){
 void KeithleySimulation::checkForError() {
 
 }
+
+void KeithleySimulation::setOutputOff() {
+
+}

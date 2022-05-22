@@ -166,3 +166,7 @@ void KeithleyTSP::checkForError() {
     }
     gpib->cmd(address, "errorqueue.clear()", DELAYGPIB, TERMCHAR);
 }
+
+void KeithleyTSP::setOutputOff() {
+    gpib->cmd(address, "node[2].smua.source.output = node[2].smua.OUTPUT_OFF", DELAYGPIB, TERMCHAR);
+}
