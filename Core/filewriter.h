@@ -12,7 +12,7 @@
 
 //Internal Classes
 class MeasSeqJc;
-class MeasurementSequence;
+//class MeasurementSequence;
 class FileWriter;
 class DataPoint;
 #include "../ControlCore/measurementsmanager.h"
@@ -26,14 +26,14 @@ public slots:
 
 public:
     FileWriter(QObject* parent = 0);
-    QString openFile(std::shared_ptr<const MeasurementSequence> measurementSequence);
+    QString openFile(std::shared_ptr<const MeasSeqJc> measurementSequence);
     void closeFile();
     void MeasurementState(MeasurementsManager::State newState);
 
 
 private:
-    QString createFileName(std::shared_ptr<const MeasurementSequence> measurementSequence);
-    QString writeHeader(std::shared_ptr<const MeasurementSequence> measurementSequence);
+    QString createFileName(std::shared_ptr<const MeasSeqJc> measurementSequence);
+    QString writeHeader(std::shared_ptr<const MeasSeqJc> measurementSequence);
     QString filedir;
     MeasurementsManager::State measurementState;
     std::shared_ptr<QFile> file;

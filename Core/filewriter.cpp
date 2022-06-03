@@ -16,7 +16,7 @@ FileWriter::FileWriter(QObject* parent)
 {
 }
 
-QString FileWriter::writeHeader(std::shared_ptr<const MeasurementSequence> measurementSequence)
+QString FileWriter::writeHeader(std::shared_ptr<const MeasSeqJc> measurementSequence)
 {
     //auto seqTc = std::dynamic_pointer_cast<const MeasSeqTc> (measurementSequence);
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc> (measurementSequence);
@@ -47,7 +47,7 @@ QString FileWriter::writeHeader(std::shared_ptr<const MeasurementSequence> measu
     else { return "unable to write header"; }
 }
 
-QString FileWriter::createFileName(std::shared_ptr<const MeasurementSequence> measurementSequence)
+QString FileWriter::createFileName(std::shared_ptr<const MeasSeqJc> measurementSequence)
 {
     //auto seqTc = std::dynamic_pointer_cast<const MeasSeqTc> (measurementSequence);
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc> (measurementSequence);
@@ -73,7 +73,7 @@ void FileWriter::append(std::shared_ptr<DataPoint> datapoint)
     }
 }
 
-QString FileWriter::openFile(std::shared_ptr<const MeasurementSequence> measurementSequence)
+QString FileWriter::openFile(std::shared_ptr<const MeasSeqJc> measurementSequence)
 {
     QString path("Messergebnisse/");
     QDir dir;  // ich erstelle QString mit dem Ordner, danach die direction
