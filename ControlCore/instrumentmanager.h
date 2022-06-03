@@ -27,18 +27,20 @@ public:
     ~InstrumentManager() = default;
     void openDevice();
     void setTempSetpoint(double setpoint, double rate);
-    void setPulseAndMeasure(double v, double p, double r, int n, double t, bool reversed);
+    void initializeSettings(double p, double r, int n, double t, bool reversed);
+    void setPulseAndMeasure(double v);
     void measureBackground();
     void resetBackground();
     void setMagFieldSP(double magField, double magRate);
     void setAngle(double angle);
     void rotatorState(bool rotator);
+    bool isBusyBackground();
+    QTimer* timer;
 
 private slots:
     void onPolling();
 
 private:
-    QTimer* timer;
     int simulation;
     PpmsAbstract* ppms;
     KeithleyAbstract *keithley;

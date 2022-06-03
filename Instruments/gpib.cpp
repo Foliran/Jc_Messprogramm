@@ -167,6 +167,7 @@ std::string GPIB::getError() const
 
 std::string GPIB::statusGpib(int ibsta)
 {
+    qDebug() << ibsta;
     if (ibsta & ERR)
     {
         return errorCode(*iberr_);

@@ -30,10 +30,14 @@ KeithleyDatapoint KeithleySimulation::keithleyLogik()
     return dPoint;
 }
 
-void KeithleySimulation::setPulseAndMeasure(double value, double pWidth, double r, int nPulses, double timeBetwPuls, bool reversed) {
-    //qDebug() << "setPulsAndMeasure";
+void KeithleySimulation::initializeSettings(double pWidth, double newRatio, int nPulses, double timeBetwPuls, bool reversed) {
     pulseWidth = pWidth;
-    ratio = r;
+    ratio = newRatio;
+}
+
+void KeithleySimulation::setPulseAndMeasure(double value) {
+    //qDebug() << "setPulsAndMeasure";
+
     current = value;
     voltage = value;
 }

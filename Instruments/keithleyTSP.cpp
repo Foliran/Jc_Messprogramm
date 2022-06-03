@@ -3,13 +3,15 @@
 #include<memory>
 #include<iostream>
 #include<QDebug>
-#include<chrono>
 #include<thread>
-#include<sstream>
+#include<cstdlib>
 #include<iomanip>
+#include<thread>
+#include<chrono>
+#include<QTime>
 
 //const int GPIBADDRESS = 26;
-const int DELAYGPIB = 2; //in ms
+const int DELAYGPIB = 0; //in ms
 const bool TERMCHAR = false;
 
 KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
@@ -19,6 +21,8 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     , voltage(0.0)
     , background(-1000.0)
 {
+    busy = false;
+    busyBackground = false;
     gpib->openDevice(address);
     if(!gpib->isOpen(address)) {
         QString errormessage = "TSP-Link: ";
@@ -35,7 +39,7 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     else {
         qDebug() << "Keithley Connection is open";
     }
-    gpib->cmd(address, "initializeSettings.run()", DELAYGPIB, TERMCHAR);
+    gpib->cmd(address, "tsplink.reset(2)", DELAYGPIB, TERMCHAR);
 }
 
 void KeithleyTSP::openDevice()
@@ -67,32 +71,57 @@ bool KeithleyTSP::isOpen() {
     return check;
 }
 
-void KeithleyTSP::setPulseAndMeasure(double value, double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed)
-{
-    //reversed = true -> es wird in beide Richtungen gemessesn und die Absolutwerte gemittelt; false -> es wird nur in positive Richtung gemessen
-    //qDebug() << "TSP::setPulseAndMeasure";
-    current = value;
-    gpib->cmd(address, "node[2].smua.trigger.source.limitv = 10", DELAYGPIB, TERMCHAR);
+void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed) {
     if (!gpib->isOpen(address))
     {
         return;
     }
-    resetRange();
-    pWidth = pWidth / 1000.0;
-    ratio = 50 / 1000.0;
+    //reversed = true -> es wird in beide Richtungen gemessesn und die Absolutwerte gemittelt; false -> es wird nur in positive Richtung gemessen
+    if(reversed) numberPulses = 2 * nPulses;
+    else numberPulses = nPulses;
+    pulseReversed = reversed;
+    //resetRange();
+    pulseWidth = pWidth / 1000.0;
     ratio = ratio / 1000.0;
-    std::string valueString = " value = " + std::to_string(value);
-    std::string pWidthString = " pWidth = " + std::to_string(pWidth);
-    std::string ratioString = " ratio = " + std::to_string(ratio);
+    interPulseTime = timeBetwPuls / 1000.0;
+    std::string pWidthString = " pWidth = " + std::to_string(pulseWidth) + " ";
+    std::string ratioString = " measDelay = " + std::to_string(ratio) + " ";
+    std::string nPulsesString = " nPulses = " + std::to_string(numberPulses) + " ";
+    std::string interPulsTimeString = " interPulseTime = " + std::to_string(interPulseTime) + " ";
+    //qDebug() << QString::fromStdString(interPulsTimeString + ", " + ratioString + ", " + nPulsesString);
+    gpib->cmd(address, " errorqueue.clear() " +
+                       pWidthString + ratioString + nPulsesString + interPulsTimeString + " init.run() ", DELAYGPIB, TERMCHAR);
+}
+
+void KeithleyTSP::setPulseAndMeasure(double value)
+{
+    current = value;
+    if (!gpib->isOpen(address))
+    {
+        return;
+    }
+    gpib->cmd(address, "res = 0", DELAYGPIB, TERMCHAR);
+
+    int sleeptime = (int)((numberPulses + 1) * (pulseWidth + interPulseTime) * 1000);
+    std::string valueString;
+    if(pulseReversed) {
+        valueString = " node[2].smua.trigger.source.listi({" + std::to_string(current) + ", " + std::to_string(-current) + "})";
+    } else {
+        valueString = " node[2].smua.trigger.source.listi({" + std::to_string(current) + "})";
+    }
     gpib->cmd(address, valueString, DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, pWidthString, DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, ratioString, DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "setPulseAndMeasure.run()", DELAYGPIB, TERMCHAR);
-    checkForError();
-    current = std::stod(gpib->query(address, " print(node[2].smua.nvbuffer1.sourcevalues[1]) ", DELAYGPIB, TERMCHAR));
-    voltage = std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
-    gpib->cmd(address, " node[2].smua.nvbuffer1.clear() "
-                       " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
+    gpib->cmd(address, " node[1].trigger.model.initiate() "
+    " node[2].smua.trigger.initiate() "
+    " waitcomplete() "
+    " res = 0 "
+    " for i = 1, nPulses do res = res + math.abs(node[1].defbuffer1.readings[i]) end "
+    " waitcomplete(2) "
+    " volt = res / nPulses "
+    " node[2].smua.nvbuffer1.clear() "
+    " node[1].defbuffer1.clear() ", sleeptime, TERMCHAR);
+    voltage = std::atof(gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR).c_str());
+    //current = std::atof(gpib->query(address, " print(node[2].smua.nvbuffer1.sourcevalues[1]) ", DELAYGPIB, TERMCHAR).c_str());
+    qDebug() << voltage;
 }
 
 double KeithleyTSP::getVoltage()
@@ -107,24 +136,16 @@ double KeithleyTSP::getCurrent()
 
 double KeithleyTSP::getBackground()
 {
-    background = -500;
-    std::string valueString = " value = 0.000";
-    std::string pWidthString = " pWidth = 30 / 1000.0";
-    std::string ratioString = " ratio = 100.0/1000.0";
-    gpib->cmd(address, valueString, DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, pWidthString, DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, ratioString, DELAYGPIB, TERMCHAR);
-    gpib->cmd(address, "node[1].dmm.measure.autorange = node[1].dmm.ON", DELAYGPIB, TERMCHAR);
-    double voltGes = 0;
-    for (int i = 0; i < 10; i++)
-    {
-        gpib->cmd(address, "setPulseAndMeasure.run()", DELAYGPIB, TERMCHAR);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        voltGes += std::stod(gpib->query(address, " print(node[1].defbuffer1.readings[1]) ", DELAYGPIB, TERMCHAR));
-        gpib->cmd(address, " node[1].defbuffer1.clear() ", DELAYGPIB, TERMCHAR);
+    background = -500.0;
+    busyBackground = true;
+    double count = 0;
+
+    for (int i = 0; i < 10; i++) {
+        setPulseAndMeasure(0.001);
+        count += voltage;
     }
-    background = voltGes / 10.0;
-    //std::cout << background << std::endl;
+    busyBackground = false;
+    background = count / (numberPulses * 10);
     return background;
 }
 

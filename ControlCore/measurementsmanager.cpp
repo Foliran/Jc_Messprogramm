@@ -4,13 +4,14 @@
 
 //Internal Classes
 #include "instrumentmanager.h"
-#include "../Core/measurementsequence.h"
+//#include "../Core/measurementsequence.h"
 #include "../Core/measseqjc.h"
 #include "../Core/datapoint.h"
 #include "../Core/filewriter.h"
 #include "../Instruments/ppmsdatapoint.h"
 #include "../Core/datapoint.h"
 #include <QThread>
+#include<QTime>
 #include <memory>
 
 
@@ -23,6 +24,7 @@ MeasurementsManager::MeasurementsManager()
     , magFieldSP(0)
     , angleSP(0)
     , tempSP(0)
+    , count(0)
 
 {
     connect(instrumentmanager.get(), &InstrumentManager::newData,
@@ -52,7 +54,7 @@ void MeasurementsManager::openDevice()
 }
 
 
-void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeqNew)
+void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mVecSeqNew)
 {
     for (const auto& mesSeq : mVecSeqNew)
     {
@@ -65,7 +67,7 @@ void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const Me
     }
 }
 
-void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence)
+void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasSeqJc> measurementSequence)
 {
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc>(measurementSequence);
     fw = std::make_unique<FileWriter>();
@@ -78,6 +80,9 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasurementSequ
     mSeqJc->setPulsewidth(seqJc->getPulsewidth());
     mSeqJc->setRatio(seqJc->getRatio());
     mSeqJc->setPulseMode(seqJc->getPulseMode());
+    mSeqJc->setInterPulseTime(seqJc->getInterPulseTime());
+    mSeqJc->setNumberPulses(seqJc->getNumberPulses());
+    mSeqJc->setVoltageCriterion(seqJc->getVoltageCriterion());
     //scheint zu gehen, wenn ich hier die drei emits setzte
     emit newRatio(mSeqJc->getRatio());
     emit newPulseWidth(mSeqJc->getPulsewidth());
@@ -147,17 +152,17 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             if(datapoint->getKeithleyData()->getBackground() == -1000.0)
             {
                 // -1000 -> Background noch nicht gemessen
-                instrumentmanager->measureBackground();
-            }
-            else if(datapoint->getKeithleyData()->getBackground() != -500){
-                // -500 -> Background wird gerade gemessen, warte also einfach
-                measurementState = State::ApproachEndJc;
                 if(mSeqJc->getPulseMode() == 1  || mSeqJc->getPulseMode() == 2)
                 {
-                    instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
+                    instrumentmanager->initializeSettings(mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
                 } else if(mSeqJc->getPulseMode() == 3 || mSeqJc->getPulseMode() == 4) {
-                    instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart(), mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
+                    instrumentmanager->initializeSettings(mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
                 }
+                instrumentmanager->measureBackground();
+            }
+            else if(!instrumentmanager->isBusyBackground()){
+                measurementState = State::ApproachEndJc;
+                instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart());
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
                 emit newState(measurementState);
             }
@@ -166,24 +171,14 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
         case State::ApproachEndJc:
         {
-            //qDebug() << "ApproachEndJc";
+            //qDebug() << "ApproachEndJc" ;
+            instrumentmanager->timer->setInterval(300);
             double newCurrent = 0;
             if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();
             } else if(mSeqJc->getPulseMode() == 2 || mSeqJc->getPulseMode() == 4) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentLive() * mSeqJc->getCurrentRate();
             }
-            if ( newCurrent <= mSeqJc->getCurrentEnd() )
-            {
-                if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 2) {
-                    instrumentmanager->setPulseAndMeasure(newCurrent, mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
-                }
-                if(mSeqJc->getPulseMode() == 3 || mSeqJc->getPulseMode() == 4) {
-                    instrumentmanager->setPulseAndMeasure(newCurrent, mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
-                }
-                mSeqJc->setCurrentLive(newCurrent);
-            }
-
             // Wenn Stromstärke weniger als eine Schrittweite vom Zielwert entfernt:
             // Beende Messung, setze neuen State und emitte newState
             if (fw != nullptr)
@@ -191,22 +186,30 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 fw->MeasurementState(measurementState);
                 fw->append(datapoint);
             }
-            if (std::abs(mSeqJc->getCurrentEnd() - datapoint->getKeithleyData()->getCurrent()) < mSeqJc->getCurrentRate())
+            if (newCurrent <= mSeqJc->getCurrentEnd() )
             {
+                instrumentmanager->setPulseAndMeasure(newCurrent);
+                mSeqJc->setCurrentLive(newCurrent);
+            } else
+            {
+                //qDebug() << "Reached maximal current";
                 tempSP = datapoint->getPpmsdata()->getTempSetpoint();
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
                 measurementNumber++;
                 instrumentmanager->resetBackground();
+                instrumentmanager->timer->setInterval(1000);
                 emit newState(measurementState);
             }
             if(std::abs(datapoint->getKeithleyData()->getVoltage()) > std::abs(mSeqJc->getVoltageCriterion()))
             {
+                //qDebug() << "Reached maximal voltage";
                 tempSP = datapoint->getPpmsdata()->getTempSetpoint();
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
                 measurementNumber++;
                 instrumentmanager->resetBackground();
+                instrumentmanager->timer->setInterval(1000);
                 emit newState(measurementState);
             }
             break;
@@ -225,6 +228,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         case State::CheckForMeas:
         {
             // Wenn es also noch weitere Messungen gibt, fange neue Messung an
+
             qDebug() << "CheckForMeas";
             if (mVecSeq.size() > measurementNumber)
             {

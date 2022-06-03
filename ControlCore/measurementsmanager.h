@@ -7,7 +7,7 @@
 #include <vector>
 
 class MeasSeqJc;
-class MeasurementSequence;
+//class MeasurementSequence;
 class DataPoint;
 class FileWriter;
 class InstrumentManager;
@@ -21,14 +21,14 @@ public:
     ~MeasurementsManager();
     void openDevice();
     enum class State { Idle, MeasureBackground, CheckForMeas, ApproachStartJc, ApproachEndJc, PauseMeasurement, SkipMeasurement};
-    void appendMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeq);
-    void startMeasurement(std::shared_ptr<const MeasurementSequence> measurementSequence);
+    void appendMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mVecSeq);
+    void startMeasurement(std::shared_ptr<const MeasSeqJc> measurementSequence);
     void rotatorState(bool rotator);
     State measurementState;
 
 signals:
     void newData(std::shared_ptr<const DataPoint>);
-    void startNewMeasurement(std::shared_ptr<const MeasurementSequence>);
+    void startNewMeasurement(std::shared_ptr<const MeasSeqJc>);
     void newState(MeasurementsManager::State newState);
     void newTempSP(double setpoint, double rate);
     void newCurrentValues(double current, double voltage);
@@ -53,13 +53,14 @@ private slots:
 
 private:
     size_t measurementNumber;
-    std::vector<std::shared_ptr<const MeasurementSequence>> mVecSeq;
+    std::vector<std::shared_ptr<const MeasSeqJc>> mVecSeq;
     std::unique_ptr <InstrumentManager> instrumentmanager;
     std::unique_ptr <FileWriter> fw;
     std::shared_ptr <MeasSeqJc> mSeqJc;
     double magFieldSP;
     double angleSP;
     double tempSP;
+    int count;
 
 };
 

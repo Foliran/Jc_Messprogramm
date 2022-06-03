@@ -15,7 +15,8 @@ public:
     bool isOpen() override;
     void openDevice() override;
     KeithleyDatapoint keithleyLogik() override;
-    void setPulseAndMeasure(double value, double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed) override;
+    void initializeSettings(double pWidth, double ratio, int nPulses, double timeBetwPuls, bool reversed) override;
+    void setPulseAndMeasure(double value) override;
     double getVoltage() override;
     double getCurrent() override;
     double getBackground() override;
@@ -27,9 +28,13 @@ public:
 private:
     std::shared_ptr<GPIB> gpib;
     int address;
+    int numberPulses;
     double current;
     double voltage;
     double background;
+    double pulseWidth;
+    double interPulseTime;
+    bool pulseReversed;
 };
 
 #endif // KEITHLEYTSP_H
