@@ -6,7 +6,8 @@
 //fertig
 
 //Internal Classes
-class MeasurementSequence;
+//class MeasurementSequence;
+class MeasSeqJc;
 
 class MeasurementsTable : public QWidget
 {
@@ -18,13 +19,13 @@ public:
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
-    void newMeasurement(const std::vector<std::shared_ptr<const MeasurementSequence>>& mSeq);
-    void activeMeasurement(const std::shared_ptr<const MeasurementSequence> mesSeq);
+    void newMeasurement(const std::vector<std::shared_ptr<const MeasSeqJc>>& mSeq);
+    void activeMeasurement(const std::shared_ptr<const MeasSeqJc> mesSeq);
 
 private:
     void setupUI();
     QListWidget* listWidget;
-    std::vector<std::shared_ptr<const MeasurementSequence>> vecSeq;
+    std::vector<std::shared_ptr<const MeasSeqJc>> vecSeq;
 };
 
 #endif

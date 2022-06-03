@@ -6,6 +6,7 @@
 #include "mainWindow.h"
 #include "../ControlCore/measurementsmanager.h"
 #include "../Core/measurementsequence.h"
+#include "../Core/measseqjc.h"
 #include "../Core/datapoint.h"
 #include "openfilewindow.h"
 #include "startdialog.h"
@@ -211,13 +212,13 @@ void MainWindow::onOpenFileButton()
     openfile->show();
 }
 
-void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasurementSequence>> mSeq)
+void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mSeq)
 {
     MeasManager->appendMeasurement(mSeq);
     mTable->newMeasurement(mSeq);
 }
 
-void MainWindow::onStartMeasurement(std::shared_ptr<const MeasurementSequence> mSeq)
+void MainWindow::onStartMeasurement(std::shared_ptr<const MeasSeqJc> mSeq)
 {
     graph->setStaticValues(mSeq);
     mTable->activeMeasurement(mSeq);

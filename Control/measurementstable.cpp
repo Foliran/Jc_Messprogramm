@@ -5,6 +5,7 @@
 //fertig
 
 #include "../Core/measurementsequence.h"
+#include "../Core/measseqjc.h"
 
 MeasurementsTable::MeasurementsTable(QWidget* parent)
     : QWidget(parent)
@@ -24,7 +25,7 @@ QSize MeasurementsTable::minimumSizeHint() const
     return QSize(100, 300);
 }
 
-void MeasurementsTable::newMeasurement(const std::vector<std::shared_ptr<const MeasurementSequence>>& mSeq)
+void MeasurementsTable::newMeasurement(const std::vector<std::shared_ptr<const MeasSeqJc>>& mSeq)
 {
     for (const auto& mesSeq : mSeq)
     {
@@ -39,7 +40,7 @@ void MeasurementsTable::newMeasurement(const std::vector<std::shared_ptr<const M
     }
 }
 
-void MeasurementsTable::activeMeasurement(const std::shared_ptr<const MeasurementSequence> mesSeq)
+void MeasurementsTable::activeMeasurement(const std::shared_ptr<const MeasSeqJc> mesSeq)
 {
     auto it = vecSeq.begin();
     QColor color;

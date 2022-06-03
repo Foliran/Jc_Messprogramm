@@ -14,7 +14,7 @@
 
 //Internal Classes
 #include "../Core/datapoint.h"
-#include "../Core/measurementsequence.h"
+//#include "../Core/measurementsequence.h"
 #include "../Core/measseqjc.h"
 #include "../ControlCore/measurementsmanager.h"
 QT_CHARTS_USE_NAMESPACE
@@ -76,7 +76,7 @@ QSize GraphDiagram::minimumSizeHint() const
     return QSize(300, 200);
 }
 
-void GraphDiagram::setStaticValues(std::shared_ptr<const MeasurementSequence> mSeq)
+void GraphDiagram::setStaticValues(std::shared_ptr<const MeasSeqJc> mSeq)
 {
     series->clear();
     measSeq = mSeq;

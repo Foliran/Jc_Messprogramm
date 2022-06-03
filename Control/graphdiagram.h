@@ -9,8 +9,8 @@
 
 //Internal Classes
 class DataPoint;
-class MeasurementSequence;
-class measSeqJc;
+//class MeasurementSequence;
+class MeasSeqJc;
 #include "../ControlCore/measurementsmanager.h"
 
 class GraphDiagram : public QWidget
@@ -43,11 +43,11 @@ private:
     QLogValueAxis *axisXLog;
     QLogValueAxis *axisYLog;
 
-    std::shared_ptr <const MeasurementSequence> measSeq;
+    std::shared_ptr <const MeasSeqJc> measSeq;
     MeasurementsManager::State measurementState;
 
 public slots:
-    void setStaticValues(std::shared_ptr<const MeasurementSequence> mSeq);
+    void setStaticValues(std::shared_ptr<const MeasSeqJc> mSeq);
 
 };
 
