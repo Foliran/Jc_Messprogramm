@@ -9,8 +9,63 @@ MeasSeqJc::MeasSeqJc()
     , temperature(77)
     , pulsewidth(30)
     , nPulses(1)
+    , interPulsesTime(0.0)
     , ratio(0.5)
+    , supraName("")
+    , fileName("")
+    , magneticField(0)
+    , coilAngle(0)
+    , voltageCriterion(0.0)
 {
+}
+
+QString MeasSeqJc::getSupraName() const
+{
+    return supraName;
+}
+
+void MeasSeqJc::setSupraName(const QString name)
+{
+    supraName = name;
+}
+
+double MeasSeqJc::getMagneticField() const
+{
+    return magneticField;
+}
+
+void MeasSeqJc::setMagneticField(double field)
+{
+    magneticField = field;
+}
+
+double MeasSeqJc::getCoilAngle() const
+{
+    return coilAngle;
+}
+
+void MeasSeqJc::setCoilAngle(double angle)
+{
+    coilAngle = angle;
+}
+
+QString MeasSeqJc::getFileName() const
+{
+    return fileName;
+}
+
+void MeasSeqJc::setFileName(const QString name)
+{
+    fileName = name;
+}
+
+int MeasSeqJc::getPulseMode() const {
+    //qDebug() << "MeasSeqJc pulseMode is " << pMode;
+    return pMode;
+}
+void MeasSeqJc::setPulseMode(int newMode) {
+    //qDebug() << "MeasSeqJc pulseMode is now " << newMode;
+    pMode = newMode;
 }
 
 double MeasSeqJc::getCurrentStart() const

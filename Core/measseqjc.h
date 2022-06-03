@@ -4,20 +4,16 @@
 #endif // MEASSEQJC_H
 
 #include "Core_global.h"
+#include <QString>
 
 //Internal Classes
-#include "measurementsequence.h"
+//#include "measurementsequence.h"
 /*
 Speichert Parameter einer Jc-Messung, also Start-/Enstromstärke, aktuelle Stromstärke Schrittweite,
 Temperatur, Pulsweite und Anteil der Pulsweite, nach der gemessen werden soll.
-
-Eigentlich ist die Klassse nicht mehr unbedingt nötig, die war im Induktionsmessprogramm
-sinnvoll um zwischen Tc- und Jc-Messung zu unterscheiden. Da ese jetzt nur noch
-die Jc-Messung gibt, würde meassurementsequence ausreichen. Das darf dann aber jemand
-anders machen. Viel Spaß, zukünftiger jemand!
 */
 
-class CORE_EXPORT MeasSeqJc : public MeasurementSequence
+class CORE_EXPORT MeasSeqJc// : public MeasurementSequence
 {
 public:
     MeasSeqJc();
@@ -52,7 +48,32 @@ public:
     double getVoltageCriterion() const;
     void setVoltageCriterion(double newCrit);
 
+    QString getSupraName() const;
+    void setSupraName(const QString supraName);
+
+    //PPMS
+    double getMagneticField() const;
+    void setMagneticField(double magneticField);
+
+    double getCoilAngle() const;
+    void setCoilAngle(double coilAngle);
+
+    QString getFileName() const;
+    void setFileName(const QString fileName);
+
+    int getPulseMode() const;
+    void setPulseMode(int newMode);
+
 protected:
+    QString supraName;
+    QString fileName;
+
+    //PPMS
+    double magneticField;
+    double coilAngle;
+    int pMode; //Ich mag keinen enum class, deshalb hier mit int:
+               //1 = LinearOnce, 2 = LogOnce,
+               //3 = LinearReversed, 4 = LogReversed
     double currentStart;
     double currentEnd;
     double currentRate;
