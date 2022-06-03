@@ -11,7 +11,7 @@
 
 //Internal Classes
 class MeasSeqJc;
-class MeasurementSequence;
+//class MeasurementSequence;
 class QDoubleSpinBox;
 class QLineEdit;
 
@@ -20,7 +20,7 @@ class StartDialog : public QDialog
     Q_OBJECT
 
 signals:
-    void createMeasurement(std::vector <std::shared_ptr<const MeasurementSequence>>&);
+    void createMeasurement(std::vector <std::shared_ptr<const MeasSeqJc>>&);
 private slots:
     void adjustCurrent();
 public:
@@ -35,7 +35,7 @@ protected:
 private:
     void setupUI();
     QWidget* widgetJc;
-    std::vector <std::shared_ptr<const MeasurementSequence>> createSequence() const;
+    std::vector <std::shared_ptr<const MeasSeqJc>> createSequence() const;
 
     //Jc
     QCheckBox* reversedPulse;

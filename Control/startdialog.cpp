@@ -21,7 +21,6 @@
 
 StartDialog::StartDialog(QWidget* parent)
     : QDialog(parent)
-    //, widgetTc(new QWidget(this))
     , widgetJc(new QWidget(this))
     , sampleNameJc(nullptr)
     , tempJc(nullptr)
@@ -49,14 +48,12 @@ QSize StartDialog::minimumSizeHint() const
 void StartDialog::accept()
 {
     auto vecSeq = createSequence();
-
     emit createMeasurement(vecSeq);
 }
 
 void StartDialog::setupUI()
 {
     auto gridLayoutJc = new QGridLayout();
-    //auto boxButton = new QHBoxLayout();
 
     //Jc Measurement
     sampleNameJc = new QLineEdit();
@@ -76,9 +73,9 @@ void StartDialog::setupUI()
 
     currentStartJc = new QDoubleSpinBox();
     currentStartJc->setDecimals(3);
-    currentStartJc->setSingleStep(0.002);
-    currentStartJc->setRange(0.00, 20);
-    currentStartJc->setValue(0.00);
+    currentStartJc->setSingleStep(0.001);
+    currentStartJc->setRange(0.001, 20);
+    currentStartJc->setValue(0.01);
 
     currentEndJc = new QDoubleSpinBox();
     currentEndJc->setDecimals(3);
@@ -90,7 +87,7 @@ void StartDialog::setupUI()
     currentRateJc->setDecimals(3);
     currentRateJc->setSingleStep(0.002);
     currentRateJc->setRange(0.0001, 1.0);
-    currentRateJc->setValue(0.01);
+    currentRateJc->setValue(0.001);
 
     magneticFieldJc = new QDoubleSpinBox();
     magneticFieldJc->setDecimals(2);
@@ -107,44 +104,44 @@ void StartDialog::setupUI()
     pulseWidth = new QDoubleSpinBox();
     pulseWidth->setDecimals(0);
     pulseWidth->setSingleStep(1);
-    pulseWidth->setValue(30);
-    pulseWidth->setRange(0.1, 1000);
+    pulseWidth->setRange(0.1, 1000.0);
+    pulseWidth->setValue(30.0);
 
     nPulses = new QDoubleSpinBox();
     nPulses->setDecimals(0);
     nPulses->setSingleStep(1);
-    nPulses->setValue(1);
+    nPulses->setValue(2);
 
     timeBetweenPulses = new QDoubleSpinBox();
     timeBetweenPulses->setDecimals(0);
-    timeBetweenPulses->setValue(100);
-    timeBetweenPulses->setRange(0, 1000);
+    timeBetweenPulses->setRange(0, 1000.0);
     timeBetweenPulses->setSingleStep(1);
+    timeBetweenPulses->setValue(1);
 
     ratio = new QDoubleSpinBox();
     ratio->setDecimals(2);
     ratio->setSingleStep(0.01);
     ratio->setRange(0, 1000);
-    ratio->setValue(0.5);
+    ratio->setValue(2.0);
 
     voltageCriterion = new QDoubleSpinBox();
     voltageCriterion->setDecimals(0);
-    voltageCriterion->setValue(5);
     voltageCriterion->setRange(0, 20);
+    voltageCriterion->setValue(0);
     voltageCriterion->setSingleStep(1);
 
     auto labelSampleNameJc = new QLabel("Sample name:");
-    auto labelTempJc = new QLabel("Temperature:");
-    auto labelCurrentStartJc = new QLabel("Start current:");
-    auto labelCurrentEndJc = new QLabel("End current:");
-    labelCurrentRate = new QLabel("Current rate:");
-    auto labelVoltageCriterion = new QLabel("Voltage end criterion: 10e-");
-    auto labelMagneticFieldJc = new QLabel("Magnetic field:");
+    auto labelTempJc = new QLabel("Temperature in K:");
+    auto labelCurrentStartJc = new QLabel("Start current in A:");
+    auto labelCurrentEndJc = new QLabel("End current in A:");
+    labelCurrentRate = new QLabel("Current rate in A:");
+    auto labelVoltageCriterion = new QLabel("Voltage end criterion in V: 10e-");
+    auto labelMagneticFieldJc = new QLabel("Magnetic field in mT:");
     auto labelCoilAngleJc = new QLabel("Coil angle:");
-    auto labelPulseWidth = new QLabel("Pulse width: ");
+    auto labelPulseWidth = new QLabel("Pulse width in ms: ");
     auto labelNPulses= new QLabel("Number of pulses: ");
-    auto labelTimeBetwPulses= new QLabel("Time between pulses: ");
-    auto labelRatio = new QLabel("Measurement delay:");
+    auto labelTimeBetwPulses= new QLabel("Time between pulses in ms: ");
+    auto labelRatio = new QLabel("Measurement delay in ms:");
 
     gridLayoutJc->addWidget(reversedPulse, 0, 0);
     gridLayoutJc->addWidget(logSteps, 0, 1);
@@ -189,9 +186,9 @@ void StartDialog::setupUI()
     setLayout(mainLayout);
 }
 
-std::vector <std::shared_ptr<const MeasurementSequence>> StartDialog::createSequence() const
+std::vector <std::shared_ptr<const MeasSeqJc>> StartDialog::createSequence() const
 {
-    std::vector <std::shared_ptr<const MeasurementSequence>> vecSeq;
+    std::vector <std::shared_ptr<const MeasSeqJc>> vecSeq;
     MeasSeqJc seqJc;
     seqJc.setSupraName(sampleNameJc->text());
     seqJc.setTemperature(tempJc->value());
@@ -202,8 +199,9 @@ std::vector <std::shared_ptr<const MeasurementSequence>> StartDialog::createSequ
     seqJc.setCoilAngle(coilAngleJc->value());
     seqJc.setPulsewidth(pulseWidth->value());
     seqJc.setNumberPulses((int)nPulses->value());
-    seqJc.setInterPulseTime(timeBetweenPulses->value());
+    seqJc.setInterPulseTime((double)timeBetweenPulses->value());
     seqJc.setRatio(ratio->value());
+    seqJc.setVoltageCriterion(std::pow(10, -(double)voltageCriterion->value()));
     seqJc.setFileName(sampleNameJc->text() + "_" +
         QString::number(tempJc->value()) + "K_" +
         //QString::number(frequencyJc_->value()) + "hz_" +
