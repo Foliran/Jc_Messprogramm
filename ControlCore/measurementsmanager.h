@@ -7,7 +7,8 @@
 #include <vector>
 
 class MeasSeqJc;
-//class MeasurementSequence;
+class QWidget;
+class QLabel;
 class DataPoint;
 class FileWriter;
 class InstrumentManager;
@@ -20,10 +21,11 @@ public:
     explicit MeasurementsManager();
     ~MeasurementsManager();
     void openDevice();
-    enum class State { Idle, MeasureBackground, CheckForMeas, ApproachStartJc, ApproachEndJc, PauseMeasurement, SkipMeasurement};
+    enum class State { Idle, MeasureBackground, CheckForMeas, ApproachStartJc, waitForTemp, ApproachEndJc, PauseMeasurement, SkipMeasurement};
     void appendMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mVecSeq);
     void startMeasurement(std::shared_ptr<const MeasSeqJc> measurementSequence);
     void rotatorState(bool rotator);
+    void setWaitingTime(int time);
     State measurementState;
 
 signals:
@@ -57,10 +59,14 @@ private:
     std::unique_ptr <InstrumentManager> instrumentmanager;
     std::unique_ptr <FileWriter> fw;
     std::shared_ptr <MeasSeqJc> mSeqJc;
+
+    QWidget* msg;
+    QLabel *textLabel;
     double magFieldSP;
     double angleSP;
     double tempSP;
-    int count;
+    int timeToWait;
+    int remainingTime;
 
 };
 

@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget* parent)
     , rotCheckBox(nullptr)
     , logXAxis(nullptr)
     , logYAxis(nullptr)
+    , waitingTime(nullptr)
 {
     createRotatorButton();
     setupUi();
@@ -68,7 +69,8 @@ MainWindow::MainWindow(QWidget* parent)
     connect(logYAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogYAxis);
     connect(pause, &QPushButton::clicked, this, &MainWindow::onPauseButton);
     connect(skip, &QPushButton::clicked, this, &MainWindow::onSkipButton);
-
+    connect(waitingTime, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::waitingTimeChanged);
+    waitingTimeChanged();
     MeasManager->openDevice();
 }
 
@@ -79,7 +81,7 @@ MainWindow::~MainWindow()
 
 QSize MainWindow::sizeHint() const
 {
-    return QSize(1600, 1200);
+    return QSize(1600, 1600);
 }
 
 QSize MainWindow::minimumSizeHint() const
@@ -109,7 +111,23 @@ void MainWindow::setupUi()
     QHBoxLayout* GraphandList = new QHBoxLayout();
     QVBoxLayout* listandRot = new QVBoxLayout();
     QVBoxLayout* Rot = new QVBoxLayout();
-    Rot->addSpacing(12);
+
+    //Widgets for the temperature waiting time
+    waitingTime = new QDoubleSpinBox();
+    waitingTime->setRange(0, 1000);
+    waitingTime->setDecimals(0);
+    waitingTime->setValue(30);
+
+    QLabel *waitingTimeLabel = new QLabel();
+    waitingTimeLabel->setText("Time to wait for Temp.:");
+    QHBoxLayout *timeLayout = new QHBoxLayout();
+    timeLayout->addWidget(waitingTimeLabel);
+    timeLayout->addWidget(waitingTime);
+    QWidget *timeWidget = new QWidget();
+    timeWidget->setLayout(timeLayout);
+
+    Rot->addSpacing(5);
+    Rot->addWidget(timeWidget);
     Rot->addWidget(rotCheckBox);
     Rot->addWidget(logXAxis);
     Rot->addWidget(logYAxis);
@@ -312,4 +330,6 @@ void MainWindow::createStatusBar()
     statusBar()->showMessage(tr("Ready"));
 }
 
-
+void MainWindow::waitingTimeChanged() {
+    MeasManager->setWaitingTime((int)waitingTime->value());
+}

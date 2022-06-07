@@ -11,8 +11,11 @@
 #include "../Instruments/ppmsdatapoint.h"
 #include "../Core/datapoint.h"
 #include <QThread>
-#include<QTime>
+#include <QTime>
 #include <memory>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QLabel>
 
 
 MeasurementsManager::MeasurementsManager()
@@ -24,7 +27,8 @@ MeasurementsManager::MeasurementsManager()
     , magFieldSP(0)
     , angleSP(0)
     , tempSP(0)
-    , count(0)
+    , timeToWait(300)
+    , msg(nullptr)
 
 {
     connect(instrumentmanager.get(), &InstrumentManager::newData,
@@ -41,6 +45,12 @@ MeasurementsManager::MeasurementsManager()
         this, &MeasurementsManager::onNewErrorMessage);
     connect(instrumentmanager.get(), &InstrumentManager::newValues,
         this, &MeasurementsManager::onNewCurrentValues);
+    msg = new QWidget();
+    textLabel = new QLabel();
+    QHBoxLayout *lyt = new QHBoxLayout();
+    lyt->addWidget(textLabel);
+    msg->setLayout(lyt);
+    remainingTime = timeToWait;
 }
 
 MeasurementsManager::~MeasurementsManager()
@@ -132,7 +142,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
         case State::ApproachStartJc:
         {
-            //qDebug() << "ApproachStartJc";
+            qDebug() << "ApproachStartJc";
             // Sind Parameter nahe genug an den gewollten Startwerten, starte Messung
             // gehe also auf approachEndJc
             if (std::abs(mSeqJc->getTemperature() - datapoint->getPpmsdata()->getTempLive()) < 0.6 &&
@@ -140,12 +150,37 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 std::abs(angleSP - datapoint->getPpmsdata()->getRotLive()) < 1 &&
                 tempStable == true && magStable == true && rotStable == true)
             {
+                measurementState = State::waitForTemp;
+                emit newState(measurementState);
+            }
+            break;
+        }
+        case State::waitForTemp:
+        {
+            qDebug() << "WaitForTemp, remainingTime is" << remainingTime;
+            if(remainingTime == timeToWait) {
+                qDebug() << "First if";
+                std::string txt = "Waiting for " + std::to_string(remainingTime) + " more seconds before starting the measurement";
+                textLabel->setText(QString::fromStdString(txt));
+                msg->show();
+                remainingTime--;
+            }
+            else if(remainingTime > 0 && remainingTime < timeToWait) {
+                qDebug() << "Second if";
+                std::string txt = "Waiting for " + std::to_string(remainingTime) + " more seconds before starting the measurement";
+                textLabel->setText(QString::fromStdString(txt));
+                remainingTime--;
+                qDebug() << remainingTime;
+            }
+            else if(remainingTime == 0){
+                qDebug() << "Third if";
+                remainingTime = timeToWait;
+                msg->close();
                 measurementState = State::MeasureBackground;
                 emit newState(measurementState);
             }
             break;
         }
-
         case State::MeasureBackground:
         {
             qDebug() << "MeasureBackground";
@@ -171,7 +206,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
         case State::ApproachEndJc:
         {
-            //qDebug() << "ApproachEndJc" ;
+            qDebug() << "ApproachEndJc" ;
             instrumentmanager->timer->setInterval(300);
             double newCurrent = 0;
             if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
@@ -284,3 +319,9 @@ void MeasurementsManager::onNewErrorMessage(QString errormessagePpms)
     emit newErrorMessage(errormessagePpms);
 }
 
+void MeasurementsManager::setWaitingTime(int time) {
+    if(measurementState != State::waitForTemp) {
+        remainingTime = time;
+    }
+    timeToWait = time;
+}

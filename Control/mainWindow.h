@@ -7,6 +7,7 @@
 #include <QCloseEvent>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QDoubleSpinBox>
 #include "../ControlCore/measurementsmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -60,6 +61,7 @@ private slots:
     void onLogYAxis(int state);
     void onSkipButton();
     void onPauseButton();
+    void waitingTimeChanged();
 
 private:
     void setupUi();
@@ -76,6 +78,7 @@ private:
     QWidget* mainLayoutWidget;
     MeasurementsTable* mTable;
     QCheckBox* rotCheckBox;
+    QDoubleSpinBox* waitingTime;
     QCheckBox* logXAxis;
     QCheckBox* logYAxis;
     QPushButton *pause;
