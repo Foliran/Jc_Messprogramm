@@ -127,8 +127,8 @@ void StartDialog::setupUI()
     voltageCriterion = new QDoubleSpinBox();
     voltageCriterion->setDecimals(0);
     voltageCriterion->setRange(0, 20);
-    voltageCriterion->setValue(0);
     voltageCriterion->setSingleStep(1);
+    voltageCriterion->setValue(4);
 
     auto labelSampleNameJc = new QLabel("Sample name:");
     auto labelTempJc = new QLabel("Temperature in K:");

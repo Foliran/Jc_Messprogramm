@@ -140,9 +140,9 @@ void StartDialogMulti::setupUI()
 
     voltageCriterion = new QDoubleSpinBox();
     voltageCriterion->setDecimals(0);
-    voltageCriterion->setValue(0);
     voltageCriterion->setRange(0, 20);
     voltageCriterion->setSingleStep(1);
+    voltageCriterion->setValue(4);
 
     auto labelSampleNameJc = new QLabel("Sample name:");
     auto labelStartTempJc = new QLabel("Start temperature in K:");
