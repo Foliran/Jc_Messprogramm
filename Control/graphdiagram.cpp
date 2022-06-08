@@ -54,6 +54,10 @@ void GraphDiagram::appendDataPoint(std::shared_ptr<const DataPoint> datapoint)
         if (voltMax == 10) { voltMin = datapoint->getKeithleyData()->getVoltage(); }
         if (voltMin > datapoint->getKeithleyData()->getVoltage()) { voltMin = 0.9*datapoint->getKeithleyData()->getVoltage(); }
         if (voltMax < datapoint->getKeithleyData()->getVoltage()) { voltMax = 1.1*datapoint->getKeithleyData()->getVoltage(); }
+        if (currentMin > datapoint->getKeithleyData()->getCurrent()) { currentMin = 0.9*datapoint->getKeithleyData()->getCurrent(); }
+        if (currentMax < datapoint->getKeithleyData()->getCurrent()) { currentMax = 1.1*datapoint->getKeithleyData()->getCurrent(); }
+        axisX->setRange(currentMin, currentMax);
+        axisXLog->setRange(currentMin, currentMax);
         axisY->setRange(voltMin, voltMax);
         axisYLog->setRange(voltMin, voltMax);
         series->append(datapoint->getKeithleyData()->getCurrent(), datapoint->getKeithleyData()->getVoltage());
@@ -86,7 +90,9 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasSeqJc> mSeq)
     {
         axisX->setTitleText("Current in Ampere");
         axisY->setTitleText("Voltage in Volt");
-        if (mSeqJc->getCurrentStart() <= mSeqJc->getCurrentEnd())
+        axisX->setRange(0.0, 1.0);
+        axisXLog->setRange(0.0, 1.0);
+        /*if (mSeqJc->getCurrentStart() <= mSeqJc->getCurrentEnd())
         {
             axisX->setRange(mSeqJc->getCurrentStart(), mSeqJc->getCurrentEnd()); //
         }
@@ -94,7 +100,7 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasSeqJc> mSeq)
         {
             axisX->setRange(mSeqJc->getCurrentEnd(), mSeqJc->getCurrentStart()); //mSeqJc->getCurrentEnd()
         }
-        chart->setTitle("Jc Measurement " + mSeq->getFileName());
+        chart->setTitle("Jc Measurement " + mSeq->getFileName());*/
     }
 
 
