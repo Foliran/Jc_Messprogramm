@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <bitset>
 
 //Internal Classes
 #include "../Core/datapoint.h"
@@ -41,56 +42,63 @@ PpmsInstrument::PpmsInstrument(std::shared_ptr<GPIB> gpibNew, int addressNew)
 
 void PpmsInstrument::openDevice()
 {
-    if (gpib == nullptr)
-    {
-        return;
-    }
-    qDebug() << "openDevice PPMS";
-    gpib->openDevice(address);
+    if (gpib == nullptr) {
+         return;
+     }
+     qDebug()<<"openDevice PPMS";
+     gpib->openDevice(address);
 
-    gpib->query(address, "", DELAYGPIB, TERMCHAR);
+     std::string idn = gpib->query(address, "*IDN?", DELAYGPIB, TERMCHAR);
+     if(idn.find("QUANTUM DESIGN") == std::string::npos)
+     {
+         gpib->closeDevice(address);
+     }
 
-    std::string idn = gpib->query(address, "*IDN?", DELAYGPIB, TERMCHAR);
-    if (idn.find("QUANTUM DESIGN") == std::string::npos)
-    {
-        gpib->closeDevice(address);
-    }
+     if(!gpib->isOpen(address))
+     {
+         QString errormessage = "Ppms: ";
+         if(gpib->getError().size() == 0)
+         {
+             errormessage.append("Not connected");
+         }
+         else
+         {
+             errormessage.append(gpib->getError().c_str());
+         }
+         emit newErrorPPMS(errormessage);
+         return;
+     }
+     //Das sind die Befehle aus der config-Datei, damit wird die Usertemp ausgelesen
+     gpib->cmd(address,"Movecfg 1,0.0532,380,0", DELAYGPIB, TERMCHAR);
+     gpib->cmd(address,"Bridge 1,999.023,100.000,0,0,9.0", DELAYGPIB, TERMCHAR);
+     gpib->cmd(address,"Mapdat 24,4", DELAYGPIB, TERMCHAR);
+     gpib->cmd(address,"TABLE 24,2,2 #0 184.237323,329.914870,187.944359,325.926236,193.756136,319.945840,198.871712,314.949706,204.237836,309.944897,215.750975,299.938116,228.469814,289.923725,242.510928,279.927556,258.147056,269.915850,275.557339,259.907429,295.029808,249.913502,316.960000,239.913846,341.762188,229.916262,369.940989,219.904999,402.102290,209.911729,439.116746,199.913767,482.017712,189.908053,532.059995,179.905572,591.030580,169.903622,661.114077,159.900267,745.217941,149.901201,847.615928,139.898894,974.054259,129.889562,1.132436e3,119.892077,1.334877e3,109.898180,1.600540e3,99.885400,1.765063e3,94.889559,1.958027e3,89.883539,2.185378e3,84.885868,2.456192e3,79.891780,2.783141e3,74.893140,3.182881e3,69.894115,3.679142e3,64.890540,4.305527e3,59.894191,5.113189e3,54.897780,6.180767e3,49.900606,6.706893e3,47.901289,7.634942e3,44.897895,8.774801e3,41.898663,1.019644e4,38.900916,1.200350e4,35.901677,1.434699e4,32.909221,1.642350e4,30.819392,1.860255e4,29.021187,2.090551e4,27.436012,2.364599e4,25.867645,2.696415e4,24.301623,3.110375e4,22.718146,3.621599e4,21.153520,4.044446e4,20.096277,4.489671e4,19.151326,5.008322e4,18.215723", DELAYGPIB, TERMCHAR);
+     gpib->cmd(address,"TblMode 24,1;", DELAYGPIB, TERMCHAR);
+     gpib->cmd(address,"USERTEMP 24 1.8 1.7 2 1;", DELAYGPIB, TERMCHAR);
 
-    if (!gpib->isOpen(address))
-    {
-        QString errormessage = "Ppms: ";
-        if (gpib->getError().size() == 0)
-        {
-            errormessage.append("Not connected");
-        }
-        else
-        {
-            errormessage.append(gpib->getError().c_str());
-        }
-        emit newErrorPPMS(errormessage);
-        return;
-    } else {
-        qDebug() << "PPMS Connection is open";
-    }
+     dataMask += BITSTATUS; // Stat
+     dataMask += BITTEMP; // Temp
+     dataMask += BITMAG; // Mag
+     dataMask += BITPRESSURE; // pressure
+     dataMask += BITUSERTEMP; // userTemp
 
-    dataMask += BITSTATUS; // Stat
-    dataMask += BITTEMP; // Temp
-    dataMask += BITMAG; // Mag
-    dataMask += BITPRESSURE; // pressure
-    dataMask += BITUSERTEMP; //ausgelesene Usertemp, die ich will
+     if(rotState == true)
+     {
+         dataMask += BITANGLE; // Angle
+     }
 
-    QString magcnf;
+     QString magcnf;
 
-    magcnf = (QString::fromStdString(gpib->query(address, "MAGCNF?", DELAYGPIB, TERMCHAR)));
-    auto list = magcnf.split(',', Qt::SkipEmptyParts);
+     magcnf = (QString::fromStdString(gpib->query(address,"MAGCNF?", DELAYGPIB, TERMCHAR)));
+     auto list = magcnf.split(',',QString::SkipEmptyParts);
 
-    maxPosMagField = list[0].toDouble();
-    maxRateMag = MAXFIELDRATEPPMS14;
-    //maxRateMag = (maxPosMagField_ > MAXFIELDPPMS9) ? MAXFIELDRATEPPMS14 : MAXFIELDRATEPPMS9;
+     maxPosMagField = list[0].toDouble();
+     maxRateMag = MAXFIELDRATEPPMS14;
 }
 
 void PpmsInstrument::setRotatorstate(bool rotator)
 {
+    //qDebug() << "SetRotatorState";
     rotState = rotator;
     if (rotator == true)
     {
@@ -122,11 +130,14 @@ void PpmsInstrument::setRotatorstate(bool rotator)
 
 bool PpmsInstrument::isOpen() const
 {
+    //qDebug() << "isOpen";
     return gpib->isOpen(address);
 }
 
 void PpmsInstrument::setTempSetpointCore(double setpoint, double rate)
 {
+
+    //qDebug() << "setTempSetpointCore";
     if (!gpib->isOpen(address))
     {
         return;
@@ -137,6 +148,7 @@ void PpmsInstrument::setTempSetpointCore(double setpoint, double rate)
 
 void PpmsInstrument::setMagFieldCore(double magField, double magRate)
 {
+    //qDebug() << "setMagFieldCore";
     if (!gpib->isOpen(address))
     {
         return;
@@ -147,6 +159,7 @@ void PpmsInstrument::setMagFieldCore(double magField, double magRate)
 
 void PpmsInstrument::setAngleCore(double angle)
 {
+    //qDebug() << "setAngleCore";
     if (!gpib->isOpen(address) || rotState == false)
     {
         return;
@@ -157,6 +170,7 @@ void PpmsInstrument::setAngleCore(double angle)
 
 QPair<double, double> PpmsInstrument::getTempSetpointCore()
 {
+    //qDebug() << "getTempSetpointCore";
     if (!gpib->isOpen(address))
     {
         return (QPair<double, double>(0, 0));
@@ -172,6 +186,7 @@ QPair<double, double> PpmsInstrument::getTempSetpointCore()
 
 QPair<double, double> PpmsInstrument::getMagFieldCore()
 {
+    //qDebug() << "getMagFieldCore";
     if (!gpib->isOpen(address))
     {
 
@@ -186,6 +201,7 @@ QPair<double, double> PpmsInstrument::getMagFieldCore()
 
 double PpmsInstrument::getAngleCore()
 {
+    //qDebug() << "getAngleCore";
     if (!gpib->isOpen(address) || rotState == false)
     {
         return 0;
@@ -199,6 +215,7 @@ double PpmsInstrument::getAngleCore()
 
 double PpmsInstrument::getHeliumCore()
 {
+    //qDebug() << "getHeliumCore";
     if (!gpib->isOpen(address))
     {
         return 0;
@@ -213,6 +230,7 @@ double PpmsInstrument::getHeliumCore()
 
 PpmsDataPoint PpmsInstrument::ppmsLogik()
 {
+    //qDebug() << "ppmsLogik";
     if (!gpib->isOpen(address))
     {
         return PpmsDataPoint();
@@ -225,21 +243,30 @@ PpmsDataPoint PpmsInstrument::ppmsLogik()
     std::string dataMask = std::to_string(intDataMask);
     std::string getDatStr = "GETDAT? " + dataMask + " 0";
     QString getdat = (gpib->query(address, getDatStr, DELAYGPIB, TERMCHAR).c_str());
+    //std::bitset<32> x(std::stoi(dataMask));
 
     auto Datavector = getdat.split(',');
+    //qDebug() << "Length of Datavector: " << Datavector.size();
     if (Datavector.size() < 5)
     {
+        qDebug() << "Datavector.size is smaller than 5";
         return ppmsDpoint;
     }
+    //std::bitset<32> y(Datavector[0].toInt());
+
+    //qDebug() << "Datamask is " << QString::fromStdString(x.to_string());
+    //qDebug() << "Returned data is " << getdat;
+
+    //qDebug() << "Returned value 0 is " << QString::fromStdString(y.to_string());
     ppmsDpoint.setDatamask(Datavector[0].toInt());
     ppmsDpoint.setStatusPpms(Datavector[2].toStdString());
-    ppmsDpoint.setTempLive(Datavector[3].toDouble());
+    ppmsDpoint.setTempLive(Datavector[6].toDouble());
     ppmsDpoint.setMagFieldLive(Datavector[4].toDouble() / OE_IN_MT);
     ppmsDpoint.setSamplePressure(Datavector[5].toDouble());
-    ppmsDpoint.setTempLive(Datavector[6].toDouble());
 
     if (ppmsDpoint.getDatamask() & BITUSERTEMP && rotState == true && Datavector.size() > 7)
     {
+        //qDebug() << "Second if";
         ppmsDpoint.setRotLive(Datavector[5].toDouble());
         ppmsDpoint.setSamplePressure(Datavector[6].toDouble());
         ppmsDpoint.setUserTemp(Datavector[7].toDouble());

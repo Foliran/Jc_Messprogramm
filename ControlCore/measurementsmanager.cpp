@@ -131,7 +131,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
     {
         case State::Idle:
         {
-            //qDebug() << "Idle";
+            qDebug() << "Idle";
             /*
              * if abfrage-> ob das Programm bei Aktueller Temp bleiben soll, oder Energiesparmodus!
             */
@@ -159,21 +159,21 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         {
             qDebug() << "WaitForTemp, remainingTime is" << remainingTime;
             if(remainingTime == timeToWait) {
-                qDebug() << "First if";
+                //qDebug() << "First if";
                 std::string txt = "Waiting for " + std::to_string(remainingTime) + " more seconds before starting the measurement";
                 textLabel->setText(QString::fromStdString(txt));
                 msg->show();
                 remainingTime--;
             }
             else if(remainingTime > 0 && remainingTime < timeToWait) {
-                qDebug() << "Second if";
+                //qDebug() << "Second if";
                 std::string txt = "Waiting for " + std::to_string(remainingTime) + " more seconds before starting the measurement";
                 textLabel->setText(QString::fromStdString(txt));
                 remainingTime--;
                 qDebug() << remainingTime;
             }
             else if(remainingTime == 0){
-                qDebug() << "Third if";
+                //qDebug() << "Third if";
                 remainingTime = timeToWait;
                 msg->close();
                 measurementState = State::MeasureBackground;
@@ -227,7 +227,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 mSeqJc->setCurrentLive(newCurrent);
             } else
             {
-                //qDebug() << "Reached maximal current";
+                qDebug() << "Reached maximal current";
                 tempSP = datapoint->getPpmsdata()->getTempSetpoint();
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
@@ -238,7 +238,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             if(std::abs(datapoint->getKeithleyData()->getVoltage()) > std::abs(mSeqJc->getVoltageCriterion()))
             {
-                //qDebug() << "Reached maximal voltage";
+                qDebug() << "Reached maximal voltage";
                 tempSP = datapoint->getPpmsdata()->getTempSetpoint();
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
@@ -252,6 +252,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
 
         case State::SkipMeasurement:
         {
+            qDebug() << "SkipMeasurement";
             tempSP = datapoint->getPpmsdata()->getTempSetpoint();
             fw->closeFile();
             measurementState = State::CheckForMeas;

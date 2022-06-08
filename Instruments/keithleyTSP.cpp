@@ -89,6 +89,7 @@ void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, d
     std::string nPulsesString = " nPulses = " + std::to_string(numberPulses) + " ";
     std::string interPulsTimeString = " interPulseTime = " + std::to_string(interPulseTime) + " ";
     //qDebug() << QString::fromStdString(interPulsTimeString + ", " + ratioString + ", " + nPulsesString);
+    gpib->cmd(address, " reset() ", DELAYGPIB, TERMCHAR);
     gpib->cmd(address, " errorqueue.clear() " +
                        pWidthString + ratioString + nPulsesString + interPulsTimeString + " init.run() ", DELAYGPIB, TERMCHAR);
 }
