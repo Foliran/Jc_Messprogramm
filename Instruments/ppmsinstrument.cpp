@@ -148,7 +148,6 @@ void PpmsInstrument::setTempSetpointCore(double setpoint, double rate)
 
 void PpmsInstrument::setMagFieldCore(double magField, double magRate)
 {
-    qDebug() << "setMagFieldCore, " << magField << " " << magRate;
     if (!gpib->isOpen(address))
     {
         return;

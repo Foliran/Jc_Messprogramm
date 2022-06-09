@@ -93,7 +93,8 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasSeqJc> meas
     mSeqJc->setInterPulseTime(seqJc->getInterPulseTime());
     mSeqJc->setNumberPulses(seqJc->getNumberPulses());
     mSeqJc->setVoltageCriterion(seqJc->getVoltageCriterion());
-    //scheint zu gehen, wenn ich hier die drei emits setzte
+    mSeqJc->setMagneticField(seqJc->getMagneticField());
+
     emit newRatio(mSeqJc->getRatio());
     emit newPulseWidth(mSeqJc->getPulsewidth());
     emit newCurrentSetpoint(mSeqJc->getCurrentEnd());
@@ -106,7 +107,11 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasSeqJc> meas
     emit newState(measurementState);
 
     instrumentmanager->setAngle(measurementSequence->getCoilAngle());
-    instrumentmanager->setMagFieldSP(measurementSequence->getMagneticField(), 200);
+    if(mSeqJc->getMagneticField() > 0.0) {
+        instrumentmanager->setMagFieldSP(mSeqJc->getMagneticField(), 200);
+    } else {
+        instrumentmanager->setMagFieldSP(0.0, 1.0);
+    }
 }
 
 void MeasurementsManager::rotatorState(bool rotator)
@@ -207,7 +212,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         case State::ApproachEndJc:
         {
             qDebug() << "ApproachEndJc" ;
-            instrumentmanager->timer->setInterval(300);
+            instrumentmanager->timer->setInterval(500);
             double newCurrent = 0;
             if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();

@@ -88,7 +88,6 @@ void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, d
     std::string ratioString = " measDelay = " + std::to_string(ratio) + " ";
     std::string nPulsesString = " nPulses = " + std::to_string(numberPulses) + " ";
     std::string interPulsTimeString = " interPulseTime = " + std::to_string(interPulseTime) + " ";
-    //qDebug() << QString::fromStdString(interPulsTimeString + ", " + ratioString + ", " + nPulsesString);
     gpib->cmd(address, " reset() ", DELAYGPIB, TERMCHAR);
     gpib->cmd(address, " errorqueue.clear() " +
                        pWidthString + ratioString + nPulsesString + interPulsTimeString + " init.run() ", DELAYGPIB, TERMCHAR);
@@ -101,7 +100,9 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     {
         return;
     }
-    gpib->cmd(address, "res = 0", DELAYGPIB, TERMCHAR);
+    gpib->cmd(address, " node[2].smua.nvbuffer1.clear() "
+                       " node[1].defbuffer1.clear() "
+                       " res = 0", DELAYGPIB, TERMCHAR);
 
     int sleeptime = (int)((numberPulses + 1) * (pulseWidth + interPulseTime) * 1000);
     std::string valueString;
@@ -117,12 +118,16 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     " res = 0 "
     " for i = 1, nPulses do res = res + math.abs(node[1].defbuffer1.readings[i]) end "
     " waitcomplete(2) "
-    " volt = res / nPulses "
-    " node[2].smua.nvbuffer1.clear() "
-    " node[1].defbuffer1.clear() ", sleeptime, TERMCHAR);
+    " volt = res / nPulses ", sleeptime, TERMCHAR);
     voltage = std::atof(gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR).c_str());
+    qDebug() << "Background is" << background;
+    if (background != -1000.0 && background != -500.0)
+    {
+        qDebug() << "So we are in the if";
+        voltage -= background;
+    }
     //current = std::atof(gpib->query(address, " print(node[2].smua.nvbuffer1.sourcevalues[1]) ", DELAYGPIB, TERMCHAR).c_str());
-    qDebug() << voltage;
+    qDebug() << "Voltage is " << voltage;
 }
 
 double KeithleyTSP::getVoltage()

@@ -1,4 +1,5 @@
 #include "ppmsabstract.h"
+#include <QDebug>
 
 const double MAXTEMP = 350;
 const double MINTEMP = 1.9;
@@ -39,7 +40,7 @@ void PpmsAbstract::setTempSetpoint(double setpoint, double rate)
 
 void PpmsAbstract::setMagField(double magField, double magRate)
 {
-    Q_UNUSED(magRate);
+    //Q_UNUSED(magRate);
 
     if (!isOpen())
     {
@@ -47,7 +48,6 @@ void PpmsAbstract::setMagField(double magField, double magRate)
     }
 
     magField *= 10;
-
     if (maxPosMagField < magField)
     {
         magField = maxPosMagField;
@@ -62,7 +62,7 @@ void PpmsAbstract::setMagField(double magField, double magRate)
         emit newErrorPPMS(errorhel);
     }
 
-    setMagFieldCore(magField, maxRateMag);
+    setMagFieldCore(magField, magRate);
     auto setpointReport = getMagFieldCore();
     emit newMagSP(setpointReport.first, setpointReport.second);
 }
