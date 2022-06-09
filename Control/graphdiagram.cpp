@@ -90,20 +90,11 @@ void GraphDiagram::setStaticValues(std::shared_ptr<const MeasSeqJc> mSeq)
     {
         axisX->setTitleText("Current in Ampere");
         axisY->setTitleText("Voltage in Volt");
+        axisY->setRange(0.0, 1.0);
+        axisYLog->setRange(0.0, 1.0);
         axisX->setRange(0.0, 1.0);
         axisXLog->setRange(0.0, 1.0);
-        /*if (mSeqJc->getCurrentStart() <= mSeqJc->getCurrentEnd())
-        {
-            axisX->setRange(mSeqJc->getCurrentStart(), mSeqJc->getCurrentEnd()); //
-        }
-        else
-        {
-            axisX->setRange(mSeqJc->getCurrentEnd(), mSeqJc->getCurrentStart()); //mSeqJc->getCurrentEnd()
-        }
-        chart->setTitle("Jc Measurement " + mSeq->getFileName());*/
     }
-
-
 }
 
 void GraphDiagram::createQlineDiagramm()
