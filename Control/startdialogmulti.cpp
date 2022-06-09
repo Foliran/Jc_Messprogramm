@@ -63,9 +63,11 @@ void StartDialogMulti::setupUI()
 
     reversedPulse = new QCheckBox();
     reversedPulse->setText("Pulse reversed");
+    reversedPulse->setChecked(1);
 
     logSteps = new QCheckBox();
     logSteps->setText("logarithmic steps");
+    logSteps->setChecked(1);
 
     startTempJc = new QDoubleSpinBox();
     startTempJc->setDecimals(2);
@@ -95,7 +97,7 @@ void StartDialogMulti::setupUI()
     currentEndJc->setDecimals(3);
     currentEndJc->setSingleStep(0.01);
     currentEndJc->setRange(0, 20);
-    currentEndJc->setValue(0.1);
+    currentEndJc->setValue(20);
 
     currentRateJc = new QDoubleSpinBox();
     currentRateJc->setDecimals(3);
@@ -156,8 +158,10 @@ void StartDialogMulti::setupUI()
     auto labelCoilAngleJc = new QLabel("Coil angle:");
     auto labelPulseWidth = new QLabel("Pulse width in ms: ");
     auto labelNPulses= new QLabel("Number of pulses: ");
-    auto labelTimeBetwPulses= new QLabel("Time between pulses in ms: ");
+    auto labelTimeBetwPulses = new QLabel("Time between pulses in ms: ");
     auto labelRatio = new QLabel("Measurement delay in ms:");
+
+    adjustCurrent();
 
     gridLayoutJc->addWidget(reversedPulse, 0, 0);
     gridLayoutJc->addWidget(logSteps, 0, 1);
@@ -226,7 +230,7 @@ std::vector <std::shared_ptr<const MeasSeqJc>> StartDialogMulti::createSequence(
         seqJc.setNumberPulses((int)nPulses->value());
         seqJc.setInterPulseTime(timeBetweenPulses->value());
         seqJc.setRatio(ratio->value());
-        seqJc.setVoltageCriterion(voltageCriterion->value());
+        seqJc.setVoltageCriterion(std::pow(10, -(double)voltageCriterion->value()));
         seqJc.setFileName(sampleNameJc->text() + "_" +
             QString::number(temp) + "K_" +
             QString::number(magneticFieldJc->value()) + "mT_" +

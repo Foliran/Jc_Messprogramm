@@ -298,10 +298,10 @@ void PpmsWidget::setupUI()
     VoltageGridLayout->addWidget(currentRate, 2, 1);
     VoltageGridLayout->addWidget(labelVoltageLive, 3, 0);
     VoltageGridLayout->addWidget(voltageLive, 3, 1);
-    VoltageGridLayout->addWidget(labelpulseWidth, 4, 0);
+    /*VoltageGridLayout->addWidget(labelpulseWidth, 4, 0);
     VoltageGridLayout->addWidget(pulseWidth, 4, 1);
     VoltageGridLayout->addWidget(labelRatio, 5, 0);
-    VoltageGridLayout->addWidget(ratio, 5, 1);
+    VoltageGridLayout->addWidget(ratio, 5, 1);*/
 
     QWidget* tempWidget = new QWidget();
     tempWidget->setLayout(TempGridLayout);

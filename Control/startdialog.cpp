@@ -61,9 +61,11 @@ void StartDialog::setupUI()
 
     reversedPulse = new QCheckBox();
     reversedPulse->setText("Pulse reversed");
+    reversedPulse->setChecked(1);
 
     logSteps = new QCheckBox();
     logSteps->setText("logarithmic steps");
+    logSteps->setChecked(1);
 
     tempJc = new QDoubleSpinBox();
     tempJc->setDecimals(2);
@@ -81,7 +83,7 @@ void StartDialog::setupUI()
     currentEndJc->setDecimals(3);
     currentEndJc->setSingleStep(0.01);
     currentEndJc->setRange(0, 20);
-    currentEndJc->setValue(0.1);
+    currentEndJc->setValue(20);
 
     currentRateJc = new QDoubleSpinBox();
     currentRateJc->setDecimals(3);
@@ -140,8 +142,10 @@ void StartDialog::setupUI()
     auto labelCoilAngleJc = new QLabel("Coil angle:");
     auto labelPulseWidth = new QLabel("Pulse width in ms: ");
     auto labelNPulses= new QLabel("Number of pulses: ");
-    auto labelTimeBetwPulses= new QLabel("Time between pulses in ms: ");
+    auto labelTimeBetwPulses = new QLabel("Time between pulses in ms: ");
     auto labelRatio = new QLabel("Measurement delay in ms:");
+
+    adjustCurrent();
 
     gridLayoutJc->addWidget(reversedPulse, 0, 0);
     gridLayoutJc->addWidget(logSteps, 0, 1);
