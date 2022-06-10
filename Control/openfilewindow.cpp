@@ -34,8 +34,9 @@ void OpenFileWindow::openFile_clicked()
 {
     std::vector<double> current;
     std::vector<double> voltage;
-    filename = QString::fromStdString("Messergebnisse") + QDir::separator() + ui->insertFilename->displayText();
-    qDebug() << filename;
+    qDebug() << "Current path is" << QDir::currentPath();
+    filename = QDir::currentPath() + "/" + QString::fromStdString("Messergebnisse/") + ui->insertFilename->displayText();
+    qDebug() << "Filename is " + filename;
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)){
         QMessageBox* msgBox = new QMessageBox(this);
