@@ -123,7 +123,6 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     qDebug() << "Background is" << background;
     if (background != -1000.0 && background != -500.0)
     {
-        qDebug() << "So we are in the if";
         voltage -= background;
     }
     //current = std::atof(gpib->query(address, " print(node[2].smua.nvbuffer1.sourcevalues[1]) ", DELAYGPIB, TERMCHAR).c_str());

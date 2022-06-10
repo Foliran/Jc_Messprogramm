@@ -41,6 +41,7 @@ signals:
     void newAngleSP(double angle);
     void newRotstate(bool rotActive);
     void newErrorMessage(QString errormessagePpms);
+    void resetGraph(std::shared_ptr<const MeasSeqJc>);
 
 private slots:
     void onNewData(std::shared_ptr<DataPoint> datapoint);

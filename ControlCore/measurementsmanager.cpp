@@ -192,6 +192,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             if(datapoint->getKeithleyData()->getBackground() == -1000.0)
             {
                 // -1000 -> Background noch nicht gemessen
+                emit resetGraph(mSeqJc);
                 if(mSeqJc->getPulseMode() == 1  || mSeqJc->getPulseMode() == 2)
                 {
                     instrumentmanager->initializeSettings(mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);

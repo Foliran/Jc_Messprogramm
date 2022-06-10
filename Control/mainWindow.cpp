@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onNewErrorMessage);
     connect(rotCheckBox, &QCheckBox::clicked,
         this, &MainWindow::onSetSampleStage);
+    connect(MeasManager, &MeasurementsManager::resetGraph, this, &MainWindow::onResetGraph);
     connect(logXAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogXAxis);
     connect(logYAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogYAxis);
     connect(pause, &QPushButton::clicked, this, &MainWindow::onPauseButton);
@@ -238,8 +239,12 @@ void MainWindow::onCreateMeasurement(std::vector<std::shared_ptr<const MeasSeqJc
 
 void MainWindow::onStartMeasurement(std::shared_ptr<const MeasSeqJc> mSeq)
 {
-    graph->setStaticValues(mSeq);
+    //graph->setStaticValues(mSeq);
     mTable->activeMeasurement(mSeq);
+}
+
+void MainWindow::onResetGraph(std::shared_ptr<const MeasSeqJc> mSeq) {
+    graph->setStaticValues(mSeq);
 }
 
 void MainWindow::onSetSampleStage(bool rotator)
@@ -319,6 +324,7 @@ void MainWindow::onNewErrorMessage(QString errormessage)
     msgBox->setModal(false); // if you want it non-modal
     msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
 }
+
 
 void MainWindow::createQLineDiagramm()
 {

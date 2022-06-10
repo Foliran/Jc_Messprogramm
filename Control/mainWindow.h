@@ -45,6 +45,7 @@ private slots:
     void onOpenFileButton();
     void onCreateMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mSeq);
     void onStartMeasurement(std::shared_ptr<const MeasSeqJc> mSeq);
+    void onResetGraph(std::shared_ptr<const MeasSeqJc>);
     void onSetSampleStage(bool rotator);
     void onNewData(std::shared_ptr<const DataPoint> datapoint);
     void onNewMeasurementState(MeasurementsManager::State newState);
