@@ -104,6 +104,11 @@ void InstrumentManager::rotatorState(bool rotator)
 bool InstrumentManager::isBusyBackground() {
     return keithley->busyBackground;
 }
+
+void InstrumentManager::shutdown() {
+    ppms->shutdown();
+}
+
 void InstrumentManager::onPolling()
 {
     DataPoint dataPoint;

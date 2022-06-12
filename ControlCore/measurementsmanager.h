@@ -27,6 +27,7 @@ public:
     void rotatorState(bool rotator);
     void setWaitingTime(int time);
     State measurementState;
+    bool goToShutdown;
 
 signals:
     void newData(std::shared_ptr<const DataPoint>);
@@ -52,8 +53,6 @@ private slots:
     void onNewRotstate(bool rotActive);
     void onNewErrorMessage(QString errormessagePpms);
 
-
-
 private:
     size_t measurementNumber;
     std::vector<std::shared_ptr<const MeasSeqJc>> mVecSeq;
@@ -68,7 +67,6 @@ private:
     double tempSP;
     int timeToWait;
     int remainingTime;
-
 };
 
 #endif

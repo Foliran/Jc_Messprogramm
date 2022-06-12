@@ -19,6 +19,7 @@ public:
     void openDevice() override;
     void setRotatorstate(bool rot) override;
     bool isOpen() const override;
+    void shutdown() override;
 
 protected:
     void setTempSetpointCore(double setpoint, double rate) override;

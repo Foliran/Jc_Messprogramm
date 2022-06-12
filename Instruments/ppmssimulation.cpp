@@ -126,5 +126,8 @@ PpmsDataPoint PpmsSimulation::ppmsLogik()
     return ppmsDpoint;
 }
 
+void PpmsSimulation::shutdown() {
+
+}
 
 

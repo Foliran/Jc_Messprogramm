@@ -283,3 +283,7 @@ std::string PpmsInstrument::dtoStr(double number, int dec)
     sstring << std::setprecision(dec) << number;
     return sstring.str();
 }
+
+void PpmsInstrument::shutdown() {
+    gpib->cmd(address, " SHUTDOWN ", DELAYGPIB, TERMCHAR);
+}

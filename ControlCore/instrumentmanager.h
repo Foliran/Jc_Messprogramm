@@ -34,6 +34,7 @@ public:
     void setMagFieldSP(double magField, double magRate);
     void setAngle(double angle);
     void rotatorState(bool rotator);
+    void shutdown();
     bool isBusyBackground();
     QTimer* timer;
 

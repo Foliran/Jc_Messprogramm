@@ -120,7 +120,7 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     " waitcomplete(2) "
     " volt = res / nPulses ", sleeptime, TERMCHAR);
     voltage = std::atof(gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR).c_str());
-    qDebug() << "Background is" << background;
+    //qDebug() << "Background is" << background;
     if (background != -1000.0 && background != -500.0)
     {
         voltage -= background;

@@ -24,11 +24,12 @@ MeasurementsManager::MeasurementsManager()
     , instrumentmanager(std::make_unique<InstrumentManager>())
     , fw(nullptr)
     , mSeqJc(std::make_shared<MeasSeqJc>())
+    , msg(nullptr)
     , magFieldSP(0)
     , angleSP(0)
     , tempSP(0)
     , timeToWait(300)
-    , msg(nullptr)
+    , goToShutdown(false)
 
 {
     connect(instrumentmanager.get(), &InstrumentManager::newData,
@@ -279,8 +280,12 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             else
             {
-                measurementState = State::Idle;
-                emit newState(measurementState);
+                if(goToShutdown) {
+                    instrumentmanager->shutdown();
+                } else {
+                    measurementState = State::Idle;
+                    emit newState(measurementState);
+                }
             }
             break;
         }
