@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onNewErrorMessage);
     connect(rotCheckBox, &QCheckBox::clicked,
         this, &MainWindow::onSetSampleStage);
+    connect(shutdown, &QCheckBox::stateChanged, this, &MainWindow::onShutdown);
     connect(MeasManager, &MeasurementsManager::resetGraph, this, &MainWindow::onResetGraph);
     connect(logXAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogXAxis);
     connect(logYAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogYAxis);
@@ -130,6 +131,7 @@ void MainWindow::setupUi()
     Rot->addSpacing(5);
     Rot->addWidget(timeWidget);
     Rot->addWidget(rotCheckBox);
+    Rot->addWidget(shutdown);
     Rot->addWidget(logXAxis);
     Rot->addWidget(logYAxis);
     listandRot->addLayout(Rot);
@@ -170,6 +172,9 @@ void MainWindow::createActions()
 
 void MainWindow::createRotatorButton()
 {
+    shutdown = new QCheckBox();
+    shutdown->setText("Shutdown at the end of the measurements");
+
     rotCheckBox = new QCheckBox("C&ase sensitive", this);
     rotCheckBox->setText("Rotator On/Off");
     logXAxis = new QCheckBox();
@@ -208,6 +213,14 @@ void MainWindow::onPauseButton() {
     graph->MeasurementState(MeasManagerState);
 }
 
+void MainWindow::onShutdown() {
+    if(shutdown->isChecked())
+    {
+        MeasManager->goToShutdown = true;
+    } else if(!shutdown->isChecked()) {
+        MeasManager->goToShutdown = false;
+    }
+}
 
 void MainWindow::onStartMessungButton()
 {

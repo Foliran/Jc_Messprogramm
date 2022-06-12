@@ -127,7 +127,7 @@ PpmsDataPoint PpmsSimulation::ppmsLogik()
 }
 
 void PpmsSimulation::shutdown() {
-
+    qDebug() << "SHUTDOWN";
 }
 
 

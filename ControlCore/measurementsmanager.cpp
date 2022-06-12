@@ -280,12 +280,12 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             }
             else
             {
-                if(goToShutdown) {
+                if(goToShutdown)
+                {
                     instrumentmanager->shutdown();
-                } else {
-                    measurementState = State::Idle;
-                    emit newState(measurementState);
                 }
+                measurementState = State::Idle;
+                emit newState(measurementState);
             }
             break;
         }

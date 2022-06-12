@@ -62,6 +62,7 @@ private slots:
     void onLogYAxis(int state);
     void onSkipButton();
     void onPauseButton();
+    void onShutdown();
     void waitingTimeChanged();
 
 private:
@@ -79,6 +80,7 @@ private:
     QWidget* mainLayoutWidget;
     MeasurementsTable* mTable;
     QCheckBox* rotCheckBox;
+    QCheckBox* shutdown;
     QDoubleSpinBox* waitingTime;
     QCheckBox* logXAxis;
     QCheckBox* logYAxis;
