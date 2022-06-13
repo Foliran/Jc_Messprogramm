@@ -16,36 +16,7 @@ FileWriter::FileWriter(QObject* parent)
 {
 }
 
-QString FileWriter::writeHeader(std::shared_ptr<const MeasSeqJc> measurementSequence)
-{
-    //auto seqTc = std::dynamic_pointer_cast<const MeasSeqTc> (measurementSequence);
-    auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc> (measurementSequence);
-    if (seqJc != nullptr)
-    {
-        QString header;
-        header.append("Material: ");
-        header.append(measurementSequence->getSupraName());
-        header.append("\n Temperature: ");
-        header.append(QString::number(seqJc->getTemperature()));
-        //header.append(" T \n Frequency: ");
-        //header.append(QString::number(measurementSequence->frequency()));
-        header.append("\n Magnetic Field: ");
-        header.append(QString::number(seqJc->getMagneticField()));
-        header.append(" mT \n Starting Current: ");
-        header.append(QString::number(seqJc->getCurrentStart()));
-        header.append(" A \n Ending Current: ");
-        header.append(QString::number(seqJc->getCurrentEnd()));
-        header.append(" A \n Current Rate: ");
-        header.append(QString::number(seqJc->getCurrentRate()));
-        header.append(" A/s");
-        header.append("\n CoilAngle: ");
-        header.append(QString::number(measurementSequence->getCoilAngle()));
-        header.append(" degrees \n");
-        header.append(" Current Voltage \n");
-        return header;
-    }
-    else { return "unable to write header"; }
-}
+
 
 QString FileWriter::createFileName(std::shared_ptr<const MeasSeqJc> measurementSequence)
 {
@@ -69,7 +40,8 @@ void FileWriter::append(std::shared_ptr<DataPoint> datapoint)
     if (measurementState == MeasurementsManager::State::ApproachEndJc)
     {
         file->write(QString::number(datapoint->getKeithleyData()->getCurrent()).toUtf8() +
-            " " + QString::number(datapoint->getKeithleyData()->getVoltage()).toUtf8() + "\n");
+            "     " + QString::number(datapoint->getKeithleyData()->getVoltage()).toUtf8() +
+            "     " + QString::number(datapoint->getPpmsdata()->getTempLive()).toUtf8() + "\n");
     }
 }
 
@@ -102,9 +74,9 @@ QString FileWriter::openFile(std::shared_ptr<const MeasSeqJc> measurementSequenc
     {
         return QString();
     }
-    if (file->isWritable())
+    if (!file->isWritable())
     {
-        file->write(writeHeader(measurementSequence).toUtf8());
+        return QString();
     }
     return file->fileName();
 }
