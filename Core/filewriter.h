@@ -33,7 +33,6 @@ public:
 
 private:
     QString createFileName(std::shared_ptr<const MeasSeqJc> measurementSequence);
-    QString writeHeader(std::shared_ptr<const MeasSeqJc> measurementSequence);
     QString filedir;
     MeasurementsManager::State measurementState;
     std::shared_ptr<QFile> file;
