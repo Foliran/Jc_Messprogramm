@@ -16,15 +16,12 @@ class QMenu;
 class QPlainTextEdit;
 class QSessionManager;
 class MeasSeqJc;
-//class MeasurementSequence;
 class DataPoint;
 class GraphDiagram;
 class PpmsSimulation;
 class KeithleySimulation;
 class PpmsWidget;
 class MeasurementsTable;
-//class GraphWidget;
-//class OpenFileWindow;
 
 QT_END_NAMESPACE
 
@@ -42,6 +39,7 @@ public:
 private slots:
     void onStartMessungButton();
     void onStartMultiMessungButton();
+    void onStartMultiBMessungButton();
     void onOpenFileButton();
     void onCreateMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mSeq);
     void onStartMeasurement(std::shared_ptr<const MeasSeqJc> mSeq);

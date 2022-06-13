@@ -11,6 +11,7 @@
 #include "openfilewindow.h"
 #include "startdialog.h"
 #include "startdialogmulti.h"
+#include "startdialogmulti_b.h"
 #include "graphdiagram.h"
 #include "ppmswidget.h"
 #include "measurementstable.h"
@@ -130,7 +131,8 @@ void MainWindow::setupUi()
 
     Rot->addSpacing(5);
     Rot->addWidget(timeWidget);
-    Rot->addWidget(rotCheckBox);
+    //TODO: Alles was mit dem Rotator zu tun hat, kann raus
+    //Rot->addWidget(rotCheckBox);
     Rot->addWidget(shutdown);
     Rot->addWidget(logXAxis);
     Rot->addWidget(logYAxis);
@@ -155,18 +157,23 @@ void MainWindow::createActions()
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
     const QIcon measurementIconMulti = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_multiple.svg"));
+    const QIcon measurementIconMulti_B = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_multiple.svg"));
     const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
     QAction* messungStarten = new QAction(measurementIcon, tr("&New Measurement"), this);
     QAction* messungStartenMulti = new QAction(measurementIconMulti, tr("&New Measurement"), this);
+    QAction* messungStartenMulti_B = new QAction(measurementIconMulti_B, tr("&New Measurement"), this);
     QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
     messungStarten->setStatusTip(tr("Create a new measurement"));
-    messungStartenMulti->setStatusTip(tr("Create a series of new measurements"));
+    messungStartenMulti->setStatusTip(tr("Create a series of J_c(T @B) measurements"));
+    messungStartenMulti_B->setStatusTip(tr("Create a series of J_c(B @T) measurements"));
     openFile->setStatusTip(tr("Show an old Measurement"));
     connect(messungStarten, &QAction::triggered, this, &MainWindow::onStartMessungButton);
     connect(messungStartenMulti, &QAction::triggered, this, &MainWindow::onStartMultiMessungButton);
+    connect(messungStartenMulti_B, &QAction::triggered, this, &MainWindow::onStartMultiBMessungButton);
     connect(openFile, &QAction::triggered, this, &MainWindow::onOpenFileButton);
     fileToolBar->addAction(messungStarten);
     fileToolBar->addAction(messungStartenMulti);
+    fileToolBar->addAction(messungStartenMulti_B);
     fileToolBar->addAction(openFile);
 }
 
@@ -175,8 +182,8 @@ void MainWindow::createRotatorButton()
     shutdown = new QCheckBox();
     shutdown->setText("Shutdown at the end of the measurements");
 
-    rotCheckBox = new QCheckBox("C&ase sensitive", this);
-    rotCheckBox->setText("Rotator On/Off");
+    //rotCheckBox = new QCheckBox("C&ase sensitive", this);
+    //rotCheckBox->setText("Rotator On/Off");
     logXAxis = new QCheckBox();
     logXAxis->setText("Logarithmic axis x");
     logYAxis = new QCheckBox();
@@ -234,6 +241,14 @@ void MainWindow::onStartMultiMessungButton()
 {
     StartDialogMulti* start = new StartDialogMulti(this);
     connect(start, &StartDialogMulti::createMeasurement,
+        this, &MainWindow::onCreateMeasurement);
+    start->show();
+}
+
+void MainWindow::onStartMultiBMessungButton()
+{
+    StartDialogMulti_B* start = new StartDialogMulti_B(this);
+    connect(start, &StartDialogMulti_B::createMeasurement,
         this, &MainWindow::onCreateMeasurement);
     start->show();
 }
