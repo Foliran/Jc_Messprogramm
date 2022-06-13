@@ -27,9 +27,6 @@ PpmsWidget::PpmsWidget(QWidget* parent)
     , magFieldLive(nullptr)
     , magRate(nullptr)
     , magStatus(nullptr)
-    , rotSetPoint(nullptr)
-    , rotLive(nullptr)
-    , rotStatus(nullptr)
     , chamberStatus(nullptr)
     , chamberLevel(nullptr)
     , sampleSpacePressure(nullptr)
@@ -61,7 +58,7 @@ void PpmsWidget::newData(std::shared_ptr<const DataPoint> dpoint)
         tempLive->setText(QString::number(dpoint->getPpmsdata()->getTempLive()));
         tempStatus->setText(tempStatStr);
         magFieldLive->setText(QString::number(dpoint->getPpmsdata()->getMagFieldLive()));
-        rotLive->setText(QString::number(dpoint->getPpmsdata()->getRotLive()));
+        //rotLive->setText(QString::number(dpoint->getPpmsdata()->getRotLive()));
         chamberLevel->setText(QString::number(dpoint->getPpmsdata()->getChamberLevel()));
         sampleSpacePressure->setText(QString::number(dpoint->getPpmsdata()->getSamplePressure()));
         voltageLive->setText(QString::number(dpoint->getKeithleyData()->getVoltage()));
@@ -121,6 +118,7 @@ void PpmsWidget::newData(std::shared_ptr<const DataPoint> dpoint)
         else if (((static_cast<int>(ppmsStatus) >> 8) & 0b1111) == 9) { chamberStatus->setText("Flooding continuously"); }
         else if (((static_cast<int>(ppmsStatus) >> 8) & 0b1111) == 15) { chamberStatus->setText("General failure in gas control System"); }
         //angle
+        /*
         if (((static_cast<int>(ppmsStatus) >> 12) & 0b1111) == 0) { rotStatus->setText("Status unknown"); }
         else if (((static_cast<int>(ppmsStatus) >> 12) & 0b1111) == 1) { rotStatus->setText("Sample stopped at target value"); }
         else if (((static_cast<int>(ppmsStatus) >> 12) & 0b1111) == 5) { rotStatus->setText("Sample moving toward set point"); }
@@ -129,7 +127,7 @@ void PpmsWidget::newData(std::shared_ptr<const DataPoint> dpoint)
         else if (((static_cast<int>(ppmsStatus) >> 12) & 0b1111) == 8) { rotStatus->setText("Sample hit limit switch"); }
         else if (((static_cast<int>(ppmsStatus) >> 12) & 0b1111) == 9) { rotStatus->setText("Sample hit index switch"); }
         else if (((static_cast<int>(ppmsStatus) >> 12) & 0b1111) == 15) { rotStatus->setText("General failure "); }
-        else { rotStatus->setText("Reserved"); }
+        else { rotStatus->setText("Reserved"); }*/
 
     }
 
@@ -143,7 +141,7 @@ void PpmsWidget::newMagSP(double magField, double magRateNew)
 
 void PpmsWidget::newAngleSP(double angle)
 {
-    rotSetPoint->setText(QString::number(angle));
+    //rotSetPoint->setText(QString::number(angle));
 }
 
 void PpmsWidget::newTempSP(double temp, double rate)
@@ -193,12 +191,14 @@ void PpmsWidget::setupUI()
     magStatus = new QLabel();
     magStatus->setText("");
 
+    /*
     rotLive = new QLabel();
     rotLive->setText("");
     rotSetPoint = new QLabel();
     rotSetPoint->setText("");
     rotStatus = new QLabel();
     rotStatus->setText("");
+    */
 
     chamberStatus = new QLabel();
     chamberStatus->setText("");
@@ -219,38 +219,38 @@ void PpmsWidget::setupUI()
     ratio->setText("");
 
     //label
-    auto labelTempLive = new QLabel("Temperature:");
-    auto labelTempSetPoint = new QLabel("Temperature Setpoint:");
-    auto labelTempRate = new QLabel("Temperature rate:");
+    auto labelTempLive = new QLabel("Temperature in K:");
+    auto labelTempSetPoint = new QLabel("Temperature Setpoint in K:");
+    auto labelTempRate = new QLabel("Temperature rate in K/min:");
     auto labelTempStatus = new QLabel("Status:");
 
-    auto labelMagFeldLive = new QLabel("Mag. Field:");
-    auto labelMagSetPoint = new QLabel("Setpoint:");
-    auto labelMagRate = new QLabel("Mag. rate:");
+    auto labelMagFeldLive = new QLabel("Mag. Field in mT:");
+    auto labelMagSetPoint = new QLabel("Setpoint in mT:");
+    auto labelMagRate = new QLabel("Mag. rate in mT/s:");
     auto labelMagStatus = new QLabel("Status:");
 
-    auto labelRotLive = new QLabel("Rotation:");
+    /*auto labelRotLive = new QLabel("Rotation:");
     auto labelRotSetPoint = new QLabel("Setpoint:");
-    auto labelRotStatus = new QLabel("Status:");
+    auto labelRotStatus = new QLabel("Status:");*/
 
-    auto labelChamberLevel = new QLabel("Helium level:");
+    auto labelChamberLevel = new QLabel("Helium level in %:");
     auto labelChamberStatus = new QLabel("Status:");
     auto labelSampleSpacePressure = new QLabel("Chamber pressure: ");
 
 
-    auto labelCurrentLive = new QLabel("Current:");
-    auto labelCurrentRate = new QLabel("Current rate:");
-    auto labelCurrentEndpoint = new QLabel("Current setpoint:");
-    auto labelVoltageLive = new QLabel("Voltage: ");
-    auto labelpulseWidth = new QLabel("Pulse width: ");
-    auto labelRatio = new QLabel("Ratio: ");
+    auto labelCurrentLive = new QLabel("Current in A:");
+    auto labelCurrentRate = new QLabel("Current rate in A/step:");
+    auto labelCurrentEndpoint = new QLabel("Maximal current in A:");
+    auto labelVoltageLive = new QLabel("Voltage in V: ");
+    auto labelpulseWidth = new QLabel("Pulse width in ms: ");
+    auto labelRatio = new QLabel("Measurement delay in ms: ");
 
     auto labelempty = new QLabel("");
 
     //Grid Layouts:
     auto TempGridLayout = new QGridLayout();
     auto MagGridLayout = new QGridLayout();
-    auto RotGridLayout = new QGridLayout();
+    //auto RotGridLayout = new QGridLayout();
     auto ChamberGridLayout = new QGridLayout();
     auto VoltageGridLayout = new QGridLayout();
 
@@ -271,7 +271,7 @@ void PpmsWidget::setupUI()
     MagGridLayout->addWidget(magRate, 2, 1);
     MagGridLayout->addWidget(labelMagStatus, 3, 0);
     MagGridLayout->addWidget(magStatus, 3, 1);
-
+    /*
     RotGridLayout->addWidget(labelRotLive, 0, 0);
     RotGridLayout->addWidget(rotLive, 0, 1);
     RotGridLayout->addWidget(labelRotSetPoint, 1, 0);
@@ -280,7 +280,7 @@ void PpmsWidget::setupUI()
     RotGridLayout->addWidget(rotStatus, 2, 1);
     RotGridLayout->addWidget(labelempty, 3, 0);
     RotGridLayout->addWidget(labelempty, 3, 1);
-
+    */
     ChamberGridLayout->addWidget(labelChamberLevel, 0, 0);
     ChamberGridLayout->addWidget(chamberLevel, 0, 1);
     ChamberGridLayout->addWidget(labelChamberStatus, 2, 0);
@@ -307,8 +307,8 @@ void PpmsWidget::setupUI()
     tempWidget->setLayout(TempGridLayout);
     QWidget* magWidget = new QWidget();
     magWidget->setLayout(MagGridLayout);
-    QWidget* rotWidget = new QWidget();
-    rotWidget->setLayout(RotGridLayout);
+    //QWidget* rotWidget = new QWidget();
+    //rotWidget->setLayout(RotGridLayout);
     QWidget* chamberWidget = new QWidget();
     chamberWidget->setLayout(ChamberGridLayout);
     QWidget* voltageWidget = new QWidget();
@@ -317,7 +317,7 @@ void PpmsWidget::setupUI()
     QHBoxLayout* mainLayout = new QHBoxLayout();
     mainLayout->addWidget(tempWidget);
     mainLayout->addWidget(magWidget);
-    mainLayout->addWidget(rotWidget);
+    //mainLayout->addWidget(rotWidget);
     mainLayout->addWidget(chamberWidget);
     mainLayout->addWidget(voltageWidget);
     setLayout(mainLayout);

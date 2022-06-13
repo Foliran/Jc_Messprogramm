@@ -44,10 +44,12 @@ private:
     QLabel* magRate;
     QLabel* magStatus;
 
+    /*
     //RotationBlock
     QLabel* rotSetPoint;
     QLabel* rotLive;
     QLabel* rotStatus;
+    */
 
     //Chamber
     QLabel* chamberStatus;
