@@ -49,7 +49,6 @@ private:
     QDoubleSpinBox* currentEndJc;
     QDoubleSpinBox* currentRateJc;
     QDoubleSpinBox* voltageCriterion;
-    QDoubleSpinBox* coilAngleJc;
     QDoubleSpinBox* pulseWidth;
     QDoubleSpinBox* timeBetweenPulses;
     QDoubleSpinBox* nPulses;

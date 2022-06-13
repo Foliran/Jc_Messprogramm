@@ -30,7 +30,6 @@ StartDialogMulti::StartDialogMulti(QWidget* parent)
     , currentEndJc(nullptr)
     , currentRateJc(nullptr)
     , voltageCriterion(nullptr)
-    , coilAngleJc(nullptr)
     , nPulses(nullptr)
 {
     setupUI();
@@ -111,12 +110,6 @@ void StartDialogMulti::setupUI()
     magneticFieldJc->setRange(0, 14000);
     magneticFieldJc->setValue(0);
 
-    coilAngleJc = new QDoubleSpinBox();
-    coilAngleJc->setDecimals(1);
-    coilAngleJc->setSingleStep(0.5);
-    coilAngleJc->setRange(0, 360);
-    coilAngleJc->setValue(0);
-
     pulseWidth = new QDoubleSpinBox();
     pulseWidth->setDecimals(0);
     pulseWidth->setSingleStep(1);
@@ -153,9 +146,8 @@ void StartDialogMulti::setupUI()
     auto labelCurrentStartJc = new QLabel("Start current in A:");
     auto labelCurrentEndJc = new QLabel("End current in A:");
     labelCurrentRate = new QLabel("Current stepsize in A:");
-    auto labelVoltageCriterion = new QLabel("Voltage end criterion in V: 10e-");
+    auto labelVoltageCriterion = new QLabel("Voltage end criterion in V: 1e-");
     auto labelMagneticFieldJc = new QLabel("Magnetic field in mT:");
-    auto labelCoilAngleJc = new QLabel("Coil angle:");
     auto labelPulseWidth = new QLabel("Pulse width in ms: ");
     auto labelNPulses= new QLabel("Number of pulses: ");
     auto labelTimeBetwPulses = new QLabel("Time between pulses in ms: ");
@@ -191,8 +183,6 @@ void StartDialogMulti::setupUI()
     gridLayoutJc->addWidget(ratio);
     gridLayoutJc->addWidget(labelMagneticFieldJc);
     gridLayoutJc->addWidget(magneticFieldJc);
-    gridLayoutJc->addWidget(labelCoilAngleJc);
-    gridLayoutJc->addWidget(coilAngleJc);
 
     widgetJc->setLayout(gridLayoutJc);
 
@@ -225,7 +215,7 @@ std::vector <std::shared_ptr<const MeasSeqJc>> StartDialogMulti::createSequence(
         seqJc.setCurrentStart(currentStartJc->value());
         seqJc.setCurrentEnd(currentEndJc->value());
         seqJc.setCurrentRate(currentRateJc->value());
-        seqJc.setCoilAngle(coilAngleJc->value());
+        seqJc.setCoilAngle(0);
         seqJc.setPulsewidth(pulseWidth->value());
         seqJc.setNumberPulses((int)nPulses->value());
         seqJc.setInterPulseTime(timeBetweenPulses->value());
@@ -233,9 +223,7 @@ std::vector <std::shared_ptr<const MeasSeqJc>> StartDialogMulti::createSequence(
         seqJc.setVoltageCriterion(std::pow(10, -(double)voltageCriterion->value()));
         seqJc.setFileName(sampleNameJc->text() + "_" +
             QString::number(temp) + "K_" +
-            QString::number(magneticFieldJc->value()) + "mT_" +
-            QString::number(coilAngleJc->value()) + "d"
-        );
+            QString::number(magneticFieldJc->value()) + "mT");
         temp = temp + direction * tempRateJc->value();
         if(!logSteps->isChecked() && !reversedPulse->isChecked())
         {
