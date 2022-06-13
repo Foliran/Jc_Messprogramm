@@ -17,7 +17,8 @@ SOURCES += graphdiagram.cpp \
     openfilewindow.cpp \
     ppmswidget.cpp \
     startdialog.cpp \
-    startdialogmulti.cpp
+    startdialogmulti.cpp \
+    startdialogmulti_b.cpp
 
 HEADERS += graphdiagram.h \
     mainWindow.h \
@@ -25,7 +26,8 @@ HEADERS += graphdiagram.h \
     openfilewindow.h \
     ppmswidget.h \
     startdialog.h \
-    startdialogmulti.h
+    startdialogmulti.h \
+    startdialogmulti_b.h
 
 # Default rules for deployment.
 unix {
