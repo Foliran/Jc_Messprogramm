@@ -77,8 +77,14 @@ void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, d
         return;
     }
     //reversed = true -> es wird in beide Richtungen gemessesn und die Absolutwerte gemittelt; false -> es wird nur in positive Richtung gemessen
-    if(reversed) numberPulses = 2 * nPulses;
-    else numberPulses = nPulses;
+    if(reversed)
+    {
+        numberPulses = 2 * nPulses;
+        gpib->cmd(address, " pulseReversed = true ", DELAYGPIB, TERMCHAR);
+    } else {
+        numberPulses = nPulses;
+        gpib->cmd(address, " pulseReversed = false ", DELAYGPIB, TERMCHAR);
+    }
     pulseReversed = reversed;
     //resetRange();
     pulseWidth = pWidth / 1000.0;
@@ -91,6 +97,7 @@ void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, d
     gpib->cmd(address, " reset() ", DELAYGPIB, TERMCHAR);
     gpib->cmd(address, " errorqueue.clear() " +
                        pWidthString + ratioString + nPulsesString + interPulsTimeString + " init.run() ", DELAYGPIB, TERMCHAR);
+
 }
 
 void KeithleyTSP::setPulseAndMeasure(double value)
@@ -116,7 +123,7 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     " node[2].smua.trigger.initiate() "
     " waitcomplete() "
     " res = 0 "
-    " for i = 1, nPulses do res = res + math.abs(node[1].defbuffer1.readings[i]) end "
+    " for i = 1, nPulses do if(pulseReversed and (math.mod(i, 2) == 0)) then res = res - node[1].defbuffer1.readings[i] else res = res + node[1].defbuffer1.readings[i] end end " //Den langen Code hier am besten einfach irgendwo reinkopieren und Absaetze rein, dann macht der mehr Sinn
     " waitcomplete(2) "
     " volt = res / nPulses ", DELAYGPIB, TERMCHAR);
     voltage = std::atof(gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR).c_str());
