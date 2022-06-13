@@ -22,7 +22,7 @@ const int KEITHLEYADDRESS = 26;
 
 InstrumentManager::InstrumentManager()
     : timer(new QTimer(this))
-    , simulation(0) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
+    , simulation(2) //0 -> beide Geräte Simulation; 1 -> PPMS Simulation, Keihtley angeschlossen, 2 ->  beide angeschlossen
     , gpib(std::make_shared<GPIB>())
 {
     connect(timer, &QTimer::timeout,

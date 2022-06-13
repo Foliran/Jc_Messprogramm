@@ -216,7 +216,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             qDebug() << "ApproachEndJc" ;
             int sleeptime = 2 * mSeqJc->getNumberPulses() * (mSeqJc->getPulsewidth() + mSeqJc->getInterPulseTime());
             //TODO: Ausprobieren ob es reicht, wenn ich das hier als Interval setze
-            instrumentmanager->timer->setInterval(500);
+            instrumentmanager->timer->setInterval(sleeptime);
             double newCurrent = 0;
             if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();
