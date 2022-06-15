@@ -122,7 +122,7 @@ void MainWindow::setupUi()
     waitingTime->setValue(30);
 
     QLabel *waitingTimeLabel = new QLabel();
-    waitingTimeLabel->setText("Time to wait for Temp.:");
+    waitingTimeLabel->setText("Time to wait for temp.:");
     QHBoxLayout *timeLayout = new QHBoxLayout();
     timeLayout->addWidget(waitingTimeLabel);
     timeLayout->addWidget(waitingTime);
@@ -155,13 +155,14 @@ void MainWindow::createActions()
 {
     //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
+    fileToolBar->setIconSize(QSize(45, 30));
     const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
-    const QIcon measurementIconMulti = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_multiple.svg"));
-    const QIcon measurementIconMulti_B = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_multiple.svg"));
+    const QIcon measurementIconMulti = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_von_T_at_B.svg"));
+    const QIcon measurementIconMulti_B = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_von_B_at_T.svg"));
     const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
-    QAction* messungStarten = new QAction(measurementIcon, tr("&New Measurement"), this);
-    QAction* messungStartenMulti = new QAction(measurementIconMulti, tr("&New Measurement"), this);
-    QAction* messungStartenMulti_B = new QAction(measurementIconMulti_B, tr("&New Measurement"), this);
+    QAction* messungStarten = new QAction(measurementIcon, tr("&New single measurement"), this);
+    QAction* messungStartenMulti = new QAction(measurementIconMulti, tr("&New Jc(T@B) measurement"), this);
+    QAction* messungStartenMulti_B = new QAction(measurementIconMulti_B, tr("&New Jc(B@T) measurement"), this);
     QAction* openFile = new QAction(openFileIcon, tr("&open File"), this);
     messungStarten->setStatusTip(tr("Create a new measurement"));
     messungStartenMulti->setStatusTip(tr("Create a series of J_c(T @B) measurements"));

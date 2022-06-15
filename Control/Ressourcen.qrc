@@ -4,5 +4,7 @@
         <file>Icons/Jc.svg</file>
         <file>Icons/open_file.png</file>
         <file>Icons/Jc_multiple.svg</file>
+        <file>Icons/Jc_von_B_at_T.svg</file>
+        <file>Icons/Jc_von_T_at_B.svg</file>
     </qresource>
 </RCC>

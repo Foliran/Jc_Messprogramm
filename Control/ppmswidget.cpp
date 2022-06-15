@@ -220,11 +220,11 @@ void PpmsWidget::setupUI()
 
     //label
     auto labelTempLive = new QLabel("Temperature in K:");
-    auto labelTempSetPoint = new QLabel("Temperature Setpoint in K:");
+    auto labelTempSetPoint = new QLabel("Temperature setpoint in K:");
     auto labelTempRate = new QLabel("Temperature rate in K/min:");
     auto labelTempStatus = new QLabel("Status:");
 
-    auto labelMagFeldLive = new QLabel("Mag. Field in mT:");
+    auto labelMagFeldLive = new QLabel("Mag. field in mT:");
     auto labelMagSetPoint = new QLabel("Setpoint in mT:");
     auto labelMagRate = new QLabel("Mag. rate in mT/s:");
     auto labelMagStatus = new QLabel("Status:");
@@ -242,8 +242,6 @@ void PpmsWidget::setupUI()
     auto labelCurrentRate = new QLabel("Current rate in A/step:");
     auto labelCurrentEndpoint = new QLabel("Maximal current in A:");
     auto labelVoltageLive = new QLabel("Voltage in V: ");
-    auto labelpulseWidth = new QLabel("Pulse width in ms: ");
-    auto labelRatio = new QLabel("Measurement delay in ms: ");
 
     auto labelempty = new QLabel("");
 
