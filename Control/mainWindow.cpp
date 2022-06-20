@@ -29,9 +29,9 @@ MainWindow::MainWindow(QWidget* parent)
     , mainLayoutWidget(new QWidget())
     , mTable(new MeasurementsTable())
     , rotCheckBox(nullptr)
+    , waitingTime(nullptr)
     , logXAxis(nullptr)
     , logYAxis(nullptr)
-    , waitingTime(nullptr)
 {
     createRotatorButton();
     setupUi();
@@ -119,7 +119,7 @@ void MainWindow::setupUi()
     waitingTime = new QDoubleSpinBox();
     waitingTime->setRange(0, 1000);
     waitingTime->setDecimals(0);
-    waitingTime->setValue(30);
+    waitingTime->setValue(300);
 
     QLabel *waitingTimeLabel = new QLabel();
     waitingTimeLabel->setText("Time to wait for temp.:");
@@ -156,9 +156,9 @@ void MainWindow::createActions()
     //QMenu* fileMenu = menuBar()->addMenu(tr("&Measurement"));
     QToolBar* fileToolBar = addToolBar(tr("New Measurement"));
     fileToolBar->setIconSize(QSize(45, 30));
-    const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.svg"));
-    const QIcon measurementIconMulti = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_von_T_at_B.svg"));
-    const QIcon measurementIconMulti_B = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_von_B_at_T.svg"));
+    const QIcon measurementIcon = QIcon::fromTheme("MessungIcon", QIcon(":/Icons/Icons/Jc.png"));
+    const QIcon measurementIconMulti = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_von_T_at_B.png"));
+    const QIcon measurementIconMulti_B = QIcon::fromTheme("MessungIconMulti", QIcon(":/Icons/Icons/Jc_von_B_at_T.png"));
     const QIcon openFileIcon = QIcon::fromTheme("FileIcon", QIcon(":/Icons/Icons/open_file.png"));
     QAction* messungStarten = new QAction(measurementIcon, tr("&New single measurement"), this);
     QAction* messungStartenMulti = new QAction(measurementIconMulti, tr("&New Jc(T@B) measurement"), this);

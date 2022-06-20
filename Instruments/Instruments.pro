@@ -29,6 +29,7 @@ HEADERS += \
     keithleydatapoint.h \
     keithleysimulation.h \
     ni488.h \
+    ni4882.h \
     ppmsabstract.h \
     ppmsdatapoint.h \
     ppmsinstrument.h \

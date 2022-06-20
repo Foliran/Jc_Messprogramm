@@ -1,5 +1,3 @@
-//Credits to Joseph Poirier on GitHub, copied on 11.01.2022
-
 /*
  *
  *
@@ -23,9 +21,9 @@
 extern "C" {
 #endif
 
-    /***************************************************************************/
-    /*    HANDY CONSTANTS FOR USE BY APPLICATION PROGRAMS ...                  */
-    /***************************************************************************/
+/***************************************************************************/
+/*    HANDY CONSTANTS FOR USE BY APPLICATION PROGRAMS ...                  */
+/***************************************************************************/
 #define UNL  0x3f  /* GPIB unlisten command                 */
 #define UNT  0x5f  /* GPIB untalk command                   */
 #define GTL  0x01  /* GPIB go to local                      */
@@ -158,10 +156,10 @@ extern "C" {
 #define  IbcRsv        0x0021      /* Set the RSV byte.                    */
 #define  IbcLON        0x0022      /* Enter listen only mode               */
 
- /*
-  *    Constants that can be used (in addition to the ibconfig constants)
-  *    when calling the ibask() function.
-  */
+/*
+ *    Constants that can be used (in addition to the ibconfig constants)
+ *    when calling the ibask() function.
+ */
 
 #define  IbaPAD            IbcPAD
 #define  IbaSAD            IbcSAD
@@ -199,7 +197,7 @@ extern "C" {
 #define  IbaBNA            0x0200   /* A device's access board. */
 
 
-  /* Values used by the Send 488.2 command. */
+/* Values used by the Send 488.2 command. */
 #define  NULLend 0x00  /* Do nothing at the end of a transfer.*/
 #define  NLend   0x01  /* Send NL with EOI after a transfer.  */
 #define  DABend  0x02  /* Send EOI with the last DAB.         */
@@ -209,34 +207,34 @@ extern "C" {
 #define  STOPend     0x0100
 
 
- /* Address type (for 488.2 calls) */
+/* Address type (for 488.2 calls) */
 
- //typedef short Addr4882_t; /* System dependent: must be 16 bits */
+//typedef short Addr4882_t; /* System dependent: must be 16 bits */
 
- /*
-  *  This macro can be used to easily create an entry in address list
-  *  that is required by many of the 488.2 functions. The primary address goes in the
-  *  lower 8-bits and the secondary address goes in the upper 8-bits.
-  */
+/*
+ *  This macro can be used to easily create an entry in address list
+ *  that is required by many of the 488.2 functions. The primary address goes in the
+ *  lower 8-bits and the secondary address goes in the upper 8-bits.
+ */
 #define  MakeAddr(pad, sad)   ((short)(((pad)&0xFF) | ((sad)<<8)))
 
-  /*
-   *  This value is used to terminate an address list.  It should be
-   *  assigned to the last entry.
-   */
+/*
+ *  This value is used to terminate an address list.  It should be
+ *  assigned to the last entry.
+ */
 #ifndef NOADDR
 #define NOADDR    (short)((unsigned short)0xFFFF)
 #endif
 
-   /*
-    *  The following two macros are used to "break apart" an address list
-    *  entry.  They take an unsigned integer and return either the primary
-    *  or secondary address stored in the integer.
-    */
+/*
+ *  The following two macros are used to "break apart" an address list
+ *  entry.  They take an unsigned integer and return either the primary
+ *  or secondary address stored in the integer.
+ */
 #define  GetPAD(val)    ((val) & 0xFF)
 #define  GetSAD(val)    (((val) >> 8) & 0xFF)
 
-    /* iblines constants */
+/* iblines constants */
 
 #define  ValidEOI   (short)0x0080
 #define  ValidATN   (short)0x0040
@@ -262,32 +260,32 @@ extern "C" {
 /****
  **** typedef for ibnotify callback ****
  ****/
-    typedef int(__stdcall* GpibNotifyCallback_t)(int, int, int, long, void*);
+typedef int (__stdcall * GpibNotifyCallback_t)(int, int, int, long, void*);
 
-    /*************************************************************************/
-    /*                                                                       */
-    /*  iblockx and ibunlockx definitions --- deprecated, use iblck          */
-    /*                                                                       */
-    /*************************************************************************/
+/*************************************************************************/
+/*                                                                       */
+/*  iblockx and ibunlockx definitions --- deprecated, use iblck          */
+/*                                                                       */
+/*************************************************************************/
 #define  TIMMEDIATE                 -1
 #define  TINFINITE                  -2
 #define  MAX_LOCKSHARENAME_LENGTH   64
 
 #if defined(UNICODE)
-#define iblockx iblockxW
+   #define iblockx iblockxW
 #else
-#define iblockx iblockxA
+   #define iblockx iblockxA
 #endif
 
-    extern int __stdcall iblockxA(int ud, int LockWaitTime, char* LockShareName);
-    extern int __stdcall iblockxW(int ud, int LockWaitTime, unsigned short* LockShareName);
-    extern int __stdcall ibunlockx(int ud);
+extern int __stdcall iblockxA (int ud, int LockWaitTime, char* LockShareName);
+extern int __stdcall iblockxW (int ud, int LockWaitTime, unsigned short* LockShareName);
+extern int __stdcall ibunlockx (int ud);
 
 
-    /***************************************************************************/
-    /*         IBSTA, IBERR, IBCNT, IBCNTL and FUNCTION PROTOTYPES             */
-    /*      ( only included if not accessing the 32-bit DLL directly )         */
-    /***************************************************************************/
+/***************************************************************************/
+/*         IBSTA, IBERR, IBCNT, IBCNTL and FUNCTION PROTOTYPES             */
+/*      ( only included if not accessing the 32-bit DLL directly )         */
+/***************************************************************************/
 #if !defined(GPIB_DIRECT_ACCESS)
 
 /*
@@ -297,124 +295,124 @@ extern "C" {
  *  multiple threads of a single process.
  */
 
-    extern int  ibsta;
-    extern int  iberr;
-    extern int  ibcnt;
-    extern long ibcntl;
+extern int  ibsta;
+extern int  iberr;
+extern int  ibcnt;
+extern long ibcntl;
 
 #if defined(UNICODE)
-#define ibbna  ibbnaW
-#define ibfind ibfindW
-#define ibrdf  ibrdfW
-#define ibwrtf ibwrtfW
+   #define ibbna  ibbnaW
+   #define ibfind ibfindW
+   #define ibrdf  ibrdfW
+   #define ibwrtf ibwrtfW
 #else
-#define ibbna  ibbnaA
-#define ibfind ibfindA
-#define ibrdf  ibrdfA
-#define ibwrtf ibwrtfA
+   #define ibbna  ibbnaA
+   #define ibfind ibfindA
+   #define ibrdf  ibrdfA
+   #define ibwrtf ibwrtfA
 #endif
 
-    /*
-     *  Extern 32-bit GPIB DLL functions
-     */
+/*
+ *  Extern 32-bit GPIB DLL functions
+ */
 
-     /*  NI-488 Function Prototypes  */
-    extern int __stdcall ibfindA(char* udname);
-    extern int __stdcall ibbnaA(int ud, char* udname);
-    extern int __stdcall ibrdfA(int ud, char* filename);
-    extern int __stdcall ibwrtfA(int ud, char* filename);
+/*  NI-488 Function Prototypes  */
+extern int __stdcall ibfindA   (char* udname);
+extern int __stdcall ibbnaA    (int ud, char* udname);
+extern int __stdcall ibrdfA    (int ud, char* filename);
+extern int __stdcall ibwrtfA   (int ud, char* filename);
 
-    extern int __stdcall ibfindW(unsigned short* udname);
-    extern int __stdcall ibbnaW(int ud, unsigned short* udname);
-    extern int __stdcall ibrdfW(int ud, unsigned short* filename);
-    extern int __stdcall ibwrtfW(int ud, unsigned short* filename);
+extern int __stdcall ibfindW   (unsigned short* udname);
+extern int __stdcall ibbnaW    (int ud, unsigned short* udname);
+extern int __stdcall ibrdfW    (int ud, unsigned short* filename);
+extern int __stdcall ibwrtfW   (int ud, unsigned short* filename);
 
-    extern int __stdcall ibask(int ud, int option, int* v);
-    extern int __stdcall ibcac(int ud, int v);
-    extern int __stdcall ibclr(int ud);
-    extern int __stdcall ibcmd(int ud, void* buf, long cnt);
-    extern int __stdcall ibcmda(int ud, void* buf, long cnt);
-    extern int __stdcall ibconfig(int ud, int option, int v);
-    extern int __stdcall ibdev(int boardID, int pad, int sad, int tmo, int eot, int eos);
-    extern int __stdcall ibdiag(int ud, void* buf, long cnt);
-    extern int __stdcall ibdma(int ud, int v);
-    extern int __stdcall ibexpert(int ud, int option, void* Input, void* Output);
-    extern int __stdcall ibeos(int ud, int v);
-    extern int __stdcall ibeot(int ud, int v);
-    extern int __stdcall ibgts(int ud, int v);
-    extern int __stdcall ibist(int ud, int v);
-    extern int __stdcall iblck(int ud, int v, unsigned int LockWaitTime, void* Reserved);
-    extern int __stdcall iblines(int ud, short* result);
-    extern int __stdcall ibln(int ud, int pad, int sad, short* listen);
-    extern int __stdcall ibloc(int ud);
-    extern int __stdcall ibnotify(int ud, int mask, GpibNotifyCallback_t Callback, void* RefData);
-    extern int __stdcall ibonl(int ud, int v);
-    extern int __stdcall ibpad(int ud, int v);
-    extern int __stdcall ibpct(int ud);
-    extern int __stdcall ibpoke(int ud, long option, long v);
-    extern int __stdcall ibppc(int ud, int v);
-    extern int __stdcall ibrd(int ud, void* buf, long cnt);
-    extern int __stdcall ibrda(int ud, void* buf, long cnt);
-    extern int __stdcall ibrpp(int ud, char* ppr);
-    extern int __stdcall ibrsc(int ud, int v);
-    extern int __stdcall ibrsp(int ud, char* spr);
-    extern int __stdcall ibrsv(int ud, int v);
-    extern int __stdcall ibsad(int ud, int v);
-    extern int __stdcall ibsic(int ud);
-    extern int __stdcall ibsre(int ud, int v);
-    extern int __stdcall ibstop(int ud);
-    extern int __stdcall ibtmo(int ud, int v);
-    extern int __stdcall ibtrg(int ud);
-    extern int __stdcall ibwait(int ud, int mask);
-    extern int __stdcall ibwrt(int ud, void* buf, long cnt);
-    extern int __stdcall ibwrta(int ud, void* buf, long cnt);
+extern int __stdcall ibask    (int ud, int option, int* v);
+extern int __stdcall ibcac    (int ud, int v);
+extern int __stdcall ibclr    (int ud);
+extern int __stdcall ibcmd    (int ud, void* buf, long cnt);
+extern int __stdcall ibcmda   (int ud, void* buf, long cnt);
+extern int __stdcall ibconfig (int ud, int option, int v);
+extern int __stdcall ibdev    (int boardID, int pad, int sad, int tmo, int eot, int eos);
+extern int __stdcall ibdiag   (int ud, void* buf, long cnt);
+extern int __stdcall ibdma    (int ud, int v);
+extern int __stdcall ibexpert (int ud, int option, void * Input, void * Output);
+extern int __stdcall ibeos    (int ud, int v);
+extern int __stdcall ibeot    (int ud, int v);
+extern int __stdcall ibgts    (int ud, int v);
+extern int __stdcall ibist    (int ud, int v);
+extern int __stdcall iblck    (int ud, int v, unsigned int LockWaitTime, void * Reserved);
+extern int __stdcall iblines  (int ud, short* result);
+extern int __stdcall ibln     (int ud, int pad, int sad, short* listen);
+extern int __stdcall ibloc    (int ud);
+extern int __stdcall ibnotify (int ud, int mask, GpibNotifyCallback_t Callback, void* RefData);
+extern int __stdcall ibonl    (int ud, int v);
+extern int __stdcall ibpad    (int ud, int v);
+extern int __stdcall ibpct    (int ud);
+extern int __stdcall ibpoke   (int ud, long option, long v);
+extern int __stdcall ibppc    (int ud, int v);
+extern int __stdcall ibrd     (int ud, void* buf, long cnt);
+extern int __stdcall ibrda    (int ud, void* buf, long cnt);
+extern int __stdcall ibrpp    (int ud, char* ppr);
+extern int __stdcall ibrsc    (int ud, int v);
+extern int __stdcall ibrsp    (int ud, char* spr);
+extern int __stdcall ibrsv    (int ud, int v);
+extern int __stdcall ibsad    (int ud, int v);
+extern int __stdcall ibsic    (int ud);
+extern int __stdcall ibsre    (int ud, int v);
+extern int __stdcall ibstop   (int ud);
+extern int __stdcall ibtmo    (int ud, int v);
+extern int __stdcall ibtrg    (int ud);
+extern int __stdcall ibwait   (int ud, int mask);
+extern int __stdcall ibwrt    (int ud, void* buf, long cnt);
+extern int __stdcall ibwrta   (int ud, void* buf, long cnt);
 
-    // GPIB-ENET only functions to support locking across machines
-    // Deprecated - Use iblck
-    extern int __stdcall iblock(int ud);
-    extern int __stdcall ibunlock(int ud);
+// GPIB-ENET only functions to support locking across machines
+// Deprecated - Use iblck
+extern int __stdcall iblock   (int ud);
+extern int __stdcall ibunlock (int ud);
 
-    /**************************************************************************/
-    /*  Functions to access Thread-Specific copies of the GPIB global vars */
+/**************************************************************************/
+/*  Functions to access Thread-Specific copies of the GPIB global vars */
 
-    extern int  __stdcall ThreadIbsta(void);
-    extern int  __stdcall ThreadIberr(void);
-    extern int  __stdcall ThreadIbcnt(void);
-    extern long __stdcall ThreadIbcntl(void);
+extern int  __stdcall ThreadIbsta (void);
+extern int  __stdcall ThreadIberr (void);
+extern int  __stdcall ThreadIbcnt (void);
+extern long __stdcall ThreadIbcntl (void);
 
 
-    /**************************************************************************/
-    /*  NI-488.2 Function Prototypes  */
+/**************************************************************************/
+/*  NI-488.2 Function Prototypes  */
 
-    extern void __stdcall AllSpoll(int boardID, short* addrlist, short* results);
-    extern void __stdcall DevClear(int boardID, short addr);
-    extern void __stdcall DevClearList(int boardID, short* addrlist);
-    extern void __stdcall EnableLocal(int boardID, short* addrlist);
-    extern void __stdcall EnableRemote(int boardID, short* addrlist);
-    extern void __stdcall FindLstn(int boardID, short* addrlist, short* results, int limit);
-    extern void __stdcall FindRQS(int boardID, short* addrlist, short* dev_stat);
-    extern void __stdcall PPoll(int boardID, short* result);
-    extern void __stdcall PPollConfig(int boardID, short addr, int dataLine, int lineSense);
-    extern void __stdcall PPollUnconfig(int boardID, short* addrlist);
-    extern void __stdcall PassControl(int boardID, short addr);
-    extern void __stdcall RcvRespMsg(int boardID, void* buffer, long cnt, int Termination);
-    extern void __stdcall ReadStatusByte(int boardID, short addr, short* result);
-    extern void __stdcall Receive(int boardID, short addr, void* buffer, long cnt, int Termination);
-    extern void __stdcall ReceiveSetup(int boardID, short addr);
-    extern void __stdcall ResetSys(int boardID, short* addrlist);
-    extern void __stdcall Send(int boardID, short addr, void* databuf, long datacnt, int eotMode);
-    extern void __stdcall SendCmds(int boardID, void* buffer, long cnt);
-    extern void __stdcall SendDataBytes(int boardID, void* buffer, long cnt, int eot_mode);
-    extern void __stdcall SendIFC(int boardID);
-    extern void __stdcall SendLLO(int boardID);
-    extern void __stdcall SendList(int boardID, short* addrlist, void* databuf, long datacnt, int eotMode);
-    extern void __stdcall SendSetup(int boardID, short* addrlist);
-    extern void __stdcall SetRWLS(int boardID, short* addrlist);
-    extern void __stdcall TestSRQ(int boardID, short* result);
-    extern void __stdcall TestSys(int boardID, short* addrlist, short* results);
-    extern void __stdcall Trigger(int boardID, short addr);
-    extern void __stdcall TriggerList(int boardID, short* addrlist);
-    extern void __stdcall WaitSRQ(int boardID, short* result);
+extern void __stdcall AllSpoll      (int boardID, short * addrlist, short* results);
+extern void __stdcall DevClear      (int boardID, short addr);
+extern void __stdcall DevClearList  (int boardID, short * addrlist);
+extern void __stdcall EnableLocal   (int boardID, short * addrlist);
+extern void __stdcall EnableRemote  (int boardID, short * addrlist);
+extern void __stdcall FindLstn      (int boardID, short * addrlist, short * results, int limit);
+extern void __stdcall FindRQS       (int boardID, short * addrlist, short* dev_stat);
+extern void __stdcall PPoll         (int boardID, short* result);
+extern void __stdcall PPollConfig   (int boardID, short addr, int dataLine, int lineSense);
+extern void __stdcall PPollUnconfig (int boardID, short * addrlist);
+extern void __stdcall PassControl   (int boardID, short addr);
+extern void __stdcall RcvRespMsg    (int boardID, void* buffer, long cnt, int Termination);
+extern void __stdcall ReadStatusByte(int boardID, short addr, short* result);
+extern void __stdcall Receive       (int boardID, short addr, void* buffer, long cnt, int Termination);
+extern void __stdcall ReceiveSetup  (int boardID, short addr);
+extern void __stdcall ResetSys      (int boardID, short * addrlist);
+extern void __stdcall Send          (int boardID, short addr, void* databuf, long datacnt, int eotMode);
+extern void __stdcall SendCmds      (int boardID, void* buffer, long cnt);
+extern void __stdcall SendDataBytes (int boardID, void* buffer, long cnt, int eot_mode);
+extern void __stdcall SendIFC       (int boardID);
+extern void __stdcall SendLLO       (int boardID);
+extern void __stdcall SendList      (int boardID, short * addrlist, void* databuf, long datacnt, int eotMode);
+extern void __stdcall SendSetup     (int boardID, short * addrlist);
+extern void __stdcall SetRWLS       (int boardID, short * addrlist);
+extern void __stdcall TestSRQ       (int boardID, short* result);
+extern void __stdcall TestSys       (int boardID, short * addrlist, short* results);
+extern void __stdcall Trigger       (int boardID, short addr);
+extern void __stdcall TriggerList   (int boardID, short * addrlist);
+extern void __stdcall WaitSRQ       (int boardID, short* result);
 
 #endif
 
