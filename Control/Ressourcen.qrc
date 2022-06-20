@@ -1,13 +1,9 @@
 <RCC>
     <qresource prefix="/Icons">
         <file>Icons/StartButton.png</file>
-        <file>Icons/Jc.svg</file>
         <file>Icons/open_file.png</file>
-        <file>Icons/Jc_multiple.svg</file>
-        <file>Icons/Jc_von_B_at_T.svg</file>
-        <file>Icons/Jc_von_T_at_B.svg</file>
-        <file>D:/Icons/Jc.png</file>
-        <file>D:/Icons/Jc_von_B_at_T.png</file>
-        <file>D:/Icons/Jc_von_T_at_B.png</file>
+        <file>Icons/Jc.png</file>
+        <file>Icons/Jc_von_B_at_T.png</file>
+        <file>Icons/Jc_von_T_at_B.png</file>
     </qresource>
 </RCC>
