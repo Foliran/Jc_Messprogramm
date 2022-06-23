@@ -72,13 +72,13 @@ void StartDialogMulti::setupUI()
     startTempJc->setDecimals(2);
     startTempJc->setSingleStep(0.1);
     startTempJc->setRange(0, 400);
-    startTempJc->setValue(320);
+    startTempJc->setValue(90);
 
     endTempJc = new QDoubleSpinBox();
     endTempJc->setDecimals(2);
     endTempJc->setSingleStep(0.1);
     endTempJc->setRange(0, 400);
-    endTempJc->setValue(320);
+    endTempJc->setValue(50);
 
     tempRateJc = new QDoubleSpinBox();
     tempRateJc->setDecimals(2);
@@ -90,7 +90,7 @@ void StartDialogMulti::setupUI()
     currentStartJc->setDecimals(3);
     currentStartJc->setSingleStep(0.002);
     currentStartJc->setRange(0.00, 20);
-    currentStartJc->setValue(0.001);
+    currentStartJc->setValue(0.1);
 
     currentEndJc = new QDoubleSpinBox();
     currentEndJc->setDecimals(3);
@@ -102,7 +102,7 @@ void StartDialogMulti::setupUI()
     currentRateJc->setDecimals(3);
     currentRateJc->setSingleStep(0.002);
     currentRateJc->setRange(0.0001, 1.0);
-    currentRateJc->setValue(0.001);
+    currentRateJc->setValue(0.01);
 
     magneticFieldJc = new QDoubleSpinBox();
     magneticFieldJc->setDecimals(2);
@@ -165,6 +165,8 @@ void StartDialogMulti::setupUI()
     gridLayoutJc->addWidget(endTempJc);
     gridLayoutJc->addWidget(labelTempRateJc);
     gridLayoutJc->addWidget(tempRateJc);
+    gridLayoutJc->addWidget(labelMagneticFieldJc);
+    gridLayoutJc->addWidget(magneticFieldJc);
     gridLayoutJc->addWidget(labelCurrentStartJc);
     gridLayoutJc->addWidget(currentStartJc);
     gridLayoutJc->addWidget(labelCurrentEndJc);
@@ -181,8 +183,6 @@ void StartDialogMulti::setupUI()
     gridLayoutJc->addWidget(timeBetweenPulses);
     gridLayoutJc->addWidget(labelRatio);
     gridLayoutJc->addWidget(ratio);
-    gridLayoutJc->addWidget(labelMagneticFieldJc);
-    gridLayoutJc->addWidget(magneticFieldJc);
 
     widgetJc->setLayout(gridLayoutJc);
 

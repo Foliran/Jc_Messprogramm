@@ -70,13 +70,13 @@ void StartDialog::setupUI()
     tempJc->setDecimals(2);
     tempJc->setSingleStep(0.1);
     tempJc->setRange(0, 400);
-    tempJc->setValue(320);
+    tempJc->setValue(77);
 
     currentStartJc = new QDoubleSpinBox();
     currentStartJc->setDecimals(3);
     currentStartJc->setSingleStep(0.001);
     currentStartJc->setRange(0.001, 20);
-    currentStartJc->setValue(0.01);
+    currentStartJc->setValue(0.1);
 
     currentEndJc = new QDoubleSpinBox();
     currentEndJc->setDecimals(3);

@@ -72,7 +72,7 @@ void StartDialogMulti_B::setupUI()
     startMagFieldJc->setDecimals(2);
     startMagFieldJc->setSingleStep(0.1);
     startMagFieldJc->setRange(0, 14000);
-    startMagFieldJc->setValue(0);
+    startMagFieldJc->setValue(14000);
 
     endMagFieldJc = new QDoubleSpinBox();
     endMagFieldJc->setDecimals(2);
@@ -84,7 +84,7 @@ void StartDialogMulti_B::setupUI()
     fieldRateJc->setDecimals(2);
     fieldRateJc->setSingleStep(0.1);
     fieldRateJc->setRange(0, 14000);
-    fieldRateJc->setValue(0.0);
+    fieldRateJc->setValue(500);
 
     currentStartJc = new QDoubleSpinBox();
     currentStartJc->setDecimals(3);
@@ -108,7 +108,7 @@ void StartDialogMulti_B::setupUI()
     temperatureJc->setDecimals(2);
     temperatureJc->setSingleStep(0.1);
     temperatureJc->setRange(0, 400);
-    temperatureJc->setValue(320);
+    temperatureJc->setValue(77);
 
     pulseWidth = new QDoubleSpinBox();
     pulseWidth->setDecimals(0);
