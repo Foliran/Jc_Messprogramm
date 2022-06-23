@@ -145,6 +145,8 @@ void StartDialog::setupUI()
     gridLayoutJc->addWidget(sampleNameJc);
     gridLayoutJc->addWidget(labelTempJc);
     gridLayoutJc->addWidget(tempJc);
+    gridLayoutJc->addWidget(labelMagneticFieldJc);
+    gridLayoutJc->addWidget(magneticFieldJc);
     gridLayoutJc->addWidget(labelCurrentStartJc);
     gridLayoutJc->addWidget(currentStartJc);
     gridLayoutJc->addWidget(labelCurrentEndJc);
@@ -161,8 +163,6 @@ void StartDialog::setupUI()
     gridLayoutJc->addWidget(timeBetweenPulses);
     gridLayoutJc->addWidget(labelRatio);
     gridLayoutJc->addWidget(ratio);
-    gridLayoutJc->addWidget(labelMagneticFieldJc);
-    gridLayoutJc->addWidget(magneticFieldJc);
 
     widgetJc->setLayout(gridLayoutJc);
 

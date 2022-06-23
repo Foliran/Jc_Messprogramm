@@ -90,7 +90,7 @@ void StartDialogMulti_B::setupUI()
     currentStartJc->setDecimals(3);
     currentStartJc->setSingleStep(0.002);
     currentStartJc->setRange(0.00, 20);
-    currentStartJc->setValue(0.001);
+    currentStartJc->setValue(0.1);
 
     currentEndJc = new QDoubleSpinBox();
     currentEndJc->setDecimals(3);
