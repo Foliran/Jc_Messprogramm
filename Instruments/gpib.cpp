@@ -1,4 +1,6 @@
 #include "gpib.h"
+//#include "D:\ni488.h"
+#include "ni488.h"
 #include <algorithm>
 #include <QtDebug>
 #include <utility>
@@ -19,21 +21,28 @@ GPIB::GPIB()
 //public:
 void GPIB::openDevice(int deviceAddress)
 {
+    qDebug() << "in GPIB::openDevice";
     //open device
     int handle = ibdev_(0, deviceAddress, 0, T3s, 1, 0);
-
+    qDebug() << "Passed first command";
     std::string noError = "no known error";
 
     if (errorCode(*iberr_) != noError)
     {
+        qDebug() << "In first if";
         errormessage_ = statusGpib(*ibsta_);
+        qDebug() << "end first if";
         return;
     }
 
+    qDebug() << "After first if";
     if (handle >= 0)
     {
+        qDebug() << "In second if";
         deviceHandles_.insert(std::make_pair(deviceAddress, handle));
+        qDebug() << "End second if";
     }
+    qDebug() << "End GPIB::openDevice";
 }
 
 void GPIB::closeDevice(int deviceAddress)
@@ -105,9 +114,14 @@ void GPIB::init()
     static HINSTANCE Gpib32Lib = NULL;
 
     //load library and check if loading failed
-    Gpib32Lib = LoadLibraryA("gpib-32.dll");
+    try{Gpib32Lib = LoadLibraryA("gpib-32.dll");
+    qDebug() << "LoadLibraryA is " << Gpib32Lib;
+    } catch (const std::exception& e) {
+        qDebug() << "Could not load GPIB-32.dll";
+    }
     if (!Gpib32Lib)
     {
+        qDebug() << "GPIB wurde nicht geladen";
         errormessage_ = "Gpib TreiberBib nicht geladen";
         return;
     }

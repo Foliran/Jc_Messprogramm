@@ -141,6 +141,7 @@ void PpmsWidget::newMagSP(double magField, double magRateNew)
 
 void PpmsWidget::newAngleSP(double angle)
 {
+    Q_UNUSED(angle)
     //rotSetPoint->setText(QString::number(angle));
 }
 

@@ -10,9 +10,9 @@
 extern "C" {
 #endif
 #include <windows.h>
-//#include "ni488.h"
-#include "D:\ni488.h"
-#include "D:\ni4882.h"
+#include "ni488.h"
+//#include "D:\ni488.h"
+//#include "D:\ni4882.h"
 #ifdef __cplusplus
 }
 #endif

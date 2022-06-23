@@ -21,13 +21,19 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     , voltage(0.0)
     , background(-1000.0)
 {
+    qDebug() << "Starting KeithleyTSP constructor";
     busy = false;
     busyBackground = false;
+    qDebug() << "Trying to open GPIB connection";
     gpib->openDevice(address);
+    qDebug() << "After opening GPIB connection";
     if(!gpib->isOpen(address)) {
+        qDebug() << "So GPIB is not open";
+
         QString errormessage = "TSP-Link: ";
         if (gpib->getError().size() == 0)
         {
+            qDebug() << "Inside second if";
             errormessage.append("Not connected");
         }
         else
@@ -111,7 +117,7 @@ void KeithleyTSP::setPulseAndMeasure(double value)
                        " node[1].defbuffer1.clear() "
                        " res = 0", DELAYGPIB, TERMCHAR);
 
-    int sleeptime = (int)((numberPulses + 1) * (pulseWidth + interPulseTime) * 1000);
+    //int sleeptime = (int)((numberPulses + 1) * (pulseWidth + interPulseTime) * 1000);
     std::string valueString;
     if(pulseReversed) {
         valueString = " node[2].smua.trigger.source.listi({" + std::to_string(current) + ", " + std::to_string(-current) + "})";

@@ -27,7 +27,7 @@ InstrumentManager::InstrumentManager()
 {
     connect(timer, &QTimer::timeout,
         this, &InstrumentManager::onPolling);
-
+    qDebug() << "InstrumentManager Constructor";
     timer->start(1000);
     if (simulation == 0)
     {
@@ -41,8 +41,12 @@ InstrumentManager::InstrumentManager()
     }
     else if(simulation == 2)
     {
+        qDebug() << "Third if start";
         ppms = new PpmsInstrument(gpib, PPMSADDRESS);
+        qDebug() << "Third if middle";
         keithley = new KeithleyTSP(gpib, KEITHLEYADDRESS);
+        //keithley = new KeithleySimulation;
+        qDebug() << "Third if end";
     }
 
     connect(ppms, &PpmsAbstract::newTempSP, this, &InstrumentManager::newTempSP);
@@ -56,12 +60,22 @@ InstrumentManager::InstrumentManager()
 
 void InstrumentManager::openDevice()
 {
+    qDebug() << "InstMan ppms->openDevice";
     ppms->openDevice();
+    qDebug() << "InstMan keithley->openDevice";
     keithley->openDevice();
-    if(keithley->isOpen()) std::cout << "Keithley-Verbindung offen \n";
-    else std::cout << "Keithley-Verbindung nicht offen \n";
-    if(ppms->isOpen()) std::cout << "PPMS-Verbindung offen \n";
-    else std::cout << "PPMS-Verbindung nicht offen \n";
+    qDebug() << "InstMan devices are open";
+    if(keithley->isOpen())
+    {
+        qDebug() << "Keithley-Verbindung offen";
+    } else {
+        qDebug() << "Keithley-Verbindung nicht offen";
+    }
+    if(ppms->isOpen()) {
+        qDebug() << "PPMS-Verbindung offen";
+    } else {
+    qDebug() << "PPMS-Verbindung nicht offen";
+    }
 }
 
 void InstrumentManager::setTempSetpoint(double setpoint, double rate)

@@ -33,6 +33,9 @@ KeithleyDatapoint KeithleySimulation::keithleyLogik()
 void KeithleySimulation::initializeSettings(double pWidth, double newRatio, int nPulses, double timeBetwPuls, bool reversed) {
     pulseWidth = pWidth;
     ratio = newRatio;
+    Q_UNUSED(reversed)
+    Q_UNUSED(nPulses)
+    Q_UNUSED(timeBetwPuls)
 }
 
 void KeithleySimulation::setPulseAndMeasure(double value) {

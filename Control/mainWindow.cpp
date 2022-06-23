@@ -64,8 +64,8 @@ MainWindow::MainWindow(QWidget* parent)
         this, &MainWindow::onNewRotState);
     connect(MeasManager, &MeasurementsManager::newErrorMessage,
         this, &MainWindow::onNewErrorMessage);
-    connect(rotCheckBox, &QCheckBox::clicked,
-        this, &MainWindow::onSetSampleStage);
+    /*connect(rotCheckBox, &QCheckBox::clicked,
+        this, &MainWindow::onSetSampleStage);*/
     connect(shutdown, &QCheckBox::stateChanged, this, &MainWindow::onShutdown);
     connect(MeasManager, &MeasurementsManager::resetGraph, this, &MainWindow::onResetGraph);
     connect(logXAxis, &QCheckBox::stateChanged, this, &MainWindow::onLogXAxis);
@@ -351,7 +351,8 @@ void MainWindow::onNewErrorMessage(QString errormessage)
     msgBox->setWindowTitle(tr("Error"));
     msgBox->setText(errormessage);
     msgBox->setModal(false); // if you want it non-modal
-    msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
+    msgBox->exec();
+    //msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
 }
 
 

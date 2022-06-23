@@ -47,7 +47,7 @@ void PpmsInstrument::openDevice()
     }
     qDebug()<<"openDevice PPMS";
     gpib->openDevice(address);
-
+    qDebug() << "PPMS connection open";
     std::string idn = gpib->query(address, "*IDN?", DELAYGPIB, TERMCHAR);
     if(idn.find("QUANTUM DESIGN") == std::string::npos)
     {
