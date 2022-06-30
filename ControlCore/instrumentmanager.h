@@ -30,12 +30,13 @@ public:
     void initializeSettings(double p, double r, int n, double t, bool reversed);
     void setPulseAndMeasure(double v);
     void measureBackground();
-    void resetBackground();
+    void setBackground(double value);
     void setMagFieldSP(double magField, double magRate);
     void setAngle(double angle);
     void rotatorState(bool rotator);
     void shutdown();
     bool isBusyBackground();
+    void setBusyBackground(bool x);
     QTimer* timer;
 
 private slots:

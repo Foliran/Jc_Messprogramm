@@ -19,11 +19,14 @@ public:
     void setPulseAndMeasure(double value) override;
     double getVoltage() override;
     double getCurrent() override;
-    double getBackground() override;
+    void getBackground() override;
+    void setBusyBackground(bool x) override;
     void resetRange() override;
-    void resetBackground() override;
+    void setBackground(double value) override;
     void checkForError() override;
     void setOutputOff() override;
+    bool busyBackground;
+    bool measuredBackground;
 
 private:
     std::shared_ptr<GPIB> gpib;

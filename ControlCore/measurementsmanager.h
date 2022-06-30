@@ -67,6 +67,7 @@ private:
     double tempSP;
     int timeToWait;
     int remainingTime;
+    int count;
 };
 
 #endif

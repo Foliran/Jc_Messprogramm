@@ -27,7 +27,7 @@ InstrumentManager::InstrumentManager()
 {
     connect(timer, &QTimer::timeout,
         this, &InstrumentManager::onPolling);
-    qDebug() << "InstrumentManager Constructor";
+    //qDebug() << "InstrumentManager Constructor";
     timer->start(1000);
     if (simulation == 0)
     {
@@ -41,12 +41,12 @@ InstrumentManager::InstrumentManager()
     }
     else if(simulation == 2)
     {
-        qDebug() << "Third if start";
+        //qDebug() << "Third if start";
         ppms = new PpmsInstrument(gpib, PPMSADDRESS);
-        qDebug() << "Third if middle";
+        //qDebug() << "Third if middle";
         keithley = new KeithleyTSP(gpib, KEITHLEYADDRESS);
         //keithley = new KeithleySimulation;
-        qDebug() << "Third if end";
+        //qDebug() << "Third if end";
     }
 
     connect(ppms, &PpmsAbstract::newTempSP, this, &InstrumentManager::newTempSP);
@@ -60,11 +60,11 @@ InstrumentManager::InstrumentManager()
 
 void InstrumentManager::openDevice()
 {
-    qDebug() << "InstMan ppms->openDevice";
+    //qDebug() << "InstMan ppms->openDevice";
     ppms->openDevice();
-    qDebug() << "InstMan keithley->openDevice";
+    //qDebug() << "InstMan keithley->openDevice";
     keithley->openDevice();
-    qDebug() << "InstMan devices are open";
+    //qDebug() << "InstMan devices are open";
     if(keithley->isOpen())
     {
         qDebug() << "Keithley-Verbindung offen";
@@ -106,8 +106,12 @@ void InstrumentManager::measureBackground() {
     keithley->getBackground();
 }
 
-void InstrumentManager::resetBackground() {
-    keithley->resetBackground();
+void InstrumentManager::setBackground(double value) {
+    keithley->setBackground(value);
+}
+
+void InstrumentManager::setBusyBackground(bool x) {
+    keithley->setBusyBackground(x);
 }
 
 void InstrumentManager::rotatorState(bool rotator)

@@ -18,8 +18,9 @@ public:
     double getVoltage() override;
     double getCurrent() override;
     void resetRange() override;
-    double getBackground() override;
-    void resetBackground() override;
+    void getBackground() override;
+    void setBusyBackground(bool x) override;
+    void setBackground(double value) override;
     void checkForError() override;
     void setOutputOff() override;
 private:

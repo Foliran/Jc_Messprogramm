@@ -17,8 +17,9 @@ public:
     virtual double getVoltage() = 0;
     virtual double getCurrent() = 0;
     virtual void resetRange() = 0;
-    virtual double getBackground() = 0;
-    virtual void resetBackground() = 0;
+    virtual void getBackground() = 0;
+    virtual void setBusyBackground(bool x) = 0;
+    virtual void setBackground(double value) = 0;
     virtual void checkForError() = 0;
     virtual void setOutputOff() = 0;
     bool busy;

@@ -21,10 +21,10 @@ GPIB::GPIB()
 //public:
 void GPIB::openDevice(int deviceAddress)
 {
-    qDebug() << "in GPIB::openDevice";
+    //qDebug() << "in GPIB::openDevice";
     //open device
     int handle = ibdev_(0, deviceAddress, 0, T3s, 1, 0);
-    qDebug() << "Passed first command";
+    //qDebug() << "Passed first command";
     std::string noError = "no known error";
 
     if (errorCode(*iberr_) != noError)
@@ -35,14 +35,14 @@ void GPIB::openDevice(int deviceAddress)
         return;
     }
 
-    qDebug() << "After first if";
+    //qDebug() << "After first if";
     if (handle >= 0)
     {
-        qDebug() << "In second if";
+        //qDebug() << "In second if";
         deviceHandles_.insert(std::make_pair(deviceAddress, handle));
-        qDebug() << "End second if";
+        //qDebug() << "End second if";
     }
-    qDebug() << "End GPIB::openDevice";
+    //qDebug() << "End GPIB::openDevice";
 }
 
 void GPIB::closeDevice(int deviceAddress)
@@ -115,7 +115,7 @@ void GPIB::init()
 
     //load library and check if loading failed
     try{Gpib32Lib = LoadLibraryA("gpib-32.dll");
-    qDebug() << "LoadLibraryA is " << Gpib32Lib;
+    //qDebug() << "LoadLibraryA is " << Gpib32Lib;
     } catch (const std::exception& e) {
         qDebug() << "Could not load GPIB-32.dll";
     }
@@ -181,7 +181,7 @@ std::string GPIB::getError() const
 
 std::string GPIB::statusGpib(int ibsta)
 {
-    qDebug() << ibsta;
+    //qDebug() << ibsta;
     if (ibsta & ERR)
     {
         return errorCode(*iberr_);

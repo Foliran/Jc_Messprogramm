@@ -30,6 +30,7 @@ MeasurementsManager::MeasurementsManager()
     , tempSP(0)
     , timeToWait(300)
     , goToShutdown(false)
+    , count(0)
 
 {
     connect(instrumentmanager.get(), &InstrumentManager::newData,
@@ -63,7 +64,6 @@ void MeasurementsManager::openDevice()
 {
     instrumentmanager->openDevice();
 }
-
 
 void MeasurementsManager::appendMeasurement(std::vector<std::shared_ptr<const MeasSeqJc>> mVecSeqNew)
 {
@@ -189,34 +189,46 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         case State::MeasureBackground:
         {
             qDebug() << "MeasureBackground";
+            int sleeptime = 2 * mSeqJc->getNumberPulses() * (mSeqJc->getPulsewidth() + mSeqJc->getInterPulseTime());
+            instrumentmanager->timer->setInterval(sleeptime);
             if(datapoint->getKeithleyData()->getBackground() == -1000.0)
             {
                 // -1000 -> Background noch nicht gemessen
-                emit resetGraph(mSeqJc);
                 if(mSeqJc->getPulseMode() == 1  || mSeqJc->getPulseMode() == 2)
                 {
                     instrumentmanager->initializeSettings(mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), false);
                 } else if(mSeqJc->getPulseMode() == 3 || mSeqJc->getPulseMode() == 4) {
                     instrumentmanager->initializeSettings(mSeqJc->getPulsewidth(), mSeqJc->getRatio(), mSeqJc->getNumberPulses(), mSeqJc->getInterPulseTime(), true);
                 }
-                instrumentmanager->measureBackground();
+                instrumentmanager->setBackground(0.0);
             }
+            if(count < 10) {
+                instrumentmanager->measureBackground();
+                count++;
+            } else {
+                count = 0;
+                instrumentmanager->setBusyBackground(false);
+                measurementState = State::ApproachEndJc;
+                instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart());
+                mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
+                emit resetGraph(mSeqJc);
+                emit newState(measurementState);
+            }/*
             else if(!instrumentmanager->isBusyBackground()){
                 measurementState = State::ApproachEndJc;
                 instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart());
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
                 emit newState(measurementState);
-            }
+            }*/
             break;
         }
 
         case State::ApproachEndJc:
         {
             qDebug() << "ApproachEndJc" ;
-            int sleeptime = 2 * mSeqJc->getNumberPulses() * (mSeqJc->getPulsewidth() + mSeqJc->getInterPulseTime());
-            //TODO: Ausprobieren ob es reicht, wenn ich das hier als Interval setze
-            instrumentmanager->timer->setInterval(sleeptime);
             double newCurrent = 0;
+            int sleeptime = 2 * mSeqJc->getNumberPulses() * (mSeqJc->getPulsewidth() + mSeqJc->getInterPulseTime());
+            instrumentmanager->timer->setInterval(sleeptime);
             if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();
             } else if(mSeqJc->getPulseMode() == 2 || mSeqJc->getPulseMode() == 4) {
@@ -240,7 +252,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
                 measurementNumber++;
-                instrumentmanager->resetBackground();
+                instrumentmanager->setBackground(-1000.0);
                 instrumentmanager->timer->setInterval(1000);
                 emit newState(measurementState);
             }
@@ -251,7 +263,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 fw->closeFile();
                 measurementState = State::CheckForMeas;
                 measurementNumber++;
-                instrumentmanager->resetBackground();
+                instrumentmanager->setBackground(-1000.0);
                 instrumentmanager->timer->setInterval(1000);
                 emit newState(measurementState);
             }
@@ -265,7 +277,7 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
             fw->closeFile();
             measurementState = State::CheckForMeas;
             measurementNumber++;
-            instrumentmanager->resetBackground();
+            instrumentmanager->setBackground(-1000.0);
             emit newState(measurementState);
         }
 

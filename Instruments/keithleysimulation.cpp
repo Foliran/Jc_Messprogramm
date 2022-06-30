@@ -60,13 +60,16 @@ void KeithleySimulation::resetRange() {
 
 }
 
-double KeithleySimulation::getBackground(){
+void KeithleySimulation::getBackground(){
     background = 0;
-    return background;
 }
 
-void KeithleySimulation::resetBackground(){
-    background = -1000;
+void KeithleySimulation::setBusyBackground(bool x) {
+    Q_UNUSED(x)
+}
+
+void KeithleySimulation::setBackground(double value){
+    background = value;
 }
 
 void KeithleySimulation::checkForError() {

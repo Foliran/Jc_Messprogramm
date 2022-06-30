@@ -9,6 +9,7 @@
 #include<thread>
 #include<chrono>
 #include<QTime>
+#include<utility>
 
 //const int GPIBADDRESS = 26;
 const int DELAYGPIB = 0; //in ms
@@ -20,11 +21,12 @@ KeithleyTSP::KeithleyTSP(std::shared_ptr<GPIB> gpibNew, int addressNew) :
     , current(0.0)
     , voltage(0.0)
     , background(-1000.0)
+    , busyBackground(false)
 {
-    qDebug() << "Starting KeithleyTSP constructor";
+    //qDebug() << "Starting KeithleyTSP constructor";
     busy = false;
     busyBackground = false;
-    qDebug() << "Trying to open GPIB connection";
+    //qDebug() << "Trying to open GPIB connection";
     gpib->openDevice(address);
     qDebug() << "After opening GPIB connection";
     if(!gpib->isOpen(address)) {
@@ -71,7 +73,6 @@ bool KeithleyTSP::isOpen() {
     std::string s = gpib->query(address, "print(tsplink.state)", DELAYGPIB, TERMCHAR);
     if (s == "online")
     {
-
         check = true;
     }
     return check;
@@ -85,7 +86,7 @@ void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, d
     //reversed = true -> es wird in beide Richtungen gemessesn und die Absolutwerte gemittelt; false -> es wird nur in positive Richtung gemessen
     if(reversed)
     {
-        numberPulses = 2 * nPulses;
+        numberPulses = nPulses;
         gpib->cmd(address, " pulseReversed = true ", DELAYGPIB, TERMCHAR);
     } else {
         numberPulses = nPulses;
@@ -96,6 +97,7 @@ void KeithleyTSP::initializeSettings(double pWidth, double ratio, int nPulses, d
     pulseWidth = pWidth / 1000.0;
     ratio = ratio / 1000.0;
     interPulseTime = timeBetwPuls / 1000.0;
+    qDebug() << "InterPulseTime is" << interPulseTime;
     std::string pWidthString = " pWidth = " + std::to_string(pulseWidth) + " ";
     std::string ratioString = " measDelay = " + std::to_string(ratio) + " ";
     std::string nPulsesString = " nPulses = " + std::to_string(numberPulses) + " ";
@@ -132,14 +134,16 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     " for i = 1, nPulses do if(pulseReversed and (math.mod(i, 2) == 0)) then res = res - node[1].defbuffer1.readings[i] else res = res + node[1].defbuffer1.readings[i] end end "
     " waitcomplete(2) "
     " volt = res / nPulses ", DELAYGPIB, TERMCHAR);
-    voltage = std::atof(gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR).c_str());
+    qDebug() << "In KeithleyTSP, before,  Voltage is " << voltage;
+    std::string s = gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR);
+    voltage = std::atof(s.c_str());
     //qDebug() << "Background is" << background;
-    if (background != -1000.0 && background != -500.0)
+    qDebug() << "In KeithleyTSP, Voltage is " << QString::fromStdString(s);
+    if (background != -1000.0 && !busyBackground)
     {
         voltage -= background;
     }
     //current = std::atof(gpib->query(address, " print(node[2].smua.nvbuffer1.sourcevalues[1]) ", DELAYGPIB, TERMCHAR).c_str());
-    qDebug() << "Voltage is " << voltage;
 }
 
 double KeithleyTSP::getVoltage()
@@ -152,19 +156,27 @@ double KeithleyTSP::getCurrent()
     return current;
 }
 
-double KeithleyTSP::getBackground()
+void KeithleyTSP::setBusyBackground(bool x) {
+    busyBackground = x;
+}
+void KeithleyTSP::getBackground()
 {
-    background = -500.0;
-    busyBackground = true;
+    /*busyBackground = true;
     double count = 0;
 
     for (int i = 0; i < 10; i++) {
         setPulseAndMeasure(0.001);
+        int sleeptime = 2 * numberPulses * (pulseWidth + interPulseTime);
+        Sleep(sleeptime);
         count += voltage;
     }
     busyBackground = false;
     background = count / (numberPulses * 10);
-    return background;
+    return background;*/
+    busyBackground = true;
+    setPulseAndMeasure(0.001);
+    background += voltage / 10;
+    qDebug() << "In KeithleyTSP, background is" << background;
 }
 
 void KeithleyTSP::resetRange() {
@@ -186,8 +198,8 @@ void KeithleyTSP::resetRange() {
     }
 }
 
-void KeithleyTSP::resetBackground() {
-    background = -1000.0;
+void KeithleyTSP::setBackground(double value) {
+    background = value;
 }
 
 void KeithleyTSP::checkForError() {
