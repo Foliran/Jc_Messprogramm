@@ -355,7 +355,6 @@ void MainWindow::onNewErrorMessage(QString errormessage)
     //msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
 }
 
-
 void MainWindow::createQLineDiagramm()
 {
     graph->createQlineDiagramm();

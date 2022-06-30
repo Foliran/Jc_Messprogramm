@@ -50,8 +50,6 @@ void MeasurementsTable::activeMeasurement(const std::shared_ptr<const MeasSeqJc>
             color = (mesSeq == el) ? Qt::red : Qt::black;
             listWidget->item(it++ - vecSeq.begin())->setForeground(color);
         });
-
-
 }
 
 void MeasurementsTable::setupUI()

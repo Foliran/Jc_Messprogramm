@@ -95,7 +95,6 @@ void MeasurementsManager::startMeasurement(std::shared_ptr<const MeasSeqJc> meas
     mSeqJc->setNumberPulses(seqJc->getNumberPulses());
     mSeqJc->setVoltageCriterion(seqJc->getVoltageCriterion());
     mSeqJc->setMagneticField(seqJc->getMagneticField());
-
     emit newRatio(mSeqJc->getRatio());
     emit newPulseWidth(mSeqJc->getPulsewidth());
     emit newCurrentSetpoint(mSeqJc->getCurrentEnd());

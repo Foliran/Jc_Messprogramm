@@ -52,7 +52,7 @@ void OpenFileWindow::openFile_clicked()
     int lineNumber = 0;
     while(!stream.atEnd())
     {
-        if (lineNumber >= 8)
+        if (lineNumber >= 0)
         {
             QString line = file.readLine();
             QString StringCurr = line.split(QRegExp("\\s+"))[0];

@@ -128,8 +128,8 @@ void KeithleyTSP::setPulseAndMeasure(double value)
     gpib->cmd(address, " node[1].trigger.model.initiate() "
     " node[2].smua.trigger.initiate() "
     " waitcomplete() "
-    " res = 0 "
-    " for i = 1, nPulses do if(pulseReversed and (math.mod(i, 2) == 0)) then res = res - node[1].defbuffer1.readings[i] else res = res + node[1].defbuffer1.readings[i] end end " //Den langen Code hier am besten einfach irgendwo reinkopieren und Absaetze rein, dann macht der mehr Sinn
+    " res = 0.0 "
+    " for i = 1, nPulses do if(pulseReversed and (math.mod(i, 2) == 0)) then res = res - node[1].defbuffer1.readings[i] else res = res + node[1].defbuffer1.readings[i] end end "
     " waitcomplete(2) "
     " volt = res / nPulses ", DELAYGPIB, TERMCHAR);
     voltage = std::atof(gpib->query(address, " print(volt) ", DELAYGPIB, TERMCHAR).c_str());
