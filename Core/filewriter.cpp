@@ -7,6 +7,7 @@
 //#include "measseqtc.h"
 #include "measseqjc.h"
 #include "datapoint.h"
+#include "QDateTime"
 
 //fertig
 
@@ -39,9 +40,18 @@ void FileWriter::append(std::shared_ptr<DataPoint> datapoint)
     }
     if (measurementState == MeasurementsManager::State::ApproachEndJc)
     {
-        file->write(QString::number(datapoint->getKeithleyData()->getCurrent()).toUtf8() +
+        /*file->write(QString::number(datapoint->getKeithleyData()->getCurrent()).toUtf8() +
             "     " + QString::number(datapoint->getKeithleyData()->getVoltage()).toUtf8() +
-            "     " + QString::number(datapoint->getPpmsdata()->getTempLive()).toUtf8() + "\n");
+            "     " + QString::number(datapoint->getPpmsdata()->getTempLive()).toUtf8() + "\n");*/
+        file->write(QString::number(datapoint->getPpmsdata()->getDatamask()).toUtf8() + "\t" +
+                    QString::number(datapoint->getPpmsdata()->getTempLive()).toUtf8() + "\t" +
+                    QString::number(datapoint->getPpmsdata()->getUserTemp()).toUtf8() + "\t" +
+                    QString::number(datapoint->getPpmsdata()->getMagFieldLive()).toUtf8() + "\t" +
+                    QString::number(datapoint->getPpmsdata()->getSamplePressure()).toUtf8() + "\t" +
+                    QString::number(datapoint->getKeithleyData()->getCurrent()).toUtf8() + "\t" +
+                    QString::number(datapoint->getKeithleyData()->getVoltage()).toUtf8() + "\t" +
+                    QString::number(datapoint->getKeithleyData()->getVoltage() / datapoint->getKeithleyData()->getCurrent()).toUtf8() + "\t" +
+                    QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()).toUtf8() + "\n");
     }
 }
 
@@ -69,6 +79,7 @@ QString FileWriter::openFile(std::shared_ptr<const MeasSeqJc> measurementSequenc
     file = std::make_shared<QFile>(file2.fileName());
 
     file->open(QIODevice::WriteOnly | QIODevice::Text);
+    file->write("PPMS\tT\tT\tB\tP\tI\tU\tTimestamp\n-\tK\tK\tmT\tPa\tA\tV\tOhm\ts\nPPMS\tRod\tSample\t-\tchamber\tMean\tMean\tMean\t-\n");
 
     if (!file->isOpen())
     {

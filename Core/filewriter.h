@@ -30,7 +30,6 @@ public:
     void closeFile();
     void MeasurementState(MeasurementsManager::State newState);
 
-
 private:
     QString createFileName(std::shared_ptr<const MeasSeqJc> measurementSequence);
     QString filedir;
