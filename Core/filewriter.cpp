@@ -25,8 +25,28 @@ QString FileWriter::createFileName(std::shared_ptr<const MeasSeqJc> measurementS
     auto seqJc = std::dynamic_pointer_cast<const MeasSeqJc> (measurementSequence);
     if (seqJc != nullptr)
     {
-        QString filename = "Jc_";
+        /*QString filename = "Jc_";
         filename.append(measurementSequence->getFileName());
+        return filename;*/
+        QString filename;
+        filename.append(measurementSequence->getSupraName()+"_U(I)_");
+        QString temp = QString::number(measurementSequence->getTemperature());
+        if(temp.contains('.')) {
+            temp.replace(".", ",");
+            temp.append("K_");
+        } else {
+            temp.append(",0K_");
+        }
+        QString mag = QString::number(measurementSequence->getMagneticField());
+        if(mag.contains('.')) {
+            mag.replace(".", ",");
+            mag.append("mT_");
+        } else {
+            mag.append(",0mT_");
+        }
+        filename.append(temp);
+        filename.append(mag);
+        filename.append("000,0Deg"); //Das hier kommt nur hinten dran, damit JcCalc die Dateien lesen kann, fuer das Programm muss der Dateinamen naemlich exakt das Format hier haben
         return filename;
     }
     else { return "No filename"; }
