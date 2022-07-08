@@ -125,7 +125,7 @@ void StartDialogMulti::setupUI()
     timeBetweenPulses->setDecimals(0);
     timeBetweenPulses->setRange(0, 1000);
     timeBetweenPulses->setSingleStep(1);
-    timeBetweenPulses->setValue(1);
+    timeBetweenPulses->setValue(100);
 
     ratio = new QDoubleSpinBox();
     ratio->setDecimals(0);
