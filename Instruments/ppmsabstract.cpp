@@ -48,7 +48,7 @@ void PpmsAbstract::setMagField(double magField, double magRate)
     }
 
     magField *= 10;
-    if (maxPosMagField < magField)
+    if (magField > maxPosMagField)
     {
         magField = maxPosMagField;
         QString errorMag = ("The maximum magField is too high and will automaticly be reduced to: ");

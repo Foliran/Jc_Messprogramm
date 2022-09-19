@@ -33,6 +33,7 @@ StartDialogMulti_B::StartDialogMulti_B(QWidget* parent)
     , nPulses(nullptr)
 {
     setupUI();
+    setLocale(QLocale::Italian);
 }
 
 QSize StartDialogMulti_B::sizeHint() const

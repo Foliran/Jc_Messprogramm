@@ -32,6 +32,7 @@ StartDialog::StartDialog(QWidget* parent)
     , nPulses(nullptr)
 {
     setupUI();
+    setLocale(QLocale::Italian);
 }
 
 QSize StartDialog::sizeHint() const
@@ -91,10 +92,10 @@ void StartDialog::setupUI()
     currentRateJc->setValue(0.001);
 
     magneticFieldJc = new QDoubleSpinBox();
+    magneticFieldJc->setRange(0, 140000);
     magneticFieldJc->setDecimals(2);
-    magneticFieldJc->setSingleStep(0.1);
-    magneticFieldJc->setRange(0, 14000);
-    magneticFieldJc->setValue(0);
+    magneticFieldJc->setSingleStep(0.01);
+    magneticFieldJc->setValue(0.0);
 
     pulseWidth = new QDoubleSpinBox();
     pulseWidth->setDecimals(0);

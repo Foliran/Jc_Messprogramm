@@ -211,15 +211,11 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
                 measurementState = State::ApproachEndJc;
                 instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart());
                 mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
+                int sleeptime = 2 * mSeqJc->getNumberPulses() * (mSeqJc->getPulsewidth() + mSeqJc->getInterPulseTime());
+                instrumentmanager->timer->setInterval(sleeptime);
                 emit resetGraph(mSeqJc);
                 emit newState(measurementState);
-            }/*
-            else if(!instrumentmanager->isBusyBackground()){
-                measurementState = State::ApproachEndJc;
-                instrumentmanager->setPulseAndMeasure(mSeqJc->getCurrentStart());
-                mSeqJc->setCurrentLive(mSeqJc->getCurrentStart());
-                emit newState(measurementState);
-            }*/
+            }
             break;
         }
 
@@ -227,8 +223,6 @@ void MeasurementsManager::onNewData(std::shared_ptr<DataPoint> datapoint)
         {
             qDebug() << "ApproachEndJc" ;
             double newCurrent = 0;
-            int sleeptime = 2 * mSeqJc->getNumberPulses() * (mSeqJc->getPulsewidth() + mSeqJc->getInterPulseTime());
-            instrumentmanager->timer->setInterval(sleeptime);
             if(mSeqJc->getPulseMode() == 1 || mSeqJc->getPulseMode() == 3) {
                 newCurrent = mSeqJc->getCurrentLive() + mSeqJc->getCurrentRate();
             } else if(mSeqJc->getPulseMode() == 2 || mSeqJc->getPulseMode() == 4) {
