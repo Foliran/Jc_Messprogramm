@@ -120,11 +120,8 @@ void PpmsInstrument::setRotatorstate(bool rotator)
     }
     else
     {
-        //TODO: Rotator Voltage aus?
-        //gpib_->cmd(address_ ,"Bridge 0,999.023,100.000,0,0,9.0", DELAYGPIB, TERMCHAR);
         gpib->cmd(address, "USERTEMP 0", DELAYGPIB, TERMCHAR);
         dataMask -= BITANGLE; // Angle
-        //dataMask -= BITUSERTEMP; // userTemp
     }
 
     emit newRotstate(rotState);

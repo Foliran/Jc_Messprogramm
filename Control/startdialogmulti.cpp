@@ -105,7 +105,7 @@ void StartDialogMulti::setupUI()
     currentRateJc->setValue(0.01);
 
     magneticFieldJc = new QDoubleSpinBox();
-    magneticFieldJc->setDecimals(2);
+    magneticFieldJc->setDecimals(1);
     magneticFieldJc->setSingleStep(0.1);
     magneticFieldJc->setRange(0, 14000);
     magneticFieldJc->setValue(0);

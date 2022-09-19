@@ -18,7 +18,7 @@ PpmsSimulation::PpmsSimulation()
      , magFieldNow_(0)
      , angle_(0)
 {
-    maxPosMagField = 9000;
+    maxPosMagField = 14000;
     maxRateMag = 100;
     ppmsHelium = 60;
 }

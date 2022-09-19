@@ -52,18 +52,18 @@ void OpenFileWindow::openFile_clicked()
     int lineNumber = 0;
     while(!stream.atEnd())
     {
-        if (lineNumber >= 0)
+        if (lineNumber >= 3)
         {
             QString line = file.readLine();
-            QString StringCurr = line.split(QRegExp("\\s+"))[0];
-            QString StringVolt = line.split(QRegExp("\\s+"))[1];
+            QString StringCurr = line.split(QRegExp("\\s+"))[5];
+            QString StringVolt = line.split(QRegExp("\\s+"))[6];
             series->append(StringCurr.toDouble(), StringVolt.toDouble());
         }
         lineNumber++;
     }
 
     //Diagramm erstellen
-    QChart *chart =new QChart();
+    QChart *chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
     QValueAxis *axisX = new QValueAxis;
